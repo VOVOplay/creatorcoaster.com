@@ -1,2 +1,1 @@
-# creatorcoaster.com
-creatorcoaster.com
+## 🤫 More info soon!
