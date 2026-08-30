@@ -22,8 +22,11 @@ func main() {
 func configureRouter() *http.ServeMux {
 	router := http.NewServeMux()
 
-	pageHandler := handlers.NewPageHandler()
+	// Static
+	fileServer := http.FileServer(http.Dir("src/static"))
+	router.Handle("GET /static/", http.StripPrefix("/static/", fileServer))
 
+	pageHandler := handlers.NewPageHandler()
 	router.HandleFunc("GET /", pageHandler.HandleHome)
 
 	return router

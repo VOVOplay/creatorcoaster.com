@@ -1,0 +1,56 @@
+:root {
+    --main-bg-color: #333333;
+}
+
+* {
+    box-sizing: border-box;
+    color: white;
+}
+
+body {
+    background-color: var(--main-bg-color);
+    margin: 0;
+}
+
+/* Navbar */
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+
+    background-color: black;
+    border: 1px solid red;
+
+    height: 64px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+nav a {
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-decoration: none;
+
+    padding: 10px;
+}
+
+nav a:hover {
+    background-color: aquamarine;
+}
+
+nav a img {
+    padding: 2px;
+    height: 50px;
+}
+
+nav a:first-child {
+    margin-right: auto;
+}
+
