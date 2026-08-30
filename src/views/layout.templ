@@ -1,0 +1,23 @@
+package views
+
+templ Layout(title string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<title>{ title }</title>
+			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+			<link rel="stylesheet" href="/static/style.css">
+			<link rel="icon" type="image/png" href="https://images.creatorcoaster.com/cc-logo-circle.png">
+		</head>
+		<body>
+			<nav>
+				<a href="/"><img src="https://images.creatorcoaster.com/cc-logo-circle.png"></a>
+				<a href="/">Home</a>
+			</nav>
+			<main>
+				{ children... }
+			</main>
+		</body>
+	</html>
+}
