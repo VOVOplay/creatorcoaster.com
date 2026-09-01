@@ -1,7 +1,14 @@
 package views
 
 templ NotFound() {
-    @Layout("404 - Creator Coaster") {
-        <p>This page was not found</p>
+    @Layout("404 | Creator Coaster") {
+        <div class="fill-screen-div">
+            <div id="not-found-section">
+                <img src="https://images.creatorcoaster.com/cc-animated-logo-circle.gif">
+                <h1>404</h1>
+                <p>We could not find what you were looking for :(</p>
+                <a href="/"><button>Go home</button></a>
+            </div>
+        </div>
     }
 }
