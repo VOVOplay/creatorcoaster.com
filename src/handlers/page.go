@@ -23,3 +23,9 @@ func (h *PageHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 	component := views.Home()
 	component.Render(r.Context(), w)
 }
+
+func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
+
+	component := views.AboutUs()
+	component.Render(r.Context(), w)
+}

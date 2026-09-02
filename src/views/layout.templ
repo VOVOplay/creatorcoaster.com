@@ -7,15 +7,16 @@ templ Layout(title string) {
 			<meta charset="UTF-8"/>
 			<title>{ title }</title>
 			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+			<script src="https://unpkg.com/htmx.org/dist/ext/preload.js"></script>
 			<link rel="stylesheet" href="/static/style.css">
 			<link rel="icon" type="image/png" href="https://images.creatorcoaster.com/cc-logo-circle.png">
 		</head>
-		<body>
-			<nav>
+		<body hx-ext="preload">
+		<nav>
 			<a href="/"><img class="nav-image" src="https://images.creatorcoaster.com/cc-logo-circle.png"></a>
 			<a href="/">Home</a>
-			<a href="/blogs">Blogs</a>
 			<a href="/wiki">Wiki</a>
+			<a href="/blogs">Blogs</a>
 			<a href="/about">About Us</a>
 		</nav>
 		<main>
@@ -36,7 +37,7 @@ templ Layout(title string) {
 					<a href="https://github.com/vovoplay/creatorcoaster.com"><img src="/static/assets/github-logo.svg"></a>
 				</div>
 			</div>
-			<p id="small-footer-text">Made with ❤️ by <a href="https://vovoplay.dev/">vovoplay</a></p>
+			<p class="small-footer-text">Made with ❤️ by <a href="https://vovoplay.dev/">vovoplay</a></p>
 		</footer>
 		</body>
 	</html>

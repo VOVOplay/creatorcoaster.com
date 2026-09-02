@@ -28,6 +28,7 @@ func configureRouter() *http.ServeMux {
 
 	pageHandler := handlers.NewPageHandler()
 	router.HandleFunc("GET /", pageHandler.HandleHome)
+	router.HandleFunc("GET /about", pageHandler.HandleAbout)
 
 	return router
 }
