@@ -28,49 +28,69 @@ func (h *PageHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 func getTeamMemberInfo() []views.TeamMemberInfo {
 	return []views.TeamMemberInfo{
 		{
+			DiscordUsername:    "@kdesa",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Owner",
+		},
+		{
 			DiscordUsername:    "@vovoplay",
-			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
 			Role:               "Head Manager",
 		},
 		{
 			DiscordUsername:    "@qsynx",
-			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
 			Role:               "Manager",
 		},
 		{
-			DiscordUsername:    "@vovoplay",
-			ProfilePictureLink: "/static/assets/discord-logo.svg",
-			Role:               "Head Manager",
+			DiscordUsername:    "@lgx_",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Head Admin",
 		},
 		{
-			DiscordUsername:    "@qsynx",
-			ProfilePictureLink: "/static/assets/discord-logo.svg",
-			Role:               "Manager",
+			DiscordUsername:    "@fiona.ktk",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Admin",
 		},
 		{
-			DiscordUsername:    "@vovoplay",
-			ProfilePictureLink: "/static/assets/discord-logo.svg",
-			Role:               "Head Manager",
+			DiscordUsername:    "@furbated",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Admin",
 		},
 		{
-			DiscordUsername:    "@vovoplay",
-			ProfilePictureLink: "/static/assets/discord-logo.svg",
-			Role:               "Head Manager",
+			DiscordUsername:    "@sevtube",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Moderator",
 		},
 		{
-			DiscordUsername:    "@vovoplay",
-			ProfilePictureLink: "/static/assets/discord-logo.svg",
-			Role:               "Head Manager",
+			DiscordUsername:    "@hazelstyx",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Moderator",
 		},
 		{
-			DiscordUsername:    "@vovoplay",
-			ProfilePictureLink: "/static/assets/discord-logo.svg",
-			Role:               "Head Manager",
+			DiscordUsername:    "@reaper_mc.",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Moderator",
 		},
 		{
-			DiscordUsername:    "@vovoplay",
-			ProfilePictureLink: "/static/assets/discord-logo.svg",
-			Role:               "Head Manager",
+			DiscordUsername:    "@random_dudy",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Moderator",
+		},
+		{
+			DiscordUsername:    "@fyzter123",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Moderator",
+		},
+		{
+			DiscordUsername:    "@eulmdev",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Support",
+		},
+		{
+			DiscordUsername:    "@claucefx",
+			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
+			Role:               "Support",
 		},
 	}
 }

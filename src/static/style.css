@@ -1,6 +1,7 @@
 :root {
     --main-bg-color: #333333;
     --secondary-color: #202020;
+    --tertiary-color: #636363;
     --cc-brand-color: #30d2e7;
 }
 
@@ -241,8 +242,6 @@ footer {
     flex-wrap: wrap;
     gap: 1rem;
 
-    border: 3px solid purple;
-
     width: 100%;
     height: fit-content;
     padding: 1rem;
@@ -251,10 +250,12 @@ footer {
 }
 
 .team-member-card {
-    border: 1px solid red;
+    border: 1px solid var(--tertiary-color);
 
     height: 200px;
     width: 150px;
+
+    background-color: rgb(41, 41, 41);
 
     margin: 0;
     padding: 10px;
@@ -265,11 +266,24 @@ footer {
     flex-direction: column;
 
     flex-shrink: 0;
+
+    border-radius: 10px;
 }
 
 .team-member-card img {
     height: 100px;
     width: 100px;
+
+    border-radius: 50%;
+    margin: 10px;
+}
+
+.team-member-card .username {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500;
+}
+.team-member-card .role{
+    color: #a3a3a3;
 }
 
 /* ABOUT US */

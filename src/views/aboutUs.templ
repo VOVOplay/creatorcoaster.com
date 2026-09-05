@@ -23,8 +23,8 @@ templ AboutUs(teamMemberInfo []TeamMemberInfo) {
             for _, teamMember := range teamMemberInfo {
                 <div class="team-member-card">
                     <img src={ teamMember.ProfilePictureLink }>
-                    <span>{ teamMember.DiscordUsername }</span>
-                    <span> { teamMember.Role } </span>
+                    <span class="username">{ teamMember.DiscordUsername }</span>
+                    <span class="role"> { teamMember.Role } </span>
                 </div>
             }
             </div>
