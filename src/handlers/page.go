@@ -24,8 +24,60 @@ func (h *PageHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 	component.Render(r.Context(), w)
 }
 
-func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
+// temporary for testing
+func getTeamMemberInfo() []views.TeamMemberInfo {
+	return []views.TeamMemberInfo{
+		{
+			DiscordUsername:    "@vovoplay",
+			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			Role:               "Head Manager",
+		},
+		{
+			DiscordUsername:    "@qsynx",
+			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			Role:               "Manager",
+		},
+		{
+			DiscordUsername:    "@vovoplay",
+			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			Role:               "Head Manager",
+		},
+		{
+			DiscordUsername:    "@qsynx",
+			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			Role:               "Manager",
+		},
+		{
+			DiscordUsername:    "@vovoplay",
+			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			Role:               "Head Manager",
+		},
+		{
+			DiscordUsername:    "@vovoplay",
+			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			Role:               "Head Manager",
+		},
+		{
+			DiscordUsername:    "@vovoplay",
+			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			Role:               "Head Manager",
+		},
+		{
+			DiscordUsername:    "@vovoplay",
+			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			Role:               "Head Manager",
+		},
+		{
+			DiscordUsername:    "@vovoplay",
+			ProfilePictureLink: "/static/assets/discord-logo.svg",
+			Role:               "Head Manager",
+		},
+	}
+}
 
-	component := views.AboutUs()
+func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
+	teamMemberInfo := getTeamMemberInfo()
+
+	component := views.AboutUs(teamMemberInfo)
 	component.Render(r.Context(), w)
 }

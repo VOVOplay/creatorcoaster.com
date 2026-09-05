@@ -12,7 +12,7 @@ body {
     background-color: var(--main-bg-color);
     margin: 0;
     color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif; /* Stolen from localhost8000.com */
 
     display: grid;
     grid-template-rows: auto 1fr auto;
@@ -169,3 +169,51 @@ footer {
     background-color: rgb(28, 28, 28);;
 }
 /* NOT FOUND */
+
+/* ABOUT US */
+#sixty-percent-of-screen {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    width: 60%;
+    max-width: 60vw;
+    align-self: center;
+}
+
+#team-member-cards-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    border: 3px solid purple;
+
+    width: 100%;
+    height: fit-content;
+
+    align-self: center;
+}
+.team-member-card {
+    border: 1px solid red;
+
+    height: 200px;
+    width: 150px;
+
+    margin: 20px;
+    padding: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    flex-shrink: 0;
+}
+
+.team-member-card img {
+    height: 100px;
+    width: 100px;
+}
+
+/* ABOUT US */
