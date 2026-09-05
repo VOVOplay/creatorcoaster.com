@@ -101,3 +101,9 @@ func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
 	component := views.AboutUs(teamMemberInfo)
 	component.Render(r.Context(), w)
 }
+
+func (h *PageHandler) HandleTestText(w http.ResponseWriter, r *http.Request) {
+
+	component := views.TestText()
+	component.Render(r.Context(), w)
+}

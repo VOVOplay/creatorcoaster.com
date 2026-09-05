@@ -3,10 +3,19 @@
     --secondary-color: #202020;
     --tertiary-color: #636363;
     --cc-brand-color: #30d2e7;
+    --darker-text-color: #b6b6b6;
 }
 
 * {
     box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'Droid Sans Mono';
+    src:url('/static/fonts/DroidSansMono-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
 
 html {
@@ -63,6 +72,20 @@ main {
     align-items: center;
     padding: 1rem;
 }
+
+ul, ol {
+    padding-left: 1.2rem; 
+    margin-left: 0;
+}
+
+pre {
+    max-width: 100%;
+    overflow-x: auto;
+    background-color: var(--secondary-color);
+    padding: 1rem;
+    border-radius: 4px;
+}
+
 /* GENERAL */
 
 
@@ -288,6 +311,66 @@ footer {
 
 /* ABOUT US */
 
+/* MARKDOWN TEXT STYLES */
+/* Note: These are used outside of the generated md articles/blogs, but I'll keep the names with a md- prefix */
+.text-div {
+    width: 60%;
+    max-width: 1000px;
+    align-self: center;
+
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.md-heading {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 800;
+    margin-bottom: -0.7rem;
+    margin-top: 1.5rem;
+}
+
+
+.md-paragraph {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.md-blockquote {
+    margin: 0.3rem 0;
+    padding: 0.3rem 1rem;
+    
+    border-left: 4px solid var(--tertiary-color); 
+    color: var(--darker-text-color);
+
+    font-size: 90%;
+}
+
+.md-inline-code {
+    background-color: var(--secondary-color);
+    color: var(--darker-text-color);
+
+    text-indent: 0;
+    white-space: pre-wrap;
+
+    padding: 0 .3em;
+    margin: -.2em 0;
+
+    border-radius: 4px;
+
+    font-size: 85%;
+    font-family: "Droid Sans Mono", monospace;
+}
+
+.md-ul {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+.md-ol {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+/* MARKDOWN TEXT STYLES */
+
 @media (max-width: 640px) {
     nav a {
         padding: 0 12px;
@@ -319,5 +402,11 @@ footer {
         min-height: 44px;
         min-width: 44px;
         padding: 0.5rem;
+    }
+
+    .text-div {
+        width: calc(100% - 1rem);
+        max-width: calc(100vw - 1rem);
+        align-self: center;
     }
 }
