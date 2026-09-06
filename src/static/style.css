@@ -78,13 +78,7 @@ ul, ol {
     margin-left: 0;
 }
 
-pre {
-    max-width: 100%;
-    overflow-x: auto;
-    background-color: var(--secondary-color);
-    padding: 1rem;
-    border-radius: 4px;
-}
+
 
 /* GENERAL */
 
@@ -359,6 +353,36 @@ footer {
 
     font-size: 85%;
     font-family: "Droid Sans Mono", monospace;
+}
+
+.md-large-code {
+    overflow-x: auto;
+    scrollbar-color: rgb(90, 90, 90) rgb(17, 17, 17);
+
+    font-family: "Droid Sans Mono", monospace;
+}
+
+.code-container {
+    max-width: 100%;
+
+    display: flex;
+    justify-content: flex-start;
+
+    background-color: var(--secondary-color);
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.copy-code-button {
+    height: 20px;
+    width: 20px;
+    position: sticky;
+    z-index: 100;
+    margin-left: auto;
+}
+
+.md-large-code {
+    margin: 0;
 }
 
 .md-ul {
