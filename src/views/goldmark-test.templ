@@ -1,0 +1,9 @@
+package views
+
+templ TestGoldmark(goldmarkHTML string) {
+    @Layout("TEST GOLDMARK | Creator Coaster") {
+        <div class="text-div">
+            @templ.Raw(goldmarkHTML)
+        </div>
+    }
+}
