@@ -1,3 +1,5 @@
+package main
+
 /*
 According to all known laws
 of aviation,
