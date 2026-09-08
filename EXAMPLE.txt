@@ -4,7 +4,6 @@
 #### Heading four
 ##### Heading five
 ###### Heading six
-
 This is some paragraph with `inline code`, _italic_, **bold** and that's about it
 This is kinda the same paragraph, I wonder how it deals with this
 
@@ -12,7 +11,19 @@ This is kinda the same paragraph, I wonder how it deals with this
 - Bullet thing two
 
 Oh look another paragraph, this time with a link [hi](https://google.com/)
+> blockquote _italic_ **bold** `code`
 
 ```go
-fmt.Println("hi")
+fmt.Println("**hi")** aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+fmt.Println("**hi")** aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+fmt.Println("**hi")** aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
+
+1. Test
+2. Test2
+1) Te
+2) te
+
+test `_not italic_`
+
+test { test }

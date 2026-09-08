@@ -316,27 +316,36 @@ footer {
     word-break: break-word;
 }
 
+.md-spacer {
+    height: 1rem;
+}
+
 .md-heading {
     font-family: "JetBrains Mono", monospace;
     font-weight: 800;
-    margin-bottom: -0.7rem;
-    margin-top: 1.5rem;
+    margin-bottom: 0.7rem;
+    margin-top: 1rem;
 }
 
 
 .md-paragraph {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    /* margin-top: 1rem;
+    margin-bottom: 1rem; */
+    margin: 0;
 }
 
 .md-blockquote {
-    margin: 0.3rem 0;
+    margin: 0;
     padding: 0.3rem 1rem;
     
     border-left: 4px solid var(--tertiary-color); 
     color: var(--darker-text-color);
 
     font-size: 90%;
+}
+
+.md-blockquote .md-paragraph {
+    margin: 0;
 }
 
 .md-inline-code {
@@ -371,6 +380,8 @@ footer {
     background-color: var(--secondary-color);
     padding: 10px;
     border-radius: 15px;
+
+    margin: 0;
 }
 
 .copy-code-button {
@@ -386,12 +397,12 @@ footer {
 }
 
 .md-ul {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 .md-ol {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 /* MARKDOWN TEXT STYLES */
 
