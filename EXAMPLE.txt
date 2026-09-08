@@ -1,9 +1,17 @@
-## Heading
-# wo
+# Heading one
+## Heading two
+### Heading three
+#### Heading four
+##### Heading five
+###### Heading six
 
-a
+This is some paragraph with `inline code`, _italic_, **bold** and that's about it
+This is kinda the same paragraph, I wonder how it deals with this
 
-- yo `code`
+- Bullet thing 1
+- Bullet thing two
+
+Oh look another paragraph, this time with a link [hi](https://google.com/)
 
 ```go
 fmt.Println("hi")

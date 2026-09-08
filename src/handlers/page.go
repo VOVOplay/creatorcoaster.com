@@ -1,17 +1,13 @@
 package handlers
 
 import (
-	"bytes"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 
+	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/extension"
-	"github.com/yuin/goldmark/renderer/html"
 )
 
 type PageHandler struct {
@@ -128,29 +124,10 @@ func loadTestFile() string {
 	return data_str
 }
 
-func generateHTMLFromString(sourceString string) string {
-	source := []byte(sourceString)
-
-	md := goldmark.New(
-		goldmark.WithExtensions(extension.GFM),
-
-		goldmark.WithRendererOptions(
-			html.WithHardWraps(),
-		),
-	)
-
-	var buf bytes.Buffer
-	if err := md.Convert(source, &buf); err != nil {
-		log.Fatal(err)
-	}
-
-	return buf.String()
-}
-
 func (h *PageHandler) HandleGoldmarkTest(w http.ResponseWriter, r *http.Request) {
 	data_str := loadTestFile()
 
-	html := generateHTMLFromString(data_str)
+	html := markdown.GenerateHTMLFromString(data_str)
 
 	component := views.TestGoldmark(html)
 	component.Render(r.Context(), w)
