@@ -2,7 +2,6 @@ package markdown
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 
 	"github.com/yuin/goldmark"
@@ -42,8 +41,6 @@ func GenerateHTMLFromString(sourceString string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Print(buf.String())
 
 	return buf.String()
 }

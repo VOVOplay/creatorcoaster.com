@@ -34,6 +34,8 @@ body {
     grid-template-rows: auto 1fr auto;
     min-height: 100vh;
     min-height: 100dvh;
+
+    grid-template-columns: minmax(0, 100%);
 }
 
 img {
@@ -62,6 +64,8 @@ main {
     display: flex;
     flex-direction: column;
     width: 100%;
+
+    min-width: 0;
 }
 
 .fill-screen-div {
@@ -308,12 +312,15 @@ footer {
 /* MARKDOWN TEXT STYLES */
 /* Note: These are used outside of the generated md articles/blogs, but I'll keep the names with a md- prefix */
 .text-div {
-    width: 60%;
-    max-width: 1000px;
+    width: 90%;
+    max-width: 900px;
     align-self: center;
 
     overflow-wrap: anywhere;
     word-break: break-word;
+
+    margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .md-spacer {
@@ -369,6 +376,11 @@ footer {
     scrollbar-color: rgb(90, 90, 90) rgb(17, 17, 17);
 
     font-family: "Droid Sans Mono", monospace;
+
+    margin: 0;
+
+    min-width: 0;
+    width: 100%;
 }
 
 .code-container {
@@ -382,6 +394,7 @@ footer {
     border-radius: 15px;
 
     margin: 0;
+    min-width: 0;
 }
 
 .copy-code-button {
@@ -390,10 +403,6 @@ footer {
     position: sticky;
     z-index: 100;
     margin-left: auto;
-}
-
-.md-large-code {
-    margin: 0;
 }
 
 .md-ul {
