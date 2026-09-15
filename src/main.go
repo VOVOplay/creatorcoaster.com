@@ -27,10 +27,14 @@ func configureRouter() *http.ServeMux {
 	router.Handle("GET /static/", http.StripPrefix("/static/", fileServer))
 
 	pageHandler := handlers.NewPageHandler()
+	wikiHandler := handlers.NewWikiHandler()
+
 	router.HandleFunc("GET /", pageHandler.HandleHome)
 	router.HandleFunc("GET /about", pageHandler.HandleAbout)
 	router.HandleFunc("GET /test_text", pageHandler.HandleTestText)
 	router.HandleFunc("GET /goldmark-test", pageHandler.HandleGoldmarkTest)
+
+	router.HandleFunc("GET /wiki/", wikiHandler.HandleWiki)
 
 	return router
 }

@@ -1,0 +1,12 @@
+package views
+
+import "fmt"
+import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
+
+templ WikiLayout(article myTypes.Article) {
+    @Layout(fmt.Sprintf("%v | Creator Coaster", article.PrettyName)) {
+        <p>Stuff around article (sidebar...)</p>
+
+        @GenericArticle(article) 
+    }
+}
