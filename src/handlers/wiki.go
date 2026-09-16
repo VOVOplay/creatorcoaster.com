@@ -20,6 +20,27 @@ func NewWikiHandler() *WikiHandler {
 	return &WikiHandler{}
 }
 
+func (h *WikiHandler) HandleWiki(w http.ResponseWriter, r *http.Request) {
+	requestedArticleName, err := h.findWhichArticleWasRequested(r)
+	if err != nil {
+		component := views.NotFound()
+		component.Render(r.Context(), w)
+		return
+	}
+
+	requestedArticle, err := h.getRequestedArticle(requestedArticleName)
+	if err != nil {
+		component := views.NotFound()
+		component.Render(r.Context(), w)
+		return
+	}
+
+	allArticles := h.getArticles()
+
+	component := views.WikiLayout(requestedArticle, allArticles)
+	component.Render(r.Context(), w)
+}
+
 func (h *WikiHandler) findWhichArticleWasRequested(r *http.Request) (string, error) {
 	if r.URL.String() == "/wiki/" {
 		return "introduction", nil
@@ -58,21 +79,48 @@ func (h *WikiHandler) getRequestedArticle(requestedArticle string) (myTypes.Arti
 
 }
 
-func (h *WikiHandler) HandleWiki(w http.ResponseWriter, r *http.Request) {
-	requestedArticleName, err := h.findWhichArticleWasRequested(r)
-	if err != nil {
-		component := views.NotFound()
-		component.Render(r.Context(), w)
-		return
+// temp
+func (h *WikiHandler) getArticles() []myTypes.Article {
+	return []myTypes.Article{
+		{
+			Name:         "first-article",
+			PrettyName:   "First Article",
+			HTML:         "FIRST ARTICLE",
+			CategoryPath: "/",
+			Info: myTypes.ArticleInfo{
+				Date:   "09/08/2027",
+				Author: "VOVOplay",
+			},
+		},
+		{
+			Name:         "second-article",
+			PrettyName:   "Second Article",
+			HTML:         "SECOND ARTICLE",
+			CategoryPath: "/perks/",
+			Info: myTypes.ArticleInfo{
+				Date:   "09/08/2027",
+				Author: "VOVOplay",
+			},
+		},
+		{
+			Name:         "third-article",
+			PrettyName:   "Third Article",
+			HTML:         "THIRD ARTICLE",
+			CategoryPath: "/perks/",
+			Info: myTypes.ArticleInfo{
+				Date:   "09/08/2027",
+				Author: "VOVOplay",
+			},
+		},
+		{
+			Name:         "fourth-article",
+			PrettyName:   "Fourth Article",
+			HTML:         "FOURTH ARTICLE",
+			CategoryPath: "/perks/talent",
+			Info: myTypes.ArticleInfo{
+				Date:   "09/08/2027",
+				Author: "VOVOplay",
+			},
+		},
 	}
-
-	requestedArticle, err := h.getRequestedArticle(requestedArticleName)
-	if err != nil {
-		component := views.NotFound()
-		component.Render(r.Context(), w)
-		return
-	}
-
-	component := views.WikiLayout(requestedArticle)
-	component.Render(r.Context(), w)
 }

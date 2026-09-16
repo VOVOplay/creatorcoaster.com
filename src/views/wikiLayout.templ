@@ -3,11 +3,24 @@ package views
 import "fmt"
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 
-templ WikiLayout(article myTypes.Article) {
+templ WikiLayout(article myTypes.Article, allArticles []myTypes.Article) {
     @Layout(fmt.Sprintf("%v | Creator Coaster", article.PrettyName)) {
         <div class="wiki-container">
             <div class="sidebar">
-
+                <div class="sidebar-category">
+                    <button class="category-button"><img src="/static/assets/chevrons/down-chevron.svg">Category One</button>
+                    <ul class="sidebar-category-list">
+                        <li><a href="/">One</a></li>
+                    </ul>
+                    <div class="sidebar-category">
+                        <span>Category Two</span>
+                        <br>
+                        <ul class="sidebar-category-list">
+                            <li><a href="/">One</a></li>
+                            <li><a href="/">Two</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="free-wiki-area">
                 <div class="text-div">

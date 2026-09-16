@@ -24,3 +24,27 @@ document.addEventListener('click', async (e) => {
         console.error('Failed to copy text: ', err);
     }
 });
+
+document.addEventListener('click', async (e) => {
+    const button = e.target.closest('.category-button');
+    if (!button) return;
+
+    e.preventDefault();
+
+
+    const categoryList = button.nextElementSibling;
+    if (!categoryList) return;
+
+
+    categoryList.classList.toggle('hidden'); // toggle the .hidden class
+    const isHidden = window.getComputedStyle(categoryList).display === 'none';
+
+    const chevronImage = button.querySelector('img');
+    if (!chevronImage) return;
+
+    if (isHidden) {
+        chevronImage.src = "/static/assets/chevrons/right-chevron.svg";
+    } else {
+        chevronImage.src = "/static/assets/chevrons/down-chevron.svg";
+    }
+});
