@@ -5,8 +5,17 @@ import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 
 templ WikiLayout(article myTypes.Article) {
     @Layout(fmt.Sprintf("%v | Creator Coaster", article.PrettyName)) {
-        <p>Stuff around article (sidebar...)</p>
+        <div class="wiki-container">
+            <div class="sidebar">
 
-        @GenericArticle(article) 
+            </div>
+            <div class="free-wiki-area">
+                <div class="text-div">
+                    @GenericArticle(article)
+                </div>
+            </div>
+            
+        </div>
+        
     }
 }

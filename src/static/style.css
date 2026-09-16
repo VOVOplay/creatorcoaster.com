@@ -4,6 +4,7 @@
     --tertiary-color: #636363;
     --cc-brand-color: #30d2e7;
     --darker-text-color: #b6b6b6;
+    --yet-another-gray: #2a2a2a;
 }
 
 * {
@@ -104,6 +105,8 @@ nav {
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
+
+    border-bottom: 1px solid var(--tertiary-color);
 }
 
 nav a {
@@ -145,6 +148,8 @@ footer {
     flex-direction: column;
     
     text-align: center;
+
+    border-top: 1px solid var(--tertiary-color);
 }
 
 .small-footer-text {
@@ -312,14 +317,12 @@ footer {
 /* Note: These are used outside of the generated md articles/blogs, but I'll keep the names with a md- prefix */
 .text-div {
     width: 90%;
-    max-width: 900px;
-    align-self: center;
+    max-width: 1000px;
 
     overflow-wrap: anywhere;
     word-break: break-word;
 
-    margin-bottom: 20px;
-    margin-top: 20px;
+    padding: 20px;
 }
 
 .md-spacer {
@@ -340,6 +343,8 @@ footer {
 
 .md-blockquote {
     margin: 0;
+    margin-top: 0.1rem;
+    margin-top: 0.1rem;
     padding: 0.3rem 1rem;
     
     border-left: 4px solid var(--tertiary-color); 
@@ -378,6 +383,7 @@ footer {
 
     min-width: 0;
     width: 100%;
+    
 }
 
 .code-container {
@@ -391,6 +397,9 @@ footer {
     border-radius: 15px;
 
     margin: 0;
+    margin-top: 0.1rem;
+    margin-bottom: 0.1rem;
+
     min-width: 0;
 }
 
@@ -411,6 +420,57 @@ footer {
     margin-bottom: 0;
 }
 /* MARKDOWN TEXT STYLES */
+
+/* WIKI */
+.wiki-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: row;
+
+    justify-content: flex-start;
+}
+
+.free-wiki-area {
+    display: flex;
+
+    width: 100%;
+
+    justify-content: center;
+}
+
+
+.sidebar {
+    margin: 0px;
+
+    height: auto;
+    width: 300px;
+
+    background-color: var(--yet-another-gray);
+
+    flex-shrink: 0;
+
+    border-right: 1px solid var(--tertiary-color);
+}
+
+
+.article-main-heading {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 800;
+    margin-bottom: 0;
+    margin-top: 0;
+
+    text-align: center;
+}
+
+.article-info {
+    color: var(--darker-text-color);
+    text-align: center;
+    font-size: small;
+
+    margin-bottom: 1rem;
+}
+/* WIKI */
 
 @media (max-width: 640px) {
     nav a {

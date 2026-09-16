@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
@@ -42,10 +43,11 @@ func (h *WikiHandler) findWhichArticleWasRequested(r *http.Request) (string, err
 }
 
 func (h *WikiHandler) getRequestedArticle(requestedArticle string) (myTypes.Article, error) {
+	html := markdown.GenerateHTMLFromString(loadTestFile())
 	article := myTypes.Article{
 		Name:       requestedArticle,
 		PrettyName: "Test Article",
-		HTML:       "<p>This is the actual article content</p>",
+		HTML:       html,
 		Info: myTypes.ArticleInfo{
 			Date:   "09/03/2026",
 			Author: "VOVOplay",

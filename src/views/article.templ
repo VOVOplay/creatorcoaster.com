@@ -3,16 +3,19 @@ package views
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 
 
-templ WikiArticleInfo(info myTypes.Article) {
-    // Last Modified: X, ignore author
+templ WikiArticleInfo(info myTypes.ArticleInfo) {
+    <div class="article-info">
+        Last modified: { info.Date }
+    </div>
 }
 
-templ BlogArticleInfo(info myTypes.Article) {
+templ BlogArticleInfo(info myTypes.ArticleInfo) {
     // Date: X, Author: Y
 }
 
 templ GenericArticle(article myTypes.Article) {
-    <p>Article-specific info, stuff like author and date</p>
-
+    <h1 class="article-main-heading">Test</h1>
+    @WikiArticleInfo(article.Info)
     @templ.Raw(article.HTML)
+    
 }
