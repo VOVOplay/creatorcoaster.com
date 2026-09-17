@@ -463,20 +463,22 @@ footer {
 }
 
 .sidebar-category .sidebar-category {
-    margin-left: 15px;
+    margin-left: 0px;
 }
+
+.sidebar-category .sidebar-category-list {
+    margin-left: 35px;
+}
+
 
 .sidebar-category ul {
     margin-left: 15px;
 }
 
 .sidebar-category-list {
-    margin: 0;
-}
+    display: flex;
+    flex-direction: column;
 
-.sidebar-category-list li {
-    list-style-type: square;
-    color: var(--darker-text-color);
     margin: 0;
 }
 
@@ -485,6 +487,8 @@ footer {
     border: none;
     color: var(--darker-text-color);
     font-size: medium;
+
+    padding: 0;
 
     display: flex;
 }
