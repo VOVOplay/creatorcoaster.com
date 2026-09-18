@@ -5,16 +5,12 @@ import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 
 
 
-func buildCategories(allArticles []myTypes.Article) {
-    
-}
+
 
 templ WikiLayout(article myTypes.Article, allArticles []myTypes.Article) {
     @Layout(fmt.Sprintf("%v | Creator Coaster", article.PrettyName)) {
         <div class="wiki-container">
             <div class="sidebar">
-                // for _, article := range allArticles {
-                // }
             </div>
             <div class="free-wiki-area">
                 <div class="text-div">

@@ -24,33 +24,3 @@ type CategoryItem interface {
 
 func (a *Article) isCategoryItem()  {}
 func (c *Category) isCategoryItem() {}
-
-// Articles:
-// []Article
-// Input: /something/perks
-// Resolves path on the fly? Or struct for
-
-/*
-
-Category {
-	Article
-	Article
-	Article
-	Category {
-		Article
-		Article
-	}
-	Article
-	Category {
-		Article
-		Article
-		Article
-	}
-}
-
-Category {
-	Article
-	Article
-}
-
-*/
