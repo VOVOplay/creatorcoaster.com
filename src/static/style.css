@@ -457,23 +457,14 @@ footer {
     padding: 15px;
 }
 
-.sidebar-category span {
-    color: var(--darker-text-color);
-    margin: 0;
-}
-
 .sidebar-category .sidebar-category {
     margin-left: 0px;
 }
 
 .sidebar-category .sidebar-category-list {
-    margin-left: 35px;
-}
-
-
-.sidebar-category ul {
     margin-left: 15px;
 }
+
 
 .sidebar-category-list {
     display: flex;
@@ -519,6 +510,18 @@ footer {
 
     margin-bottom: 1rem;
 }
+
+.chevron {
+    transition: transform 0.15s ease-in-out; /* Adjust 0.2s to change speed */
+    transform-origin: center;
+    display: inline-block;
+}
+
+/* Add this class via JS to rotate the chevron pointing down */
+.chevron.rotated {
+    transform: rotate(-90deg); 
+}
+
 /* WIKI */
 
 @media (max-width: 640px) {

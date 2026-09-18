@@ -31,20 +31,14 @@ document.addEventListener('click', async (e) => {
 
     e.preventDefault();
 
-
     const categoryList = button.nextElementSibling;
     if (!categoryList) return;
 
-
-    categoryList.classList.toggle('hidden'); // toggle the .hidden class
+    categoryList.classList.toggle('hidden'); 
     const isHidden = window.getComputedStyle(categoryList).display === 'none';
 
-    const chevronImage = button.querySelector('img');
+    const chevronImage = button.querySelector('img.chevron');
     if (!chevronImage) return;
 
-    if (isHidden) {
-        chevronImage.src = "/static/assets/chevrons/right-chevron.svg";
-    } else {
-        chevronImage.src = "/static/assets/chevrons/down-chevron.svg";
-    }
+    chevronImage.classList.toggle('rotated', isHidden); // rotate it
 });

@@ -96,7 +96,7 @@ func (h *WikiHandler) getArticles() []myTypes.Article {
 			Name:         "second-article",
 			PrettyName:   "Second Article",
 			HTML:         "SECOND ARTICLE",
-			CategoryPath: "/perks/",
+			CategoryPath: "/Perks/",
 			Info: myTypes.ArticleInfo{
 				Date:   "09/08/2027",
 				Author: "VOVOplay",
@@ -106,7 +106,7 @@ func (h *WikiHandler) getArticles() []myTypes.Article {
 			Name:         "third-article",
 			PrettyName:   "Third Article",
 			HTML:         "THIRD ARTICLE",
-			CategoryPath: "/perks/",
+			CategoryPath: "/Perks/",
 			Info: myTypes.ArticleInfo{
 				Date:   "09/08/2027",
 				Author: "VOVOplay",
@@ -116,7 +116,7 @@ func (h *WikiHandler) getArticles() []myTypes.Article {
 			Name:         "fourth-article",
 			PrettyName:   "Fourth Article",
 			HTML:         "FOURTH ARTICLE",
-			CategoryPath: "/perks/talent",
+			CategoryPath: "/Perks/Talent Roles",
 			Info: myTypes.ArticleInfo{
 				Date:   "09/08/2027",
 				Author: "VOVOplay",
