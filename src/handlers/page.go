@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
 
@@ -23,6 +22,9 @@ func (h *PageHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 		component.Render(r.Context(), w)
 		return
 	}
+
+	// for caching
+	w.Header().Set("Cache-Control", "public, max-age=60")
 
 	component := views.Home()
 	component.Render(r.Context(), w)
@@ -102,13 +104,10 @@ func getTeamMemberInfo() []views.TeamMemberInfo {
 func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
 	teamMemberInfo := getTeamMemberInfo()
 
+	// for caching
+	w.Header().Set("Cache-Control", "public, max-age=60")
+
 	component := views.AboutUs(teamMemberInfo)
-	component.Render(r.Context(), w)
-}
-
-func (h *PageHandler) HandleTestText(w http.ResponseWriter, r *http.Request) {
-
-	component := views.TestText()
 	component.Render(r.Context(), w)
 }
 
@@ -122,13 +121,4 @@ func loadTestFile() string {
 	data_str := string(data)
 
 	return data_str
-}
-
-func (h *PageHandler) HandleGoldmarkTest(w http.ResponseWriter, r *http.Request) {
-	data_str := loadTestFile()
-
-	html := markdown.GenerateHTMLFromString(data_str)
-
-	component := views.TestGoldmark(html)
-	component.Render(r.Context(), w)
 }

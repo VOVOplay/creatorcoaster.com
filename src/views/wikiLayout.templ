@@ -68,7 +68,7 @@ templ renderCurrentCategoryLevel(currentCategoryLevel []myTypes.CategoryItem)  {
         switch item := categoryItem.(type) {
         case *myTypes.Article:
             {{ articlePath := "/wiki/" + item.Name }}
-            <a href={ articlePath }>{ item.PrettyName }</a>
+            <a href={ articlePath } hx-preload="mouseover">{ item.PrettyName }</a>
         case *myTypes.Category:
             <div class="sidebar-category">
                 <button class="category-button">{ item.Name }<img class="chevron" src="/static/assets/chevrons/down-chevron.svg"></button>

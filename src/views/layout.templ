@@ -7,25 +7,26 @@ templ Layout(title string) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			<title>{ title }</title>
-			<script src="https://unpkg.com/htmx.org@1.9.12"></script>
-			<script src="https://unpkg.com/htmx.org/dist/ext/preload.js"></script>
+			<link rel="icon" type="image/png" href="https://images.creatorcoaster.com/cc-logo-circle.png">
+
+			<script src="/static/htmx/htmx.min.js"></script>
+			<script src="/static/htmx/hx-preload.js"></script>
+
 			<script src="/static/script.js"></script>
+			<link rel="stylesheet" href="/static/style.css">
+
 			<link rel="preconnect" href="https://fonts.googleapis.com">
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 			<link href="https://fonts.googleapis.com/css2?family=Geist+Pixel:ELSH@0..100&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 			<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
-			<link rel="stylesheet" href="/static/style.css">
-			<link rel="icon" type="image/png" href="https://images.creatorcoaster.com/cc-logo-circle.png">
 		</head>
-		<body hx-ext="preload">
+		<body hx-boost:inherited="true">
 		<nav>
-			<a href="/"><img class="nav-image" src="https://images.creatorcoaster.com/cc-logo-circle.png"></a>
-			<a href="/">Home</a>
-			<a href="/wiki">Wiki</a>
-			<a href="/blogs">Blogs</a>
-			<a href="/about">About Us</a>
-			<a href="/test_text">test_text</a>
-			<a href="/goldmark-test">goldmark-test</a>
+			<a href="/" hx-preload="mouseover"><img class="nav-image" src="https://images.creatorcoaster.com/cc-logo-circle.png"></a>
+			<a href="/" hx-preload="mouseover">Home</a>
+			<a href="/wiki" hx-preload="mouseover">Wiki</a>
+			<a href="/blogs" hx-preload="mouseover">Blogs</a>
+			<a href="/about" hx-preload="mouseover">About Us</a>
 		</nav>
 		<main>
 			{ children... }
@@ -45,7 +46,7 @@ templ Layout(title string) {
 					<a href="https://github.com/vovoplay/creatorcoaster.com" target="_blank"><img src="/static/assets/github-logo.svg"></a>
 				</div>
 			</div>
-			<p class="small-footer-text">Made with ❤️ by <a href="https://vovoplay.dev/" target="_blank">vovoplay</a></p>
+			<p class="small-footer-text">Made with ❤️ by <a hx-preload="mouseover" href="https://vovoplay.dev/" target="_blank">vovoplay</a></p>
 		</footer>
 		</body>
 	</html>

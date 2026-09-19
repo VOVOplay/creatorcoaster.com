@@ -37,6 +37,9 @@ func (h *WikiHandler) HandleWiki(w http.ResponseWriter, r *http.Request) {
 
 	allArticles := h.getArticles()
 
+	// for caching
+	w.Header().Set("Cache-Control", "public, max-age=60")
+
 	component := views.WikiLayout(requestedArticle, allArticles)
 	component.Render(r.Context(), w)
 }
@@ -64,19 +67,31 @@ func (h *WikiHandler) findWhichArticleWasRequested(r *http.Request) (string, err
 }
 
 func (h *WikiHandler) getRequestedArticle(requestedArticle string) (myTypes.Article, error) {
-	html := markdown.GenerateHTMLFromString(loadTestFile())
+	if requestedArticle != "first-article" {
+		html := markdown.GenerateHTMLFromString(loadTestFile())
+		article := myTypes.Article{
+			Name:       requestedArticle,
+			PrettyName: "Test Article",
+			HTML:       html,
+			Info: myTypes.ArticleInfo{
+				Date:   "09/03/2026",
+				Author: "VOVOplay",
+			},
+		}
+
+		return article, nil
+	}
+
 	article := myTypes.Article{
 		Name:       requestedArticle,
 		PrettyName: "Test Article",
-		HTML:       html,
+		HTML:       "<p>wow</p>",
 		Info: myTypes.ArticleInfo{
 			Date:   "09/03/2026",
 			Author: "VOVOplay",
 		},
 	}
-
 	return article, nil
-
 }
 
 // temp

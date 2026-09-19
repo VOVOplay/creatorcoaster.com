@@ -31,8 +31,6 @@ func configureRouter() *http.ServeMux {
 
 	router.HandleFunc("GET /", pageHandler.HandleHome)
 	router.HandleFunc("GET /about", pageHandler.HandleAbout)
-	router.HandleFunc("GET /test_text", pageHandler.HandleTestText)
-	router.HandleFunc("GET /goldmark-test", pageHandler.HandleGoldmarkTest)
 
 	router.HandleFunc("GET /wiki/", wikiHandler.HandleWiki)
 
