@@ -1,0 +1,9 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MARIADB_DATABASE: ${DB_NAME}
+    ports:
+      - ${DB_DOCKER_PORT}
