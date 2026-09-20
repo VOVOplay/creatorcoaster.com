@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
 
@@ -55,8 +56,8 @@ func (h *PageHandler) HandlePrivacy(w http.ResponseWriter, r *http.Request) {
 }
 
 // temporary for testing
-func getTeamMemberInfo() []views.TeamMemberInfo {
-	return []views.TeamMemberInfo{
+func getTeamMemberInfo() []myTypes.TeamMemberInfo {
+	return []myTypes.TeamMemberInfo{
 		{
 			DiscordUsername:    "@kdesa",
 			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",

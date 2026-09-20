@@ -21,3 +21,9 @@ Database:
 ```
 sudo docker compose --env-file ./src/config/.env up
 ```
+
+
+Database commands from the terminal:
+```
+sudo docker compose --env-file ./src/config/.env exec mariadb mariadb -u root -p
+```

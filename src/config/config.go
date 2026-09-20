@@ -13,6 +13,7 @@ type Config struct {
 }
 
 type DatabaseConfig struct {
+	User      string
 	EntryPort string
 	Name      string
 	Password  string
@@ -27,6 +28,7 @@ func GetConfig() Config {
 	return Config{
 		Port: os.Getenv("INTERNAL_PORT"),
 		DatabaseConfig: DatabaseConfig{
+			User:      os.Getenv("DB_USER"),
 			EntryPort: os.Getenv("DB_ENTRY_PORT"),
 			Name:      os.Getenv("DB_NAME"),
 			Password:  os.Getenv("DB_PASSWORD"),

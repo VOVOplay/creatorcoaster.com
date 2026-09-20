@@ -1,14 +1,8 @@
 package views
 
-type TeamMemberInfo struct {
-	DiscordUsername    string
-	ProfilePictureLink string
-    Role               string
-}
+import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 
-
-
-templ AboutUs(teamMemberInfo []TeamMemberInfo) {
+templ AboutUs(teamMemberInfo []myTypes.TeamMemberInfo) {
     @Layout("About Us | Creator Coaster") {
         <div id="main-about-us-container">
             <h1>About Us</h1>
