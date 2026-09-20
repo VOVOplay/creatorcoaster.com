@@ -49,6 +49,9 @@ a {
     color: var(--cc-brand-color);
     text-decoration: none;
 }
+a:hover {
+    color: #6ceeff;
+}
 
 a,
 button {
@@ -164,6 +167,7 @@ footer {
 
 #footer-links {
     margin: 5px;
+    margin-bottom: 0px;
 
     height: fit-content;
     width: fit-content;
@@ -192,6 +196,13 @@ footer {
 .footer-link-icon a img {
     height: 1.5rem;
     width: 1.5rem;
+}
+
+.darker-footer-link {
+    color: #787878;
+}
+.darker-footer-link:hover {
+    color: var(--darker-text-color);
 }
 /* FOOTER */
 

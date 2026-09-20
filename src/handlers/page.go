@@ -30,6 +30,30 @@ func (h *PageHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 	component.Render(r.Context(), w)
 }
 
+func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
+	teamMemberInfo := getTeamMemberInfo()
+
+	// for caching
+	w.Header().Set("Cache-Control", "public, max-age=60")
+
+	component := views.AboutUs(teamMemberInfo)
+	component.Render(r.Context(), w)
+}
+
+func (h *PageHandler) HandleAboutWebsite(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "public, max-age=60")
+
+	component := views.AboutWebsite()
+	component.Render(r.Context(), w)
+}
+
+func (h *PageHandler) HandlePrivacy(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "public, max-age=60")
+
+	component := views.Privacy()
+	component.Render(r.Context(), w)
+}
+
 // temporary for testing
 func getTeamMemberInfo() []views.TeamMemberInfo {
 	return []views.TeamMemberInfo{
@@ -101,18 +125,8 @@ func getTeamMemberInfo() []views.TeamMemberInfo {
 	}
 }
 
-func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
-	teamMemberInfo := getTeamMemberInfo()
-
-	// for caching
-	w.Header().Set("Cache-Control", "public, max-age=60")
-
-	component := views.AboutUs(teamMemberInfo)
-	component.Render(r.Context(), w)
-}
-
 func loadTestFile() string {
-	filePath := filepath.Join("./EXAMPLE.txt")
+	filePath := filepath.Join("./config/static-markdown-content/EXAMPLE-WIKI.md")
 	data, err := os.ReadFile(filePath)
 	if err != nil {
 		fmt.Println(err)
