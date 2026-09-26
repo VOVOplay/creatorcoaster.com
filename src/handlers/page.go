@@ -1,12 +1,10 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
+	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
@@ -33,40 +31,34 @@ func (h *PageHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
+	aboutUsText := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("about_us.md"))
+
 	staffList := database.GetStaffMemberList()
 	sortedStaffList := sortStaffList(staffList)
 
 	// for caching
 	w.Header().Set("Cache-Control", "public, max-age=60")
 
-	component := views.AboutUs(sortedStaffList)
+	component := views.AboutUs(aboutUsText, sortedStaffList)
 	component.Render(r.Context(), w)
 }
 
 func (h *PageHandler) HandleAboutWebsite(w http.ResponseWriter, r *http.Request) {
+	text := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("about_website.md"))
+
 	w.Header().Set("Cache-Control", "public, max-age=60")
 
-	component := views.AboutWebsite()
+	component := views.AboutWebsite(text)
 	component.Render(r.Context(), w)
 }
 
 func (h *PageHandler) HandlePrivacy(w http.ResponseWriter, r *http.Request) {
+	text := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("privacy.md"))
+
 	w.Header().Set("Cache-Control", "public, max-age=60")
 
-	component := views.Privacy()
+	component := views.Privacy(text)
 	component.Render(r.Context(), w)
-}
-
-func loadTestFile() string {
-	filePath := filepath.Join("./config/static-markdown-content/EXAMPLE-WIKI.md")
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		fmt.Println(err)
-		return ""
-	}
-	data_str := string(data)
-
-	return data_str
 }
 
 func sortStaffList(staffList []myTypes.StaffMember) []myTypes.StaffMember {

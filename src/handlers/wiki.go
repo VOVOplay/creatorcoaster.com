@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/VOVOplay/creatorcoaster.com/src/database"
 	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
@@ -68,7 +69,7 @@ func (h *WikiHandler) findWhichArticleWasRequested(r *http.Request) (string, err
 
 func (h *WikiHandler) getRequestedArticle(requestedArticle string) (myTypes.Article, error) {
 	if requestedArticle != "first-article" {
-		html := markdown.GenerateHTMLFromString(loadTestFile())
+		html := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("EXAMPLE-WIKI.md"))
 		article := myTypes.Article{
 			Name:       requestedArticle,
 			PrettyName: "Test Article",

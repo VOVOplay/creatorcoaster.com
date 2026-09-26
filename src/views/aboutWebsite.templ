@@ -1,7 +1,11 @@
 package views
 
-templ AboutWebsite() {
+templ AboutWebsite(text string) {
     @Layout("About this website | Creator Coaster") {
-        <p>a</p>
+        <div class="free-area-for-text">
+            <div class="text-div">
+                @templ.Raw(text)
+            </div>
+        </div>
     }
 }

@@ -1,7 +1,11 @@
 package views
 
-templ Privacy() {
-    @Layout("Privacy Policy | Creator Coaster") {
-        <p>a</p>
+templ Privacy(text string) {
+    @Layout("About this website | Creator Coaster") {
+        <div class="free-area-for-text">
+            <div class="text-div">
+                @templ.Raw(text)
+            </div>
+        </div>
     }
 }
