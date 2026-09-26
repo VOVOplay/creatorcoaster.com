@@ -2,7 +2,7 @@ package views
 
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 
-templ AboutUs(teamMemberInfo []myTypes.TeamMemberInfo) {
+templ AboutUs(staffList []myTypes.StaffMember) {
     @Layout("About Us | Creator Coaster") {
         <div id="main-about-us-container">
             <h1>About Us</h1>
@@ -14,11 +14,11 @@ templ AboutUs(teamMemberInfo []myTypes.TeamMemberInfo) {
 
             <h1>Meet the team</h1>
             <div id="team-member-cards-container">
-            for _, teamMember := range teamMemberInfo {
+            for _, staffMember := range staffList {
                 <div class="team-member-card">
-                    <img src={ teamMember.ProfilePictureLink }>
-                    <span class="username">{ teamMember.DiscordUsername }</span>
-                    <span class="role"> { teamMember.Role } </span>
+                    <img src={ staffMember.ProfilePictureLink }>
+                    <span class="username">{ staffMember.Username }</span>
+                    <span class="role"> { staffMember.PositionPrettyName } </span>
                 </div>
             }
             </div>

@@ -292,6 +292,7 @@ footer {
 
     height: 200px;
     width: 150px;
+    min-width: 0;
 
     background-color: rgb(41, 41, 41);
 
@@ -319,9 +320,11 @@ footer {
 .team-member-card .username {
     font-family: "JetBrains Mono", monospace;
     font-weight: 500;
+    word-break: break-word;
 }
 .team-member-card .role{
     color: #a3a3a3;
+    overflow-wrap: break-word;
 }
 
 /* ABOUT US */

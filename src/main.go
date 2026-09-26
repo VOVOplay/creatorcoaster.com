@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/config"
+	"github.com/VOVOplay/creatorcoaster.com/src/database"
 	"github.com/VOVOplay/creatorcoaster.com/src/handlers"
 )
 
@@ -12,6 +13,8 @@ func main() {
 	config := config.GetConfig()
 
 	router := configureRouter()
+
+	database.GetStaffMemberList()
 
 	err := http.ListenAndServe(config.Port, router)
 	if err != nil {

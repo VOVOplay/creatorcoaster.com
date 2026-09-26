@@ -20,25 +20,27 @@ var dsn string = fmt.Sprintf("%s:%s@tcp(127.0.0.1:%s)/%s",
 	db_config.Name,
 )
 
-func GetStaffMemberList() []myTypes.TeamMemberInfo {
+func GetStaffMemberList() []myTypes.StaffMember {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	rawStaffList, err := db.Query("SELECT * FROM staff_list")
+	var staffList []myTypes.StaffMember
 
-	staffList := []myTypes.TeamMemberInfo{}
+	rawStaffList, err := db.Query("SELECT * FROM staff_list")
 	for rawStaffList.Next() {
-		var name string
-		if err := rawStaffList.Scan(&name); err != nil {
+		var staffMember myTypes.StaffMember
+		err := rawStaffList.Scan(&staffMember.UserID, &staffMember.Username, &staffMember.ProfilePictureLink, &staffMember.Position, &staffMember.PositionPrettyName)
+		if err != nil {
 			log.Fatal(err)
 		}
+		staffList = append(staffList, staffMember)
 	}
 
 	if rawStaffList.Err() != nil {
 		log.Fatal(err)
 	}
 
-	return []myTypes.TeamMemberInfo{}
+	return staffList
 }

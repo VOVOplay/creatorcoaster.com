@@ -1,7 +1,9 @@
 package myTypes
 
-type TeamMemberInfo struct {
-	DiscordUsername    string
+type StaffMember struct {
+	UserID             uint64
+	Username           string
 	ProfilePictureLink string
-	Role               string
+	Position           string
+	PositionPrettyName string
 }

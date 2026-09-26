@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/VOVOplay/creatorcoaster.com/src/database"
 	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
@@ -32,12 +33,13 @@ func (h *PageHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
-	teamMemberInfo := getTeamMemberInfo()
+	staffList := database.GetStaffMemberList()
+	sortedStaffList := sortStaffList(staffList)
 
 	// for caching
 	w.Header().Set("Cache-Control", "public, max-age=60")
 
-	component := views.AboutUs(teamMemberInfo)
+	component := views.AboutUs(sortedStaffList)
 	component.Render(r.Context(), w)
 }
 
@@ -55,77 +57,6 @@ func (h *PageHandler) HandlePrivacy(w http.ResponseWriter, r *http.Request) {
 	component.Render(r.Context(), w)
 }
 
-// temporary for testing
-func getTeamMemberInfo() []myTypes.TeamMemberInfo {
-	return []myTypes.TeamMemberInfo{
-		{
-			DiscordUsername:    "@kdesa",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Owner",
-		},
-		{
-			DiscordUsername:    "@vovoplay",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Head Manager",
-		},
-		{
-			DiscordUsername:    "@qsynx",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Manager",
-		},
-		{
-			DiscordUsername:    "@lgx_",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Head Admin",
-		},
-		{
-			DiscordUsername:    "@fiona.ktk",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Admin",
-		},
-		{
-			DiscordUsername:    "@furbated",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Admin",
-		},
-		{
-			DiscordUsername:    "@sevtube",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Moderator",
-		},
-		{
-			DiscordUsername:    "@hazelstyx",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Moderator",
-		},
-		{
-			DiscordUsername:    "@reaper_mc.",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Moderator",
-		},
-		{
-			DiscordUsername:    "@random_dudy",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Moderator",
-		},
-		{
-			DiscordUsername:    "@fyzter123",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Moderator",
-		},
-		{
-			DiscordUsername:    "@eulmdev",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Support",
-		},
-		{
-			DiscordUsername:    "@claucefx",
-			ProfilePictureLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROpm841O9MktJCr_u6slU_C-XDufbsj0GzH2VTWsjs3A&s",
-			Role:               "Support",
-		},
-	}
-}
-
 func loadTestFile() string {
 	filePath := filepath.Join("./config/static-markdown-content/EXAMPLE-WIKI.md")
 	data, err := os.ReadFile(filePath)
@@ -136,4 +67,29 @@ func loadTestFile() string {
 	data_str := string(data)
 
 	return data_str
+}
+
+func sortStaffList(staffList []myTypes.StaffMember) []myTypes.StaffMember {
+	correctOrder := []string{
+		"owner",
+		"head_manager",
+		"manager",
+		"head_admin",
+		"admin",
+		"head_moderator",
+		"moderator",
+		"support",
+	}
+
+	var sortedStaffList []myTypes.StaffMember
+
+	for _, position := range correctOrder {
+		for _, staffMember := range staffList {
+			if staffMember.Position == position {
+				sortedStaffList = append(sortedStaffList, staffMember)
+			}
+		}
+	}
+
+	return sortedStaffList
 }
