@@ -19,9 +19,9 @@ Legend:
 - ✅ Article setup
 
 **Other pages:**
-- ➖ About Us page
-- ❌ About this website page
-- ❌ Privacy Policy Page
+- ✅ About Us page
+- ✅ About this website page
+- ✅ Privacy Policy Page
 - ❌ Home Page
 
 **Misc:**
