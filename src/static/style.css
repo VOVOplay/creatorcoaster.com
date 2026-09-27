@@ -214,6 +214,42 @@ footer {
 }
 /* FOOTER */
 
+/* HOME PAGE */
+#home-page-section {
+    height: 90%;
+    width: 90%;
+    max-width: 1000px;
+    padding: 1rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+}
+#home-page-section img {
+    height: clamp(120px, 30vw, 200px);
+    margin: 10px;
+}
+
+#home-page-section h1 {
+    margin: 10px;
+    font-size: clamp(3rem, 12vw, 70px);
+    font-weight: 700;
+}
+
+#home-page-section p {
+    font-size: clamp(1rem, 4vw, 20px);
+    margin: 0;
+}
+
+.other-buttons {
+    display: flex;
+    
+}
+
+/* HOME PAGE */
+
 /* NOT FOUND */
 #not-found-section {
     height: 90%;
