@@ -14,11 +14,11 @@ From the start, I wanted to make a **simple** website, more reminiscent of the o
 ## Technologies
 - `Go`: The main language used on the backend for, well, everything
 - `Templ`: A Go templating library/framework. This lets me easily build dynamic HTML pages with Go-like syntax
-- `HTMX`: Some parts of this website use HTMX, this is mostly to avoid unneccessary JavaScript
+- `HTMX`: Some parts of this website use HTMX, this is mostly to avoid unnecessary JavaScript
 - `HTML` + `CSS` + `JavaScript`: The only notable thing to mention here is that I only use JavaScript for tiny client-side interactive elements, not for communicating with the backend.
 
 ## How I came to choose those technologies
-Coming into this, I knew I wanted to avoid JavaScript whereever possible. I am truly a JS hater. Thankfully for me, there are many JavaScript-less ways to build a website. I went with Go for the backend because I wanted to learn a new language and because `@eulmdev` has a lot of experience in Go, so he convinced me it's the best option.
+Coming into this, I knew I wanted to avoid JavaScript wherever possible. I am truly a JS hater. Thankfully for me, there are many JavaScript-less ways to build a website. I went with Go for the backend because I wanted to learn a new language and because `@eulmdev` has a lot of experience in Go, so he convinced me it's the best option.
 
 I chose Templ because it just seemed like a much nicer way to make templates in Go than the standard template package. I really love how Templ (almost) fully supports normal Go syntax, for example making multiple divs can be as simple as:
 ```
