@@ -1,0 +1,14 @@
+package views
+
+import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
+import "fmt"
+
+templ BlogLandingPage(allBlogs []myTypes.Article) {
+    @Layout("Blogs | Creator Coaster") {
+
+        for _, blog := range allBlogs {
+            {{ blogURL := fmt.Sprintf("/blog/%v", blog.Name) }}
+            <p><a href={ blogURL }> { blog.PrettyName }</a></p>
+        }
+    }
+}

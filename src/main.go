@@ -31,6 +31,7 @@ func configureRouter() *http.ServeMux {
 
 	pageHandler := handlers.NewPageHandler()
 	wikiHandler := handlers.NewWikiHandler()
+	bloghandler := handlers.NewBlogHandler()
 
 	router.HandleFunc("GET /", pageHandler.HandleHome)
 	router.HandleFunc("GET /about", pageHandler.HandleAbout)
@@ -38,6 +39,8 @@ func configureRouter() *http.ServeMux {
 	router.HandleFunc("GET /privacy", pageHandler.HandlePrivacy)
 
 	router.HandleFunc("GET /wiki/", wikiHandler.HandleWiki)
+
+	router.HandleFunc("GET /blogs/", bloghandler.HandleLandingBlogsPage)
 
 	return router
 }
