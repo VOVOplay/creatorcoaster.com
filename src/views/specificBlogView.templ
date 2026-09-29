@@ -1,0 +1,9 @@
+package views
+
+import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
+
+templ SpecificBlogView(blog myTypes.Article) {
+    @Layout("Blogs | Creator Coaster") {
+        @templ.Raw(blog.HTML)
+    }
+}
