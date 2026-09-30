@@ -5,13 +5,23 @@ type Article struct {
 	PrettyName   string
 	HTML         string
 	CategoryPath string
+	Type         ArticleType
 	Info         ArticleInfo
 }
 
 type ArticleInfo struct {
-	Date   string
-	Author string
+	Date          string
+	Author        string
+	AuthorPFPLink string
+	ReadTime      string
 }
+
+type ArticleType int
+
+const (
+	WikiArticle ArticleType = iota
+	BlogArticle
+)
 
 type Category struct {
 	Name     string

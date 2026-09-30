@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/VOVOplay/creatorcoaster.com/src/database"
+	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
@@ -71,11 +73,13 @@ func getTestBlogArticles() []myTypes.Article {
 		{
 			Name:         "blog-one",
 			PrettyName:   "Blog One",
-			HTML:         "<p>This is blog one</p>",
+			HTML:         markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("BLOG-ONE.md")),
 			CategoryPath: "",
+			Type:         myTypes.BlogArticle,
 			Info: myTypes.ArticleInfo{
-				Date:   "09/03/2026",
-				Author: "VOVOplay",
+				Date:          "09/03/2026",
+				Author:        "VOVOplay",
+				AuthorPFPLink: "https://cdn.discordapp.com/avatars/758322333437394944/30f656e6c904df02ba54a0eebcbedfaa.png?size=1024",
 			},
 		},
 		{
@@ -83,6 +87,7 @@ func getTestBlogArticles() []myTypes.Article {
 			PrettyName:   "Blog Two",
 			HTML:         "<p>This is blog two</p>",
 			CategoryPath: "",
+			Type:         myTypes.BlogArticle,
 			Info: myTypes.ArticleInfo{
 				Date:   "09/03/2026",
 				Author: "VOVOplay",
@@ -93,6 +98,7 @@ func getTestBlogArticles() []myTypes.Article {
 			PrettyName:   "Blog Three",
 			HTML:         "<p>This is blog three</p>",
 			CategoryPath: "",
+			Type:         myTypes.BlogArticle,
 			Info: myTypes.ArticleInfo{
 				Date:   "09/03/2026",
 				Author: "VOVOplay",
@@ -103,6 +109,7 @@ func getTestBlogArticles() []myTypes.Article {
 			PrettyName:   "Blog Four",
 			HTML:         "<p>This is blog four</p>",
 			CategoryPath: "",
+			Type:         myTypes.BlogArticle,
 			Info: myTypes.ArticleInfo{
 				Date:   "09/03/2026",
 				Author: "VOVOplay",

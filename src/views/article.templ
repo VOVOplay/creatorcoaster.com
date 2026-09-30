@@ -10,12 +10,25 @@ templ WikiArticleInfo(info myTypes.ArticleInfo) {
 }
 
 templ BlogArticleInfo(info myTypes.ArticleInfo) {
-    // Date: X, Author: Y
+    <div class="blog-article-info">
+        <div class="used-area">
+            <div class="author-section">
+                <img src={ info.AuthorPFPLink }>{ info.Author }
+            </div>
+            <div class="date-section">
+                { info.Date }
+            </div>
+        </div>
+    </div>
 }
 
 templ GenericArticle(article myTypes.Article) {
-    <h1 class="article-main-heading">Test</h1>
-    @WikiArticleInfo(article.Info)
+    <h1 class="article-main-heading">{ article.PrettyName }</h1>
+    if article.Type == myTypes.WikiArticle {
+        @WikiArticleInfo(article.Info)
+    } else {
+        @BlogArticleInfo(article.Info)
+    }
     @templ.Raw(article.HTML)
     
 }

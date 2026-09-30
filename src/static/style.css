@@ -582,6 +582,44 @@ footer {
 
 /* WIKI */
 
+/* BLOG */
+
+.blog-article-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+    padding: 3px;
+
+    color: var(--darker-text-color);
+
+    font-size: larger;
+    font-family: "JetBrains Mono", monospace;
+}
+
+.blog-article-info .used-area {
+    width: 60%;
+    display: flex;
+}
+
+.blog-article-info .author-section {
+    display: flex;
+    margin-right: auto;
+    
+}
+
+.blog-article-info .author-section img {
+    height: 25px;
+    width: 25px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 0.3rem;
+
+    border-radius: 100%;
+}
+
+/* BLOG */
+
 @media (max-width: 640px) {
     nav a {
         padding: 0 12px;

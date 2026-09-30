@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/VOVOplay/creatorcoaster.com/src/database"
-	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
@@ -47,7 +45,7 @@ func (h *WikiHandler) HandleWiki(w http.ResponseWriter, r *http.Request) {
 
 func (h *WikiHandler) findWhichArticleWasRequested(r *http.Request) (string, error) {
 	if r.URL.String() == "/wiki/" {
-		return "introduction", nil
+		return "first-article", nil
 	} else {
 		URL := r.URL.String()
 		splitURL := strings.Split(URL, "/")
@@ -68,31 +66,14 @@ func (h *WikiHandler) findWhichArticleWasRequested(r *http.Request) (string, err
 }
 
 func (h *WikiHandler) getRequestedArticle(requestedArticle string) (myTypes.Article, error) {
-	if requestedArticle != "first-article" {
-		html := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("EXAMPLE-WIKI.md"))
-		article := myTypes.Article{
-			Name:       requestedArticle,
-			PrettyName: "Test Article",
-			HTML:       html,
-			Info: myTypes.ArticleInfo{
-				Date:   "09/03/2026",
-				Author: "VOVOplay",
-			},
+	allArticles := h.getArticles()
+
+	for _, article := range allArticles {
+		if article.Name == requestedArticle {
+			return article, nil
 		}
-
-		return article, nil
 	}
-
-	article := myTypes.Article{
-		Name:       requestedArticle,
-		PrettyName: "Test Article",
-		HTML:       "<p>wow</p>",
-		Info: myTypes.ArticleInfo{
-			Date:   "09/03/2026",
-			Author: "VOVOplay",
-		},
-	}
-	return article, nil
+	return myTypes.Article{}, ArticleNotFound
 }
 
 // temp

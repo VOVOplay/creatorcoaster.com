@@ -4,6 +4,10 @@ import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 
 templ SpecificBlogView(blog myTypes.Article) {
     @Layout("Blogs | Creator Coaster") {
-        @templ.Raw(blog.HTML)
+        <div class="free-area-for-text">
+            <div class="text-div">
+                @GenericArticle(blog)
+            </div>
+        </div>
     }
 }
