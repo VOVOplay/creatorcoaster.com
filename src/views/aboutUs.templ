@@ -8,17 +8,21 @@ templ AboutUs(aboutUsText string, staffList []myTypes.StaffMember) {
             <h1 class="md-heading">About Us</h1>
             
             @templ.Raw(aboutUsText)
-
+            
             <h1 class="md-heading">Meet the team</h1>
-            <div id="team-member-cards-container">
-            for _, staffMember := range staffList {
-                <div class="team-member-card">
-                    <img src={ staffMember.ProfilePictureLink }>
-                    <span class="username">{ staffMember.Username }</span>
-                    <span class="role"> { staffMember.PositionPrettyName } </span>
+            if len(staffList) != 0 {
+                <div id="team-member-cards-container">
+                    for _, staffMember := range staffList {
+                        <div class="team-member-card">
+                            <img src={ staffMember.ProfilePictureLink }>
+                            <span class="username">{ staffMember.Username }</span>
+                            <span class="role"> { staffMember.PositionPrettyName } </span>
+                        </div>
+                    }
                 </div>
+            } else {
+                <p>Sorry, this information is unavaliable at this moment.</p>
             }
-            </div>
         </div>
     }
 }

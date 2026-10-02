@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
@@ -33,7 +34,11 @@ func (h *PageHandler) HandleHome(w http.ResponseWriter, r *http.Request) {
 func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
 	aboutUsText := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("about_us.md"))
 
-	staffList := database.GetStaffMemberList()
+	staffList, err := database.GetStaffMemberList()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	sortedStaffList := sortStaffList(staffList)
 
 	// for caching
