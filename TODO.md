@@ -14,7 +14,7 @@ Legend:
 - ➖ Tuning markdown rendering and CSS
 
 **Blogs:**
-- ❌ Blog page
+- ➖ Blog page
 - ✅ Markdown Rendering
 - ✅ Article setup
 
@@ -22,7 +22,7 @@ Legend:
 - ✅ About Us page
 - ✅ About this website page
 - ✅ Privacy Policy Page
-- ❌ Home Page
+- ➖ Home Page
 
 **Misc:**
 - ❌ Discord Login

@@ -77,9 +77,10 @@ func getTestBlogArticles() []myTypes.Article {
 			CategoryPath: "",
 			Type:         myTypes.BlogArticle,
 			Info: myTypes.ArticleInfo{
-				Date:          "09/03/2026",
+				Date:          "15/10/2026",
 				Author:        "VOVOplay",
 				AuthorPFPLink: "https://cdn.discordapp.com/avatars/758322333437394944/30f656e6c904df02ba54a0eebcbedfaa.png?size=1024",
+				ReadTime:      "5 minutes",
 			},
 		},
 		{
@@ -89,8 +90,10 @@ func getTestBlogArticles() []myTypes.Article {
 			CategoryPath: "",
 			Type:         myTypes.BlogArticle,
 			Info: myTypes.ArticleInfo{
-				Date:   "09/03/2026",
-				Author: "VOVOplay",
+				Date:          "24/12/2026",
+				Author:        "Lgx_",
+				AuthorPFPLink: "https://cdn.discordapp.com/avatars/778286876619964466/50711b08e645367166da6527f4130c17.png?size=1024",
+				ReadTime:      "4 minutes",
 			},
 		},
 		{
@@ -100,8 +103,10 @@ func getTestBlogArticles() []myTypes.Article {
 			CategoryPath: "",
 			Type:         myTypes.BlogArticle,
 			Info: myTypes.ArticleInfo{
-				Date:   "09/03/2026",
-				Author: "VOVOplay",
+				Date:          "06/09/2026",
+				Author:        "Fona",
+				AuthorPFPLink: "https://cdn.discordapp.com/avatars/1319616624780644392/6fdabf0bf5ea3a4bd97fcd62f2740676.png?size=1024",
+				ReadTime:      "7 minutes",
 			},
 		},
 		{
@@ -111,8 +116,10 @@ func getTestBlogArticles() []myTypes.Article {
 			CategoryPath: "",
 			Type:         myTypes.BlogArticle,
 			Info: myTypes.ArticleInfo{
-				Date:   "09/03/2026",
-				Author: "VOVOplay",
+				Date:          "09/03/2026",
+				Author:        "VOVOplay",
+				AuthorPFPLink: "https://cdn.discordapp.com/avatars/758322333437394944/30f656e6c904df02ba54a0eebcbedfaa.png?size=1024",
+				ReadTime:      "3 minutes",
 			},
 		},
 	}

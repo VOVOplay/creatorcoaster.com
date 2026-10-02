@@ -4,11 +4,37 @@ import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 import "fmt"
 
 templ BlogLandingPage(allBlogs []myTypes.Article) {
-    @Layout("Blogs | Creator Coaster") {
+    @Layout("Blog | Creator Coaster") {
+        <div class="free-area-for-text">
+            <div class="text-div">
+                <h1 class="cc-blog-heading">Creator Coaster Blog</h1>
+                // ---
+                <div class="blog-cards">
+                    for _, blog := range allBlogs {
+                        {{ blogURL := fmt.Sprintf("/blog/%v", blog.Name) }}
 
-        for _, blog := range allBlogs {
-            {{ blogURL := fmt.Sprintf("/blog/%v", blog.Name) }}
-            <p><a href={ blogURL }> { blog.PrettyName }</a></p>
-        }
+                        <a href={ blogURL }>
+                            <div class="blog-card">
+                                <div class="top-section">
+                                    <span class="blog-card-heading"> { blog.PrettyName } </span>
+                                    <div class="author-section"><img src= { blog.Info.AuthorPFPLink }> { blog.Info.Author }</div>
+                                </div>
+                                <div class="bottom-section">
+                                    <div class="date"><img src="/static/assets/calendar.svg">{ blog.Info.Date }</div>
+                                    <div class="vertical-separator"></div>
+                                    <div class="read-time"><img src="/static/assets/clock.svg">{ blog.Info.ReadTime }</div>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+                
+
+                
+                
+            </div>
+            
+        </div>
+        
     }
 }

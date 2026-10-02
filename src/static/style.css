@@ -618,6 +618,114 @@ footer {
     border-radius: 100%;
 }
 
+
+/* Stuff for the blog landing page */
+
+.cc-blog-heading {
+    font-family: "JetBrains Mono", monospace;
+    text-align: center;
+}
+
+.blog-cards a {
+    color: white;
+}
+
+.blog-card {
+    display: flex;
+    flex-direction: column;
+
+    background-color: var();
+
+    border: 1px solid var(--tertiary-color);
+    border-radius: 10px;
+
+    padding: 10px;
+
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.blog-card:hover {
+    background-color: var(--yet-another-gray);
+    cursor: pointer;
+}
+
+.blog-card .top-section {
+    display: flex;
+    flex-direction: column;
+    margin-right: auto;
+}
+
+.blog-card-heading {
+    font-size: 130%;
+    font-weight: 500;
+    font-family: "JetBrains Mono", monospace;
+
+    margin: 3px;
+}
+
+.blog-card .top-section .author-section {
+    display: flex;
+    margin-right: auto;
+    color: var(--darker-text-color);
+    margin: 3px;
+}
+
+.blog-card .top-section .author-section img {
+    height: 23px;
+    width: 23px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 0.3rem;
+
+    border-radius: 100%;
+}
+
+.blog-card .bottom-section {
+    display: flex;
+    align-items: center;
+
+    margin: 3px;
+
+    flex-shrink: 0;
+}
+
+.blog-card .bottom-section .date {
+    color: var(--darker-text-color);
+    font-size: 90%;
+
+    display: flex;
+    align-items: center;
+}
+
+.bottom-section .date img {
+    height: 0.9rem;
+    margin-right: 0.15rem;
+}
+
+.bottom-section .vertical-separator {
+    border: 0.01px solid var(--tertiary-color);
+
+    margin-right: 4px;
+    margin-left: 5px;
+
+    height: 1rem;
+}
+
+.blog-card .bottom-section .read-time {
+    font-size: 90%;
+    color: var(--darker-text-color);
+
+    display: flex;
+    align-items: center;
+}
+
+.bottom-section .read-time img {
+    height: 0.9rem;
+    margin-right: 0.15rem;
+}
+
+
 /* BLOG */
 
 @media (max-width: 640px) {
@@ -657,5 +765,14 @@ footer {
         width: calc(100% - 1rem);
         max-width: calc(100vw - 1rem);
         align-self: center;
+    }
+
+    .blog-card {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .blog-card .right-section {
+        text-align: left;
     }
 }
