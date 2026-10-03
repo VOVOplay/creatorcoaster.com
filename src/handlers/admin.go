@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -58,7 +57,6 @@ func (h *AdminHandler) HandleCallback(w http.ResponseWriter, r *http.Request) {
 
 	token, err := h.discordOAuthConfig.Exchange(ctx, code)
 	if err != nil {
-		fmt.Printf("Token exchange error: %v\n", err)
 		http.Error(w, "Failed to exchange token", http.StatusInternalServerError)
 		return
 	}
@@ -78,7 +76,7 @@ func (h *AdminHandler) HandleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if user.ID != h.AdminUserID {
-		http.Error(w, "Unauthorized: You are not the admin", http.StatusForbidden)
+		http.Error(w, "Unauthorized: You are not allowed to be here, go away.", http.StatusForbidden)
 		return
 	}
 
