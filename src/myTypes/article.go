@@ -10,7 +10,7 @@ type Article struct {
 }
 
 type ArticleInfo struct {
-	Date               string
+	Date               int64
 	Author             string
 	AuthorPFPLink      string
 	ReadTime           string

@@ -8,13 +8,13 @@ Legend:
 - ✅ Articles
 - ✅ Categories
 - ✅ Sidebar
-- ❌ Loading from database
+- ✅ Loading from database
 - ❌ Upload wiki articles from website
 - ❌ Markdown syntax for variables (from database: {HOME_CHANNEL}, and to database: ?)
 - ➖ Tuning markdown rendering and CSS
 
 **Blogs:**
-- ➖ Blog page
+- ✅ Blog page
 - ✅ Markdown Rendering
 - ✅ Article setup
 

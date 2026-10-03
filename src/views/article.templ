@@ -1,11 +1,20 @@
 package views
 
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
+import "time"
+import "fmt"
 
+func formatUnixTime(unixTime int64) string {
+    tm := time.Unix(unixTime, 0)
+
+    date := fmt.Sprintf("%v %v, %v", tm.Month(), tm.Day(), tm.Year())
+
+    return date
+}
 
 templ WikiArticleInfo(info myTypes.ArticleInfo) {
     <div class="article-info">
-        Last modified: { info.Date }
+        Last modified: { formatUnixTime(info.Date) }
     </div>
 }
 
@@ -16,7 +25,7 @@ templ BlogArticleInfo(info myTypes.ArticleInfo) {
                 <img src={ info.AuthorPFPLink }>{ info.Author }
             </div>
             <div class="date-section">
-                { info.Date }
+                { formatUnixTime(info.Date) }
             </div>
         </div>
     </div>
