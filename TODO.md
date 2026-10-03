@@ -25,6 +25,6 @@ Legend:
 - ➖ Home Page
 
 **Misc:**
-- ❌ Discord Login
+- ✅ Discord Login
 - ❌ Transcript Viewer
 

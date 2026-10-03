@@ -12,7 +12,7 @@ import (
 func main() {
 	config := config.GetConfig()
 
-	router := configureRouter()
+	router := configureRouter(config)
 
 	database.GetStaffMemberList()
 
@@ -22,7 +22,7 @@ func main() {
 	}
 }
 
-func configureRouter() *http.ServeMux {
+func configureRouter(config config.Config) *http.ServeMux {
 	router := http.NewServeMux()
 
 	// Static
@@ -32,6 +32,7 @@ func configureRouter() *http.ServeMux {
 	pageHandler := handlers.NewPageHandler()
 	wikiHandler := handlers.NewWikiHandler()
 	blogHandler := handlers.NewBlogHandler()
+	adminHandler := handlers.NewAdminHandler(config.IsProduction)
 
 	router.HandleFunc("GET /", pageHandler.HandleHome)
 	router.HandleFunc("GET /about", pageHandler.HandleAbout)
@@ -41,6 +42,10 @@ func configureRouter() *http.ServeMux {
 	router.HandleFunc("GET /wiki/", wikiHandler.HandleWiki)
 
 	router.HandleFunc("GET /blog/", blogHandler.HandleBlog)
+
+	router.HandleFunc("GET /admin/", adminHandler.HandleAdmin)
+	router.HandleFunc("GET /auth/discord/callback", adminHandler.HandleCallback)
+	router.HandleFunc("GET /auth/discord/logout", adminHandler.HandleAdminLogout)
 
 	return router
 }
