@@ -10,11 +10,15 @@ type Article struct {
 }
 
 type ArticleInfo struct {
-	Date          string
-	Author        string
-	AuthorPFPLink string
-	ReadTime      string
+	Date               string
+	Author             string
+	AuthorPFPLink      string
+	ReadTime           string
+	IsFirstWikiArticle bool
 }
+
+// Used for making /wiki/ load that, and also to mark it as the first article in article.Info.IsFirstArticle
+var FirstArticleName string = "introduction"
 
 type ArticleType int
 

@@ -67,7 +67,14 @@ templ renderCurrentCategoryLevel(currentCategoryLevel []myTypes.CategoryItem)  {
     for _, categoryItem := range currentCategoryLevel {
         switch item := categoryItem.(type) {
         case *myTypes.Article:
-            {{ articlePath := "/wiki/" + item.Name }}
+            {{
+				var articlePath string
+				if item.Info.IsFirstWikiArticle {
+					articlePath = "/wiki/"
+				} else {
+					articlePath = "/wiki/" + item.Name
+				}
+			}}
             <a href={ articlePath } hx-preload="mouseover">{ item.PrettyName }</a>
         case *myTypes.Category:
             <div class="sidebar-category">

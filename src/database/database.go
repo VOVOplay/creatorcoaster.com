@@ -70,11 +70,13 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		blog.Type = myTypes.BlogArticle
 		allBlogs = append(allBlogs, blog)
 	}
 
 	if rawBlogs.Err() != nil {
-
+		return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
 	}
 
 	return allBlogs, nil
@@ -92,8 +94,64 @@ func GetBlogByName(name string) (myTypes.Article, error) {
 
 	err = db.QueryRow(query, name).Scan(&blog.Name, &blog.PrettyName, &blog.HTML, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
 	if err != nil {
-		return myTypes.Article{}, myTypes.ErrBlogNotFound
+		return myTypes.Article{}, myTypes.ErrArticleNotFound
 	}
 
 	return blog, nil
+}
+
+func GetAllWikiArticles() ([]myTypes.Article, error) {
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return []myTypes.Article{}, myTypes.ErrDatabseOffline
+	}
+
+	var allWikiArticles []myTypes.Article
+
+	rawWikiArticles, err := db.Query("SELECT name, pretty_name, generated_html, category_path, last_edited_at FROM wiki_articles")
+	if err != nil {
+		return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
+	}
+	defer rawWikiArticles.Close()
+
+	for rawWikiArticles.Next() {
+		var wikiArticle myTypes.Article
+		err := rawWikiArticles.Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.HTML, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
+		if err != nil {
+			return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
+		}
+
+		wikiArticle.Type = myTypes.WikiArticle
+
+		if wikiArticle.Name == myTypes.FirstArticleName {
+			wikiArticle.Info.IsFirstWikiArticle = true
+		}
+
+		allWikiArticles = append(allWikiArticles, wikiArticle)
+	}
+
+	if rawWikiArticles.Err() != nil {
+		return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
+	}
+
+	return allWikiArticles, nil
+}
+
+func GetWikiArticleByName(name string) (myTypes.Article, error) {
+	db, err := sql.Open("mysql", dsn)
+	if err != nil {
+		return myTypes.Article{}, myTypes.ErrDatabseOffline
+	}
+
+	query := "SELECT name, pretty_name, generated_html, category_path, last_edited_at FROM wiki_articles WHERE name = ?"
+
+	var wikiArticle myTypes.Article
+
+	err = db.QueryRow(query, name).Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.HTML, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
+	if err != nil {
+		return myTypes.Article{}, myTypes.ErrArticleNotFound
+	}
+
+	wikiArticle.Type = myTypes.WikiArticle
+	return wikiArticle, nil
 }

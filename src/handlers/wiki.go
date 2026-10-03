@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strings"
 
+	"github.com/VOVOplay/creatorcoaster.com/src/database"
 	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
@@ -27,14 +29,17 @@ func (h *WikiHandler) HandleWiki(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestedArticle, err := h.getRequestedArticle(requestedArticleName)
+	requestedArticle, err := database.GetWikiArticleByName(requestedArticleName)
 	if err != nil {
 		component := views.NotFound()
 		component.Render(r.Context(), w)
 		return
 	}
 
-	allArticles := h.getArticles()
+	allArticles, err := database.GetAllWikiArticles()
+	if err != nil {
+		log.Fatal("why")
+	}
 
 	// for caching
 	w.Header().Set("Cache-Control", "public, max-age=60")
@@ -45,7 +50,7 @@ func (h *WikiHandler) HandleWiki(w http.ResponseWriter, r *http.Request) {
 
 func (h *WikiHandler) findWhichArticleWasRequested(r *http.Request) (string, error) {
 	if r.URL.String() == "/wiki/" {
-		return "first-article", nil
+		return myTypes.FirstArticleName, nil
 	} else {
 		URL := r.URL.String()
 		splitURL := strings.Split(URL, "/")
@@ -60,64 +65,7 @@ func (h *WikiHandler) findWhichArticleWasRequested(r *http.Request) (string, err
 		if len(cleanedSplitURL) != 2 { // two parts: /wiki/article-name
 			return "", InvalidArticleName
 		} else {
-			return splitURL[2], nil
+			return cleanedSplitURL[1], nil
 		}
-	}
-}
-
-func (h *WikiHandler) getRequestedArticle(requestedArticle string) (myTypes.Article, error) {
-	allArticles := h.getArticles()
-
-	for _, article := range allArticles {
-		if article.Name == requestedArticle {
-			return article, nil
-		}
-	}
-	return myTypes.Article{}, ArticleNotFound
-}
-
-// temp
-func (h *WikiHandler) getArticles() []myTypes.Article {
-	return []myTypes.Article{
-		{
-			Name:         "first-article",
-			PrettyName:   "First Article",
-			HTML:         "FIRST ARTICLE",
-			CategoryPath: "/",
-			Info: myTypes.ArticleInfo{
-				Date:   "09/08/2027",
-				Author: "VOVOplay",
-			},
-		},
-		{
-			Name:         "second-article",
-			PrettyName:   "Second Article",
-			HTML:         "SECOND ARTICLE",
-			CategoryPath: "/Perks/",
-			Info: myTypes.ArticleInfo{
-				Date:   "09/08/2027",
-				Author: "VOVOplay",
-			},
-		},
-		{
-			Name:         "third-article",
-			PrettyName:   "Third Article",
-			HTML:         "THIRD ARTICLE",
-			CategoryPath: "/Perks/",
-			Info: myTypes.ArticleInfo{
-				Date:   "09/08/2027",
-				Author: "VOVOplay",
-			},
-		},
-		{
-			Name:         "fourth-article",
-			PrettyName:   "Fourth Article",
-			HTML:         "FOURTH ARTICLE",
-			CategoryPath: "/Perks/Talent Roles",
-			Info: myTypes.ArticleInfo{
-				Date:   "09/08/2027",
-				Author: "VOVOplay",
-			},
-		},
 	}
 }
