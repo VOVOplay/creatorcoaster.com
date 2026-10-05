@@ -1,12 +1,9 @@
 package views
 
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
-import "fmt"
 
 templ AboutUs(aboutUsText string, staffList []myTypes.StaffMember, databaseOkay bool) {
     @Layout("About Us | Creator Coaster") {
-        {{ fmt.Println(databaseOkay) }}
-        {{ fmt.Println(len(staffList)) }}
         <div id="main-about-us-container">
             <h1 class="md-heading">About Us</h1>
             
