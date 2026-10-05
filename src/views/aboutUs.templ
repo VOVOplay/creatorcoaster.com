@@ -1,16 +1,22 @@
 package views
 
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
+import "fmt"
 
-templ AboutUs(aboutUsText string, staffList []myTypes.StaffMember) {
+templ AboutUs(aboutUsText string, staffList []myTypes.StaffMember, databaseOkay bool) {
     @Layout("About Us | Creator Coaster") {
+        {{ fmt.Println(databaseOkay) }}
+        {{ fmt.Println(len(staffList)) }}
         <div id="main-about-us-container">
             <h1 class="md-heading">About Us</h1>
             
             @templ.Raw(aboutUsText)
             
             <h1 class="md-heading">Meet the team</h1>
-            if len(staffList) != 0 {
+            
+            if databaseOkay && len(staffList) == 0 {
+                <p>Oh no, the staff team seems to be empty. This is definitely not a bug, everyone decided to leave at once.</p>
+            } else if databaseOkay {
                 <div id="team-member-cards-container">
                     for _, staffMember := range staffList {
                         <div class="team-member-card">
@@ -21,7 +27,7 @@ templ AboutUs(aboutUsText string, staffList []myTypes.StaffMember) {
                     }
                 </div>
             } else {
-                <p>Sorry, this information is unavaliable at this moment.</p>
+                <p>Sorry, we could not load this information right now.</p>
             }
         </div>
     }

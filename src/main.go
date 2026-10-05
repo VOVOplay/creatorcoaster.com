@@ -35,9 +35,9 @@ func configureRouter(config config.Config) *http.ServeMux {
 	adminHandler := handlers.NewAdminHandler(config.IsProduction)
 
 	router.HandleFunc("GET /", pageHandler.HandleHome)
-	router.HandleFunc("GET /about", pageHandler.HandleAbout)
-	router.HandleFunc("GET /about-this-website", pageHandler.HandleAboutWebsite)
-	router.HandleFunc("GET /privacy", pageHandler.HandlePrivacy)
+	router.HandleFunc("GET /about/", pageHandler.HandleAbout)
+	router.HandleFunc("GET /about-this-website/", pageHandler.HandleAboutWebsite)
+	router.HandleFunc("GET /privacy/", pageHandler.HandlePrivacy)
 
 	router.HandleFunc("GET /wiki/", wikiHandler.HandleWiki)
 

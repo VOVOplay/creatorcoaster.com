@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
@@ -35,8 +34,9 @@ func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
 	aboutUsText := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("about_us.md"))
 
 	staffList, err := database.GetStaffMemberList()
+	databaseOkay := true
 	if err != nil {
-		log.Fatal(err)
+		databaseOkay = false
 	}
 
 	sortedStaffList := sortStaffList(staffList)
@@ -44,7 +44,7 @@ func (h *PageHandler) HandleAbout(w http.ResponseWriter, r *http.Request) {
 	// for caching
 	w.Header().Set("Cache-Control", "public, max-age=60")
 
-	component := views.AboutUs(aboutUsText, sortedStaffList)
+	component := views.AboutUs(aboutUsText, sortedStaffList, databaseOkay)
 	component.Render(r.Context(), w)
 }
 
