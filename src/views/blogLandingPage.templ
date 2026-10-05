@@ -3,31 +3,35 @@ package views
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 import "fmt"
 
-templ BlogLandingPage(allBlogs []myTypes.Article) {
+templ BlogLandingPage(allBlogs []myTypes.Article, databaseOkay bool) {
     @Layout("Blog | Creator Coaster") {
         <div class="free-area-for-text">
             <div class="text-div">
                 <h1 class="cc-blog-heading">Creator Coaster Blog</h1>
                 // ---
-                <div class="blog-cards">
-                    for _, blog := range allBlogs {
-                        {{ blogURL := fmt.Sprintf("/blog/%v", blog.Name) }}
+                if databaseOkay {
+                    <div class="blog-cards">
+                        for _, blog := range allBlogs {
+                            {{ blogURL := fmt.Sprintf("/blog/%v", blog.Name) }}
 
-                        <a href={ blogURL }>
-                            <div class="blog-card">
-                                <div class="top-section">
-                                    <span class="blog-card-heading"> { blog.PrettyName } </span>
-                                    <div class="author-section"><img src= { blog.Info.AuthorPFPLink }> { blog.Info.Author }</div>
+                            <a href={ blogURL }>
+                                <div class="blog-card">
+                                    <div class="top-section">
+                                        <span class="blog-card-heading"> { blog.PrettyName } </span>
+                                        <div class="author-section"><img src= { blog.Info.AuthorPFPLink }> { blog.Info.Author }</div>
+                                    </div>
+                                    <div class="bottom-section">
+                                        <div class="date"><img src="/static/assets/calendar.svg">{ formatUnixTime(blog.Info.Date) }</div>
+                                        <div class="vertical-separator"></div>
+                                        <div class="read-time"><img src="/static/assets/clock.svg">{ blog.Info.ReadTime }</div>
+                                    </div>
                                 </div>
-                                <div class="bottom-section">
-                                    <div class="date"><img src="/static/assets/calendar.svg">{ formatUnixTime(blog.Info.Date) }</div>
-                                    <div class="vertical-separator"></div>
-                                    <div class="read-time"><img src="/static/assets/clock.svg">{ blog.Info.ReadTime }</div>
-                                </div>
-                            </div>
-                        </a>
-                    }
-                </div>
+                            </a>
+                        }
+                    </div>
+                } else {
+                    Sorry, we could not load the blogs at this moment. Try again later.
+                }
             </div>
         </div>
         

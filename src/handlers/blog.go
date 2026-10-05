@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"strings"
 
@@ -24,11 +23,12 @@ func (h *BlogHandler) HandleBlog(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.String() == "/blog/" { // blog landing page
 		allBlogs, err := database.GetAllBlogs()
+		databaseOkay := true
 		if err != nil {
-			log.Fatal("eeh?") // temp
+			databaseOkay = false
 		}
 
-		component := views.BlogLandingPage(allBlogs)
+		component := views.BlogLandingPage(allBlogs, databaseOkay)
 		component.Render(r.Context(), w)
 
 		return
