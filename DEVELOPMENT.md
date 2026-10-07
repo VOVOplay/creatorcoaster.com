@@ -34,6 +34,11 @@ DB_USER="" # Your database user
 DB_ENTRY_PORT="" # The port the database is hosted on
 DB_NAME="" # Which database to use on that DB server
 DB_PASSWORD="" # The password to that database
+DISCORD_CLIENT_ID="" # The OAuth client ID
+DISCORD_CLIENT_SECRET="" # The OAuth client secret
+REDIRECT_URL="" # The url you set in the discord dev portal as the redirect URL for OAuth
+
+IS_PRODUCTION=0
 
 DB_DOCKER_PORT=WHATEVER:3306 # The valid docker-compose syntax for ports. The part before : is the port used to access it, and the part after is the internal port the database uses.
 ```
