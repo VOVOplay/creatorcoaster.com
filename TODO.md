@@ -50,10 +50,10 @@ Legend:
 
 - Other:
     - Designing and coding the landing page
-    - Replacing 404 page logo with a new one
+    - ✅ Replacing 404 page logo with a new one
     - Normalizing some elements around the website to be consistent (e. g. vertial-spacer vs a pipe)
     - Making the wiki page usable on mobile
-    - Adding images.creatorcoaster.com as a part of the website
+    - ✅ Adding images.creatorcoaster.com as a part of the website
 
 - Before release:
     - Setting up the real prod database and making it accessible from pterodactyl

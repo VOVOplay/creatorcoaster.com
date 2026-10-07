@@ -1,7 +1,9 @@
 package views
 
-templ AboutWebsite(text string) {
-    @Layout("About this website | Creator Coaster") {
+import "fmt"
+
+templ GenericTextPage(text string, pageName string) {
+    @Layout(fmt.Sprintf("%v | Creator Coaster", pageName)) {
         <div class="free-area-for-text">
             <div class="text-div">
                 @templ.Raw(text)

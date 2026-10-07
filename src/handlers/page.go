@@ -53,7 +53,7 @@ func (h *PageHandler) HandleAboutWebsite(w http.ResponseWriter, r *http.Request)
 
 	w.Header().Set("Cache-Control", "public, max-age=60")
 
-	component := views.AboutWebsite(text)
+	component := views.GenericTextPage(text, "About this website")
 	component.Render(r.Context(), w)
 }
 
@@ -62,7 +62,16 @@ func (h *PageHandler) HandlePrivacy(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Cache-Control", "public, max-age=60")
 
-	component := views.Privacy(text)
+	component := views.GenericTextPage(text, "Privacy Policy")
+	component.Render(r.Context(), w)
+}
+
+func (h *PageHandler) HandleResources(w http.ResponseWriter, r *http.Request) {
+	text := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("resources.md"))
+
+	w.Header().Set("Cache-Control", "public, max-age=60")
+
+	component := views.GenericTextPage(text, "Resources")
 	component.Render(r.Context(), w)
 }
 

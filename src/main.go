@@ -38,6 +38,7 @@ func configureRouter(config config.Config) *http.ServeMux {
 	router.HandleFunc("GET /about/", pageHandler.HandleAbout)
 	router.HandleFunc("GET /about-this-website/", pageHandler.HandleAboutWebsite)
 	router.HandleFunc("GET /privacy/", pageHandler.HandlePrivacy)
+	router.HandleFunc(("GET /resources/"), pageHandler.HandleResources)
 
 	router.HandleFunc("GET /wiki/", wikiHandler.HandleWiki)
 
