@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"strings"
 
@@ -38,7 +37,9 @@ func (h *WikiHandler) HandleWiki(w http.ResponseWriter, r *http.Request) {
 
 	allArticles, err := database.GetAllWikiArticles()
 	if err != nil {
-		log.Fatal("why")
+		component := views.NotFound()
+		component.Render(r.Context(), w)
+		return
 	}
 
 	// for caching
