@@ -97,6 +97,8 @@ func GetBlogByName(name string) (myTypes.Article, error) {
 		return myTypes.Article{}, myTypes.ErrArticleNotFound
 	}
 
+	blog.Type = myTypes.BlogArticle
+
 	return blog, nil
 }
 

@@ -56,7 +56,7 @@ Legend:
     - ✅ Adding images.creatorcoaster.com as a part of the website
     - Make the wiki sidebar be sorted by another value in the db (lets call it like priority)
     - Make the blog posts be sorted by date
-    - Fix the bug where "Last modified" appears in blog posts instead of the date and author
+    - ✅ Fix the bug where "Last modified" appears in blog posts instead of the date and author
     - Fix issue where the sidebar state resets when clicking to a different wiki article
 
 - Before release:
