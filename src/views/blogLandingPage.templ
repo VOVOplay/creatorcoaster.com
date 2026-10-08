@@ -2,6 +2,17 @@ package views
 
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 import "fmt"
+import "slices"
+import "cmp"
+
+func sortBlogPosts(allBlogs []myTypes.Article) []myTypes.Article {
+    // https://pkg.go.dev/slices#SortFunc
+    slices.SortFunc(allBlogs, func(a myTypes.Article, b myTypes.Article) int {
+        return cmp.Compare(b.Info.Date, a.Info.Date)
+    })
+
+    return allBlogs
+}
 
 templ BlogLandingPage(allBlogs []myTypes.Article, databaseOkay bool) {
     @Layout("Blog | Creator Coaster") {
@@ -11,7 +22,8 @@ templ BlogLandingPage(allBlogs []myTypes.Article, databaseOkay bool) {
                 // ---
                 if databaseOkay {
                     <div class="blog-cards">
-                        for _, blog := range allBlogs {
+                        {{ sortedBlogs := sortBlogPosts(allBlogs) }}
+                        for _, blog := range sortedBlogs {
                             {{ blogURL := fmt.Sprintf("/blog/%v", blog.Name) }}
 
                             <a href={ blogURL }>
