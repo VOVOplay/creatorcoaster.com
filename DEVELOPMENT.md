@@ -31,7 +31,7 @@ sudo docker compose --env-file ./src/config/.env exec mariadb mariadb -u root -p
 INTERNAL_PORT=:3000 # The port used for this web-server
 
 DB_USER="" # Your database user
-DB_ENTRY_PORT="" # The port the database is hosted on
+DB_ADDRESS="" # The host and port your database is hosted on (e.g. 127.0.0.1:3306)
 DB_NAME="" # Which database to use on that DB server
 DB_PASSWORD="" # The password to that database
 DISCORD_CLIENT_ID="" # The OAuth client ID

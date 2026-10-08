@@ -3,26 +3,49 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"log"
+	"time"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/config"
 	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var all_config config.Config = config.GetConfig()
-var db_config config.DatabaseConfig = all_config.DatabaseConfig
+var db *sql.DB
 
-var dsn string = fmt.Sprintf("%s:%s@tcp(127.0.0.1:%s)/%s",
-	db_config.User,
-	db_config.Password,
-	db_config.EntryPort,
-	db_config.Name,
-)
+func Init(databaseConfig config.DatabaseConfig) error {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s",
+		databaseConfig.User,
+		databaseConfig.Password,
+		databaseConfig.Address,
+		databaseConfig.Name,
+	)
+
+	var err error
+	db, err = sql.Open("mysql", dsn)
+	if err != nil {
+		return err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return err
+	}
+
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(25)
+	db.SetConnMaxLifetime(5 * time.Minute)
+
+	return nil
+}
+
+func Close() {
+	if db != nil {
+		db.Close()
+	}
+}
 
 func GetStaffMemberList() ([]myTypes.StaffMember, error) {
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
+	if db == nil {
 		return []myTypes.StaffMember{}, myTypes.ErrDatabseOffline
 	}
 
@@ -38,7 +61,7 @@ func GetStaffMemberList() ([]myTypes.StaffMember, error) {
 		var staffMember myTypes.StaffMember
 		err := rawStaffList.Scan(&staffMember.UserID, &staffMember.Username, &staffMember.ProfilePictureLink, &staffMember.Position, &staffMember.PositionPrettyName)
 		if err != nil {
-			log.Fatal(err)
+			return []myTypes.StaffMember{}, myTypes.ErrUnknownDatabaseError
 		}
 		staffList = append(staffList, staffMember)
 	}
@@ -51,8 +74,7 @@ func GetStaffMemberList() ([]myTypes.StaffMember, error) {
 }
 
 func GetAllBlogs() ([]myTypes.Article, error) {
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
+	if db == nil {
 		return []myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
@@ -68,7 +90,7 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 		var blog myTypes.Article
 		err := rawBlogs.Scan(&blog.Name, &blog.PrettyName, &blog.HTML, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
 		if err != nil {
-			log.Fatal(err)
+			return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
 		}
 
 		blog.Type = myTypes.BlogArticle
@@ -83,8 +105,7 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 }
 
 func GetBlogByName(name string) (myTypes.Article, error) {
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
+	if db == nil {
 		return myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
@@ -92,7 +113,7 @@ func GetBlogByName(name string) (myTypes.Article, error) {
 
 	var blog myTypes.Article
 
-	err = db.QueryRow(query, name).Scan(&blog.Name, &blog.PrettyName, &blog.HTML, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
+	err := db.QueryRow(query, name).Scan(&blog.Name, &blog.PrettyName, &blog.HTML, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
 	if err != nil {
 		return myTypes.Article{}, myTypes.ErrArticleNotFound
 	}
@@ -103,8 +124,7 @@ func GetBlogByName(name string) (myTypes.Article, error) {
 }
 
 func GetAllWikiArticles() ([]myTypes.Article, error) {
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
+	if db == nil {
 		return []myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
@@ -140,8 +160,7 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 }
 
 func GetWikiArticleByName(name string) (myTypes.Article, error) {
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
+	if db == nil {
 		return myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
@@ -149,7 +168,7 @@ func GetWikiArticleByName(name string) (myTypes.Article, error) {
 
 	var wikiArticle myTypes.Article
 
-	err = db.QueryRow(query, name).Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.HTML, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
+	err := db.QueryRow(query, name).Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.HTML, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
 	if err != nil {
 		return myTypes.Article{}, myTypes.ErrArticleNotFound
 	}

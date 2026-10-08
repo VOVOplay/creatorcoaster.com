@@ -15,10 +15,10 @@ type Config struct {
 }
 
 type DatabaseConfig struct {
-	User      string
-	EntryPort string
-	Name      string
-	Password  string
+	User     string
+	Address  string
+	Name     string
+	Password string
 }
 
 func GetConfig() Config {
@@ -40,10 +40,10 @@ func GetConfig() Config {
 		Port:         os.Getenv("INTERNAL_PORT"),
 		IsProduction: isProduction,
 		DatabaseConfig: DatabaseConfig{
-			User:      os.Getenv("DB_USER"),
-			EntryPort: os.Getenv("DB_ENTRY_PORT"),
-			Name:      os.Getenv("DB_NAME"),
-			Password:  os.Getenv("DB_PASSWORD"),
+			User:     os.Getenv("DB_USER"),
+			Address:  os.Getenv("DB_ADDRESS"),
+			Name:     os.Getenv("DB_NAME"),
+			Password: os.Getenv("DB_PASSWORD"),
 		},
 	}
 }

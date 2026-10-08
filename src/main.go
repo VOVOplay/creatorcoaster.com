@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -11,6 +12,11 @@ import (
 
 func main() {
 	config := config.GetConfig()
+	db_err := database.Init(config.DatabaseConfig)
+	if db_err != nil {
+		fmt.Println("WARNING: Could not connect to database.")
+	}
+	defer database.Close()
 
 	router := configureRouter(config)
 
@@ -38,7 +44,7 @@ func configureRouter(config config.Config) *http.ServeMux {
 	router.HandleFunc("GET /about/", pageHandler.HandleAbout)
 	router.HandleFunc("GET /about-this-website/", pageHandler.HandleAboutWebsite)
 	router.HandleFunc("GET /privacy/", pageHandler.HandlePrivacy)
-	router.HandleFunc(("GET /resources/"), pageHandler.HandleResources)
+	router.HandleFunc("GET /resources/", pageHandler.HandleResources)
 
 	router.HandleFunc("GET /wiki/", wikiHandler.HandleWiki)
 
