@@ -54,10 +54,11 @@ Legend:
     - Normalizing some elements around the website to be consistent (e. g. vertial-spacer vs a pipe)
     - Making the wiki page usable on mobile
     - ✅ Adding images.creatorcoaster.com as a part of the website
-    - Make the wiki sidebar be sorted by another value in the db (lets call it like priority)
+    - ✅ Make the wiki sidebar be sorted by another value in the db (lets call it like priority)
     - ✅ Make the blog posts be sorted by date
     - ✅ Fix the bug where "Last modified" appears in blog posts instead of the date and author
     - Fix issue where the sidebar state resets when clicking to a different wiki article
+    - Figure out sorting for categories
 
 - Before release:
     - Setting up the real prod database and making it accessible from pterodactyl

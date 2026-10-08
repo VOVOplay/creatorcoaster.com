@@ -531,6 +531,18 @@ footer {
     margin: 0;
 }
 
+.sidebar-category-list-first {
+    display: flex;
+    flex-direction: column;
+
+    margin: 0;
+}
+.sidebar-category .sidebar-category-list-first {
+    margin-left: 0px;
+}
+
+
+
 .category-button {
     background-color: var(--yet-another-gray);
     border: none;

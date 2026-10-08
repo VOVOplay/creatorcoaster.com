@@ -3,6 +3,8 @@ package views
 import "fmt"
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 import "strings"
+import "slices"
+import "cmp"
 
 // Returns a slice of category names. The first being the top-most category, and the last being the lowest category.
 // Example: /folder-one/folder-two/ -> ["folder-one", "folder-two"]
@@ -63,6 +65,15 @@ func buildCategories(allArticles []myTypes.Article) []myTypes.CategoryItem {
 	return categoryTree
 }
 
+func sortWikiArticles(wikiArticles []myTypes.Article) []myTypes.Article {
+    // https://pkg.go.dev/slices#SortFunc
+    slices.SortFunc(wikiArticles, func(a myTypes.Article, b myTypes.Article) int {
+        return cmp.Compare(a.SortOrder, b.SortOrder)
+    })
+
+    return wikiArticles
+}
+
 templ renderCurrentCategoryLevel(currentCategoryLevel []myTypes.CategoryItem)  {
     for _, categoryItem := range currentCategoryLevel {
         switch item := categoryItem.(type) {
@@ -92,12 +103,16 @@ templ WikiLayout(article myTypes.Article, allArticles []myTypes.Article) {
     @Layout(fmt.Sprintf("%v | Creator Coaster", article.PrettyName)) {
         <div class="wiki-container">
             <div class="sidebar">
-                {{
-                    categoryTree := buildCategories(allArticles)
-                }}
+				<div class="sidebar-category">
+					<div class="sidebar-category-list-first">
+						{{
+							sortedWikiArticles := sortWikiArticles(allArticles)
+							categoryTree := buildCategories(sortedWikiArticles)
+						}}
 
-                @renderCurrentCategoryLevel(categoryTree)
-
+						@renderCurrentCategoryLevel(categoryTree)
+					</div>
+				</div>
             </div>
             <div class="free-wiki-area">
                 <div class="text-div">

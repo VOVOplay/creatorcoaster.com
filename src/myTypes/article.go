@@ -5,6 +5,7 @@ type Article struct {
 	PrettyName   string
 	HTML         string
 	CategoryPath string
+	SortOrder    int // The order in which it should be displayed. Any number can be used multiple times, since the primary thing sorting it is still the categories.
 	Type         ArticleType
 	Info         ArticleInfo
 }

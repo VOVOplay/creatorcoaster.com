@@ -110,7 +110,7 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 
 	var allWikiArticles []myTypes.Article
 
-	rawWikiArticles, err := db.Query("SELECT name, pretty_name, generated_html, category_path, last_edited_at FROM wiki_articles")
+	rawWikiArticles, err := db.Query("SELECT name, pretty_name, generated_html, category_path, last_edited_at, sort_order FROM wiki_articles")
 	if err != nil {
 		return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
 	}
@@ -118,7 +118,7 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 
 	for rawWikiArticles.Next() {
 		var wikiArticle myTypes.Article
-		err := rawWikiArticles.Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.HTML, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
+		err := rawWikiArticles.Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.HTML, &wikiArticle.CategoryPath, &wikiArticle.Info.Date, &wikiArticle.SortOrder)
 		if err != nil {
 			return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
 		}
