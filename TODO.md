@@ -46,7 +46,7 @@ Legend:
 
 - Fixing current markdown issues:
     - ✅ Spacer doesnt work sometimes
-    - Some of the margins arent what Id like them to be
+    - ✅ Some of the margins arent what Id like them to be
 
 - Other:
     - Designing and coding the landing page
