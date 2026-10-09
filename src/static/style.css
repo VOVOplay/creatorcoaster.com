@@ -13,7 +13,7 @@
 
 @font-face {
     font-family: 'Droid Sans Mono';
-    src:url('/static/fonts/DroidSansMono-webfont.woff') format('woff');
+    src:url('/static/fonts/DroidSansMono.woff2') format('woff2');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -21,14 +21,28 @@
 
 @font-face {
     font-family: "JetBrains Mono";
-    src:url("/static/fonts/JetBrainsMono-VariableFont_wght.woff2") format("woff2");
+    src:url("/static/fonts/JetBrainsMono-Variable") format("woff2");
     font-weight: 100 800;
     font-style: normal;
 }
 
 @font-face {
     font-family: "JetBrains Mono";
-    src:url("/static/fonts/JetBrainsMono-Italic-VariableFont_wght.woff2") format("woff2");
+    src:url("/static/fonts/JetBrainsMono-Italic-Variable.woff2") format("woff2");
+    font-weight: 100 800;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Inter";
+    src:url("/static/fonts/Inter-Variable.woff2") format("woff2");
+    font-weight: 100 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Inter";
+    src:url("/static/fonts/Inter-Italic-Variable.woff2") format("woff2");
     font-weight: 100 800;
     font-style: italic;
 }
@@ -43,7 +57,7 @@ body {
     background-color: var(--main-bg-color);
     margin: 0;
     color: white;
-    font-family: 'Inter', system-ui, sans-serif; /* Stolen from localhost8000.com */
+    font-family: 'Inter', system-ui, "Segoe UI";
     line-height: 1.5;
 
     display: grid;
