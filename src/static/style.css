@@ -19,6 +19,21 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: "JetBrains Mono";
+    src:url("/static/fonts/JetBrainsMono-VariableFont_wght.woff2") format("woff2");
+    font-weight: 100 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "JetBrains Mono";
+    src:url("/static/fonts/JetBrainsMono-Italic-VariableFont_wght.woff2") format("woff2");
+    font-weight: 100 800;
+    font-style: italic;
+}
+
+
 html {
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 5rem;
@@ -437,13 +452,15 @@ footer {
     overflow-x: auto;
     scrollbar-color: rgb(90, 90, 90) rgb(17, 17, 17);
 
-    font-family: "Droid Sans Mono", monospace;
-
     margin: 0;
 
     min-width: 0;
-    width: 100%;
-    
+    width: 100%;   
+}
+
+.md-large-code code {
+    font-family: "Droid Sans Mono", monospace;
+    font-size: 83%;
 }
 
 .code-container {
