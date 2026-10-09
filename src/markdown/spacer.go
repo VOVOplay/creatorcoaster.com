@@ -35,6 +35,13 @@ func (t *SpacerTransformer) Transform(node *ast.Document, reader text.Reader, pc
 	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering && n.Type() == ast.TypeBlock && n.PreviousSibling() != nil {
 			if n.HasBlankPreviousLines() {
+
+				// goldmark seems to add a blank line after fenced code blocks, that's why we are ignoring it
+				previousSibling := n.PreviousSibling()
+				if previousSibling.Kind() == ast.KindFencedCodeBlock {
+					return ast.WalkContinue, nil
+				}
+
 				targets = append(targets, n)
 			}
 		}

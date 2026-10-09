@@ -45,7 +45,7 @@ Legend:
     - Maybe something for managing the staff list in About Us
 
 - Fixing current markdown issues:
-    - Spacer doesnt work sometimes
+    - ✅ Spacer doesnt work sometimes
     - Some of the margins arent what Id like them to be
 
 - Other:
