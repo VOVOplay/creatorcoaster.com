@@ -29,7 +29,7 @@ Legend:
 
 ## Actual things that still need to be done:
 - Markdown syntax for cross-bot/website variables.
-    - From db variable to markdown sources: {variable_name}
+    - ➖ From db variable to markdown sources: {variable_name}
     - From wiki article into db variable: 
     {new_var_name}(
         Text

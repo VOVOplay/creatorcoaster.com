@@ -176,3 +176,15 @@ func GetWikiArticleByName(name string) (myTypes.Article, error) {
 	wikiArticle.Type = myTypes.WikiArticle
 	return wikiArticle, nil
 }
+
+func GetVariableByName(name string) (string, error) {
+	testVariables := map[string]string{
+		"test_var1": "Test Variable 1",
+		"test_var2": "Test Variable 2",
+	}
+
+	variable_value := testVariables[name]
+
+	fmt.Println(variable_value)
+	return variable_value, nil
+}
