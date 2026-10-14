@@ -143,3 +143,7 @@ func (r *CustomSmallCodeRenderer) renderSmallCode(w util.BufWriter, source []byt
 
 	return ast.WalkContinue, nil
 }
+
+/*
+The renderer(s) for variables are located in variables.go
+*/

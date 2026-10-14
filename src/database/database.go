@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -179,12 +180,17 @@ func GetWikiArticleByName(name string) (myTypes.Article, error) {
 
 func GetVariableByName(name string) (string, error) {
 	testVariables := map[string]string{
-		"test_var1": "Test Variable 1",
-		"test_var2": "Test Variable 2",
+		"simple_text":     "Normal string",
+		"markdown_bold":   "**Bold**",
+		"markdown_italic": "_Italic_",
+		"with_newlines":   "Line 1\nLine 2\nLine 3",
+		"empty_string":    "",
+		"nested_braces":   "Nested {test_var}",
 	}
 
 	variable_value := testVariables[name]
-
-	fmt.Println(variable_value)
+	if variable_value == "" {
+		return "", errors.New("Variable not found")
+	}
 	return variable_value, nil
 }

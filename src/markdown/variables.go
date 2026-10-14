@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"fmt"
 
+	"github.com/VOVOplay/creatorcoaster.com/src/database"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/text"
 	"github.com/yuin/goldmark/util"
 )
@@ -15,12 +17,12 @@ var KindVariable = ast.NewNodeKind("Variable")
 
 type Variable struct {
 	ast.BaseInline
-	variableName []byte
+	Name []byte
 }
 
 func NewVariable(name []byte) *Variable {
 	return &Variable{
-		variableName: name,
+		Name: name,
 	}
 }
 
@@ -42,6 +44,11 @@ func (e *VariableExtension) Extend(m goldmark.Markdown) {
 			util.Prioritized(&VariableParser{}, 500),
 		),
 	)
+	m.Renderer().AddOptions(
+		renderer.WithNodeRenderers(
+			util.Prioritized(&CustomVariableRenderer{}, 500),
+		),
+	)
 }
 
 // ---
@@ -57,16 +64,36 @@ func (p *VariableParser) Parse(parent ast.Node, block text.Reader, pc parser.Con
 	line, _ := block.PeekLine()
 
 	end := bytes.IndexByte(line, '}')
-	fmt.Println(end)
 	if end < 0 {
 		return nil // returning nil falls back to normal text
 	}
 
-	variableValue := line[1:end]
-
-	fmt.Println(string(variableValue))
+	variableName := line[1:end]
 
 	block.Advance(end + 1)
 
-	return NewVariable(variableValue)
+	return NewVariable(variableName)
+}
+
+// ---
+
+type CustomVariableRenderer struct{}
+
+func (r *CustomVariableRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
+	reg.Register(KindVariable, r.renderVariable)
+}
+
+func (r *CustomVariableRenderer) renderVariable(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		n := node.(*Variable)
+		variableValue, err := database.GetVariableByName(string(n.Name))
+		if err != nil {
+			fmt.Fprintf(w, "{%v}", string(n.Name)) // "replicating" the original look, there might be a better way to do that but fuck that
+			return ast.WalkContinue, nil
+		}
+
+		w.WriteString(variableValue)
+	}
+
+	return ast.WalkContinue, nil
 }

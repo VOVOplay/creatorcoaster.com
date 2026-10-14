@@ -28,13 +28,16 @@ Legend:
 - ✅ Discord Login
 
 ## Actual things that still need to be done:
-- Markdown syntax for cross-bot/website variables.
-    - ➖ From db variable to markdown sources: {variable_name}
-    - From wiki article into db variable: 
+- Markdown:
+    - ➖ Variables from db variable to markdown sources: {variable_name}
+    - ❌ Variables from wiki article into db variable: 
     {new_var_name}(
         Text
         Text
     )
+    - ❌ @USER Variables
+    - ❌ @ROLE Variables
+    - ❌ #CHANNEL Variables
 
 - Admin panel:
     - Uploading blogs & Wiki articles
