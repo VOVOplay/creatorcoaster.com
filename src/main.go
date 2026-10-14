@@ -1,31 +1,32 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/config"
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
 	"github.com/VOVOplay/creatorcoaster.com/src/handlers"
+	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 )
 
 func main() {
-	config := config.GetConfig()
-	db_err := database.Init(config.DatabaseConfig)
-	if db_err != nil {
-		fmt.Println("WARNING: Could not connect to database.")
-	}
-	defer database.Close()
+	// config := config.GetConfig()
+	// db_err := database.Init(config.DatabaseConfig)
+	// if db_err != nil {
+	// 	fmt.Println("WARNING: Could not connect to database.")
+	// }
+	// defer database.Close()
 
-	router := configureRouter(config)
+	// router := configureRouter(config)
 
-	database.GetStaffMemberList()
+	// database.GetStaffMemberList()
 
-	err := http.ListenAndServe(config.Port, router)
-	if err != nil {
-		log.Fatal("Server crashed: ", err)
-	}
+	testing()
+
+	// err := http.ListenAndServe(config.Port, router)
+	// if err != nil {
+	// 	log.Fatal("Server crashed: ", err)
+	// }
 }
 
 func configureRouter(config config.Config) *http.ServeMux {
@@ -55,4 +56,8 @@ func configureRouter(config config.Config) *http.ServeMux {
 	router.HandleFunc("GET /auth/discord/logout", adminHandler.HandleAdminLogout)
 
 	return router
+}
+
+func testing() {
+	markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("TEST.md"))
 }

@@ -15,6 +15,10 @@ func GenerateHTMLFromString(sourceString string) string {
 	source := []byte(sourceString)
 
 	md := goldmark.New(
+		goldmark.WithExtensions(
+			&VariableExtension{},
+		),
+
 		goldmark.WithParserOptions(
 			parser.WithASTTransformers(
 				util.Prioritized(&SpacerTransformer{}, 10),
