@@ -5,3 +5,4 @@ import "errors"
 var ErrDatabseOffline error = errors.New("Database Offline")
 var ErrArticleNotFound error = errors.New("Article not found")
 var ErrUnknownDatabaseError error = errors.New("Encountered an unknown databse error")
+var ErrVariableNotFound error = errors.New("Variable not found")

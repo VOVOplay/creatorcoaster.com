@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"time"
 
@@ -179,18 +178,17 @@ func GetWikiArticleByName(name string) (myTypes.Article, error) {
 }
 
 func GetVariableByName(name string) (string, error) {
-	testVariables := map[string]string{
-		"simple_text":     "Normal string",
-		"markdown_bold":   "**Bold**",
-		"markdown_italic": "_Italic_",
-		"with_newlines":   "Line 1\nLine 2\nLine 3",
-		"empty_string":    "",
-		"nested_braces":   "Nested {test_var}",
+	if db == nil {
+		return "", myTypes.ErrDatabseOffline
 	}
 
-	variable_value := testVariables[name]
-	if variable_value == "" {
-		return "", errors.New("Variable not found")
+	query := "SELECT variable_contents FROM markdown_variables WHERE variable_name = ?"
+
+	var variableValue string
+	err := db.QueryRow(query, name).Scan(&variableValue)
+	if err != nil {
+		return "", myTypes.ErrVariableNotFound
 	}
-	return variable_value, nil
+
+	return variableValue, nil
 }

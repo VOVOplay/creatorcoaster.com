@@ -13,6 +13,23 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
+type VariableExtension struct{}
+
+func (e *VariableExtension) Extend(m goldmark.Markdown) {
+	m.Parser().AddOptions(
+		parser.WithInlineParsers(
+			util.Prioritized(&VariableParser{}, 500),
+		),
+	)
+	m.Renderer().AddOptions(
+		renderer.WithNodeRenderers(
+			util.Prioritized(&CustomVariableRenderer{}, 500),
+		),
+	)
+}
+
+// --- Normal Variable:
+
 var KindVariable = ast.NewNodeKind("Variable")
 
 type Variable struct {
@@ -32,23 +49,6 @@ func (n *Variable) Kind() ast.NodeKind {
 
 func (n *Variable) Dump(source []byte, level int) {
 	ast.DumpHelper(n, source, level, nil, nil)
-}
-
-// ---
-
-type VariableExtension struct{}
-
-func (e *VariableExtension) Extend(m goldmark.Markdown) {
-	m.Parser().AddOptions(
-		parser.WithInlineParsers(
-			util.Prioritized(&VariableParser{}, 500),
-		),
-	)
-	m.Renderer().AddOptions(
-		renderer.WithNodeRenderers(
-			util.Prioritized(&CustomVariableRenderer{}, 500),
-		),
-	)
 }
 
 // ---
@@ -97,3 +97,6 @@ func (r *CustomVariableRenderer) renderVariable(w util.BufWriter, source []byte,
 
 	return ast.WalkContinue, nil
 }
+
+// --- Channel Variable:
+// TODOWOO
