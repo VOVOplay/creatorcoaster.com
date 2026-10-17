@@ -510,6 +510,20 @@ footer {
     margin-top: 0;
     margin-bottom: 0;
 }
+
+.md-discord-channel {
+    background-color:#444880;
+    color: white;
+    text-indent: 0;
+    white-space: pre-wrap;
+
+    padding: 0 .3em;
+    margin: -.2em 0;
+
+    border-radius: 4px;
+
+    font-size: 85%;
+}
 /* MARKDOWN TEXT STYLES */
 
 /* WIKI */

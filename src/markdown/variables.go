@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
+	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/parser"
@@ -19,11 +20,13 @@ func (e *VariableExtension) Extend(m goldmark.Markdown) {
 	m.Parser().AddOptions(
 		parser.WithInlineParsers(
 			util.Prioritized(&VariableParser{}, 500),
+			util.Prioritized(&ChannelVariableParser{}, 500),
 		),
 	)
 	m.Renderer().AddOptions(
 		renderer.WithNodeRenderers(
 			util.Prioritized(&CustomVariableRenderer{}, 500),
+			util.Prioritized(&CustomChannelVariableRenderer{}, 500),
 		),
 	)
 }
@@ -99,4 +102,71 @@ func (r *CustomVariableRenderer) renderVariable(w util.BufWriter, source []byte,
 }
 
 // --- Channel Variable:
-// TODOWOO
+
+var KindChannelVariable = ast.NewNodeKind("ChannelVariable")
+
+type ChannelVariable struct {
+	ast.BaseInline
+	Name []byte
+}
+
+func NewChannelVariable(name []byte) *ChannelVariable {
+	return &ChannelVariable{
+		Name: name,
+	}
+}
+
+func (n *ChannelVariable) Kind() ast.NodeKind {
+	return KindChannelVariable
+}
+
+func (n *ChannelVariable) Dump(source []byte, level int) {
+	ast.DumpHelper(n, source, level, nil, nil)
+}
+
+// ---
+
+type ChannelVariableParser struct{}
+
+func (p *ChannelVariableParser) Trigger() []byte {
+	return []byte{'#'}
+}
+
+func (p *ChannelVariableParser) Parse(parent ast.Node, block text.Reader, pc parser.Context) ast.Node {
+	line, _ := block.PeekLine()
+
+	end := bytes.IndexByte(line, ' ')
+	if end < 0 {
+		return nil
+	}
+
+	channelVariableName := line[1:end]
+
+	block.Advance(end)
+
+	return NewChannelVariable(channelVariableName)
+}
+
+// ---
+
+type CustomChannelVariableRenderer struct{}
+
+func (r *CustomChannelVariableRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
+	reg.Register(KindChannelVariable, r.renderChannelVariable)
+}
+
+func (r *CustomChannelVariableRenderer) renderChannelVariable(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		n := node.(*ChannelVariable)
+
+		channel, err := database.GetChannelVariableByName(string(n.Name))
+		if err != nil {
+			fmt.Fprintf(w, "#%v", string(n.Name)) // replicating the original look
+			return ast.WalkContinue, nil
+		}
+
+		fmt.Fprintf(w, `<a href="%v%v"><span class="md-discord-channel">%v</span></a>`, myTypes.ChannelPartialURL, channel.ID, channel.Name)
+	}
+
+	return ast.WalkContinue, nil
+}

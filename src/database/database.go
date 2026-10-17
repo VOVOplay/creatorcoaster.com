@@ -192,3 +192,19 @@ func GetVariableByName(name string) (string, error) {
 
 	return variableValue, nil
 }
+
+func GetChannelVariableByName(name string) (myTypes.ChannelVariable, error) {
+	if db == nil {
+		return myTypes.ChannelVariable{}, myTypes.ErrDatabseOffline
+	}
+
+	query := "SELECT channel_name, channel_id FROM markdown_channel_variables WHERE variable_name = ?"
+
+	var channel myTypes.ChannelVariable
+	err := db.QueryRow(query, name).Scan(&channel.Name, &channel.ID)
+	if err != nil {
+		return myTypes.ChannelVariable{}, myTypes.ErrVariableNotFound
+	}
+
+	return channel, nil
+}
