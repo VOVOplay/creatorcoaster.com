@@ -21,12 +21,14 @@ func (e *VariableExtension) Extend(m goldmark.Markdown) {
 		parser.WithInlineParsers(
 			util.Prioritized(&VariableParser{}, 500),
 			util.Prioritized(&ChannelVariableParser{}, 500),
+			util.Prioritized(&RoleUserVariableParser{}, 500),
 		),
 	)
 	m.Renderer().AddOptions(
 		renderer.WithNodeRenderers(
 			util.Prioritized(&CustomVariableRenderer{}, 500),
 			util.Prioritized(&CustomChannelVariableRenderer{}, 500),
+			util.Prioritized(&CustomRoleUserVariableRenderer{}, 500),
 		),
 	)
 }
@@ -135,9 +137,9 @@ func (p *ChannelVariableParser) Trigger() []byte {
 func (p *ChannelVariableParser) Parse(parent ast.Node, block text.Reader, pc parser.Context) ast.Node {
 	line, _ := block.PeekLine()
 
-	end := bytes.IndexByte(line, ' ')
-	if end < 0 {
-		return nil
+	end := bytes.IndexAny(line, " \n\r")
+	if end == -1 { // not found
+		end = len(line)
 	}
 
 	channelVariableName := line[1:end]
@@ -165,7 +167,77 @@ func (r *CustomChannelVariableRenderer) renderChannelVariable(w util.BufWriter, 
 			return ast.WalkContinue, nil
 		}
 
-		fmt.Fprintf(w, `<a href="%v%v"><span class="md-discord-channel">%v</span></a>`, myTypes.ChannelPartialURL, channel.ID, channel.Name)
+		fmt.Fprintf(w, `<a href="%v%v"><span class="md-discord-mention">%v</span></a>`, myTypes.ChannelPartialURL, channel.ID, channel.Name)
+	}
+
+	return ast.WalkContinue, nil
+}
+
+// --- Role/User Variables:
+
+var KindRoleUserVariable = ast.NewNodeKind("RoleUserVariable")
+
+type RoleUserVariable struct {
+	ast.BaseInline
+	Name []byte
+}
+
+func NewRoleUserVariable(name []byte) *RoleUserVariable {
+	return &RoleUserVariable{
+		Name: name,
+	}
+}
+
+func (n *RoleUserVariable) Kind() ast.NodeKind {
+	return KindRoleUserVariable
+}
+
+func (n *RoleUserVariable) Dump(source []byte, level int) {
+	ast.DumpHelper(n, source, level, nil, nil)
+}
+
+// ---
+
+type RoleUserVariableParser struct{}
+
+func (p *RoleUserVariableParser) Trigger() []byte {
+	return []byte{'@'}
+}
+
+func (p *RoleUserVariableParser) Parse(parent ast.Node, block text.Reader, pc parser.Context) ast.Node {
+	line, _ := block.PeekLine()
+
+	end := bytes.IndexAny(line, " \n\r")
+	if end == -1 { // not found
+		end = len(line)
+	}
+
+	roleUserVariableName := line[1:end]
+
+	block.Advance(end)
+
+	return NewRoleUserVariable(roleUserVariableName)
+}
+
+// ---
+
+type CustomRoleUserVariableRenderer struct{}
+
+func (r *CustomRoleUserVariableRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
+	reg.Register(KindRoleUserVariable, r.renderRoleUserVariable)
+}
+
+func (r *CustomRoleUserVariableRenderer) renderRoleUserVariable(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		n := node.(*RoleUserVariable)
+
+		prettyName, err := database.GetRoleUserVariableByName(string(n.Name))
+		if err != nil {
+			fmt.Fprintf(w, "@%v", string(n.Name)) // replicating the original look
+			return ast.WalkContinue, nil
+		}
+
+		fmt.Fprintf(w, `<span class="md-discord-mention">@%v</span>`, prettyName)
 	}
 
 	return ast.WalkContinue, nil

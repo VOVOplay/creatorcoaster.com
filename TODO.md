@@ -35,7 +35,7 @@ Legend:
         Text
         Text
     )
-    - ❌ @ROLE Variables
+    - ✅ @ROLE/USER Variables
     - ✅ #CHANNEL Variables
     - Rendering markdown meant for discord (e. g. Replacing #CHANNEL with <#CHANEL_ID>...)
 

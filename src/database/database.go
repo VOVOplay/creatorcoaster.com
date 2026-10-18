@@ -208,3 +208,19 @@ func GetChannelVariableByName(name string) (myTypes.ChannelVariable, error) {
 
 	return channel, nil
 }
+
+func GetRoleUserVariableByName(name string) (string, error) {
+	if db == nil {
+		return "", myTypes.ErrDatabseOffline
+	}
+
+	query := "SELECT pretty_name FROM markdown_role_user_variables WHERE variable_name = ?"
+
+	var variableValue string
+	err := db.QueryRow(query, name).Scan(&variableValue)
+	if err != nil {
+		return "", myTypes.ErrVariableNotFound
+	}
+
+	return variableValue, nil
+}

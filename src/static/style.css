@@ -511,7 +511,8 @@ footer {
     margin-bottom: 0;
 }
 
-.md-discord-channel {
+/* For channels, roles & users */
+.md-discord-mention {
     background-color:#444880;
     color: white;
     text-indent: 0;
