@@ -9,9 +9,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
+	"github.com/a-h/templ"
 	"golang.org/x/oauth2"
 )
 
@@ -189,4 +192,62 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 	}
 
 	fmt.Println(r.PathValue("specificPage"))
+
+	var component templ.Component
+	switch r.PathValue("specificPage") {
+	case "upload-wiki":
+		component = views.UploadWikiView()
+	}
+
+	component.Render(r.Context(), w)
+}
+
+func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
+	sessionCookie, err := r.Cookie("admin_session")
+	if err != nil {
+		component := views.Admin(false)
+		component.Render(r.Context(), w)
+		return
+	}
+
+	if !h.hasAccess(sessionCookie.Value) {
+		component := views.Admin(false)
+		component.Render(r.Context(), w)
+		return
+	}
+
+	fmt.Println(r.PathValue("specificCommand"))
+
+	switch r.PathValue("specificCommand") {
+	case "upload-wiki":
+		h.handleUploadedWikiArticle(w, r)
+	}
+}
+
+// ---
+
+func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+
+	name := r.FormValue("name")
+	prettyName := r.FormValue("pretty-name")
+	categoryPath := r.FormValue("category-path")
+	markdownSource := r.FormValue("md-source")
+
+	sortOrderString := r.FormValue("sort-order")
+	sortOrder, err := strconv.Atoi(sortOrderString)
+	if err != nil {
+		fmt.Fprintf(w, "The sort order appears to not be an integer, try again loser")
+		return
+	}
+
+	lastEditedAt := time.Now().Unix()
+
+	fmt.Printf("%q\n", markdownSource)
+
+	w.Write([]byte(name + " " + prettyName + " " + categoryPath + " " + strconv.Itoa(sortOrder) + " " + strconv.Itoa(int(lastEditedAt)) + " " + markdownSource))
 }

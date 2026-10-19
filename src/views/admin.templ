@@ -1,18 +1,5 @@
 package views
 
-templ AdminLoggedInView() {
-    <div class="text-div">
-        <a href="/admin/upload-wiki">Upload Wiki Article</a> | <a href="/admin/manage-wiki">Manage Wiki</a>
-        <br>
-        <a href="/admin/upload-blog">Upload Blog Post</a> | <a href="/admin/manage-blog">Manage Blog Posts</a>
-        <br>
-        <a href="/admin/upload-variable">Upload New Variable</a> | <a href="/admin/manage-variable">Manage Variables</a>
-        <hr>
-        Logged in - <a href="/auth/discord/logout">Log out</a>
-    </div> 
-    
-}
-
 templ Admin(loggedIn bool) {
     @Layout("Admin | Creator Coaster") {
         if !loggedIn {
@@ -22,7 +9,63 @@ templ Admin(loggedIn bool) {
         } else {
             @AdminLoggedInView()
         }
-    }    
+    }
+}
+
+
+templ AdminLoggedInView() {
+    <div class="text-div">
+        <a href="/admin/upload-wiki">Upload Wiki Article</a> | <a href="/admin/manage-wiki">Manage Wiki</a>
+        <br>
+        <a href="/admin/upload-blog">Upload Blog Post</a> | <a href="/admin/manage-blog">Manage Blog Posts</a>
+        <br>
+        <a href="/admin/upload-variable">Upload New Variable</a> | <a href="/admin/manage-variable">Manage Variables</a>
+        <hr>
+        <a href="/auth/discord/logout">Log out</a>
+    </div> 
 }
 
 // ---
+
+
+templ UploadWikiView() {
+    @Layout("Upload Wiki | Admin | Creator Coaster") {
+        <div class="text-div">
+            <form hx-post="/api/admin/upload-wiki" hx-target="#response-section" hx-swap="outerHTML">
+                <div>
+                    <label for="name">Name (not pretty):</label>
+                    <br>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div>
+                    <label for="pretty-name">Pretty Name:</label>
+                    <br>
+                    <input type="text" id="pretty-name" name="pretty-name" required>
+                </div>
+                <div>
+                    <label for="category-path">Category Path:</label>
+                    <br>
+                    <input type="text" id="category-path" name="category-path" required>
+                </div>
+                <div>
+                    <label for="sort-order">Sort order (in its category):</label>
+                    <br>
+                    <input type="number" id="sort-order" name="sort-order" required>
+                </div>
+
+                <div>
+                    <label for="md-source">MD Source:</label>
+                    <br>
+                    <textarea id="md-source" name="md-source" required></textarea>     
+                </div>
+                
+                <br>
+
+                <button type="submit">Submit</button>
+            </form>
+            <div id="response-section"></div>
+            <hr>
+            <a href="/admin">Go back</a>
+        </div>
+    }
+}
