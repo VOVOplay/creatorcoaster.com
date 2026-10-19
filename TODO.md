@@ -3,30 +3,6 @@ Legend:
 - ➖: Working on
 - ❌: Not done
 
-**Wiki:**
-- ✅ Wiki page
-- ✅ Articles
-- ✅ Categories
-- ✅ Sidebar
-- ✅ Loading from database
-- ❌ Upload wiki articles from website
-- ❌ Markdown syntax for variables (from database: {HOME_CHANNEL}, and to database: ?)
-- ✅ Tuning markdown rendering and CSS
-
-**Blogs:**
-- ✅ Blog page
-- ✅ Markdown Rendering
-- ✅ Article setup
-
-**Other pages:**
-- ✅ About Us page
-- ✅ About this website page
-- ✅ Privacy Policy Page
-- ➖ Home Page
-
-**Misc:**
-- ✅ Discord Login
-
 ## Actual things that still need to be done:
 - Markdown:
     - ✅ Variables from db variable to markdown sources: {variable_name}
@@ -41,9 +17,9 @@ Legend:
 
 - Admin panel:
     - Uploading blogs & Wiki articles
-    - Managing wiki articles (changing their category, name...)
-    - Managing blog articles (changing their name, author...)
-    - Maybe something for managing the staff list in About Us
+    - Managing wiki articles (changing any of their parameters - category, content, name, date, order...)
+    - Managing blog articles (changing any of their parameters - content, name, date, pretty-name...)
+    - Managing all types of variables
 
 - Other:
     - Designing and coding the landing page

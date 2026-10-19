@@ -38,7 +38,7 @@ DISCORD_CLIENT_ID="" # The OAuth client ID
 DISCORD_CLIENT_SECRET="" # The OAuth client secret
 REDIRECT_URL="" # The url you set in the discord dev portal as the redirect URL for OAuth
 
-IS_PRODUCTION=0
+IS_PRODUCTION=0 # or 1 if it is production
 
 DB_DOCKER_PORT=WHATEVER:3306 # The valid docker-compose syntax for ports. The part before : is the port used to access it, and the part after is the internal port the database uses.
 ```

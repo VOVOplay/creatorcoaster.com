@@ -1,15 +1,28 @@
 package views
 
 templ AdminLoggedInView() {
-    Hi <a href="/auth/discord/logout">log out</a>
+    <div class="text-div">
+        <a href="/admin/upload-wiki">Upload Wiki Article</a> | <a href="/admin/manage-wiki">Manage Wiki</a>
+        <br>
+        <a href="/admin/upload-blog">Upload Blog Post</a> | <a href="/admin/manage-blog">Manage Blog Posts</a>
+        <br>
+        <a href="/admin/upload-variable">Upload New Variable</a> | <a href="/admin/manage-variable">Manage Variables</a>
+        <hr>
+        Logged in - <a href="/auth/discord/logout">Log out</a>
+    </div> 
+    
 }
 
 templ Admin(loggedIn bool) {
     @Layout("Admin | Creator Coaster") {
         if !loggedIn {
-            <a href="https://discord.com/oauth2/authorize?client_id=1478409762042413126&response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%3A7331%2Fauth%2Fdiscord%2Fcallback&scope=identify">Log in</a>
+            <div class="text-div">
+                <a href="https://discord.com/oauth2/authorize?client_id=1478409762042413126&response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%3A7331%2Fauth%2Fdiscord%2Fcallback&scope=identify">Log in</a>
+            </div>
         } else {
             @AdminLoggedInView()
         }
     }    
 }
+
+// ---

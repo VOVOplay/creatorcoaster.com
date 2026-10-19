@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -109,8 +110,7 @@ func (h *AdminHandler) HandleAdmin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID, valid := h.verifyValue(sessionCookie.Value)
-	if !valid || userID != h.AdminUserID {
+	if !h.hasAccess(sessionCookie.Value) {
 		component := views.Admin(false)
 		component.Render(r.Context(), w)
 		return
@@ -162,4 +162,31 @@ func (h *AdminHandler) verifyValue(signedValue string) (string, bool) {
 		return value, true
 	}
 	return "", false
+}
+
+func (h *AdminHandler) hasAccess(signedValue string) bool {
+	userID, valid := h.verifyValue(signedValue)
+	if !valid || userID != h.AdminUserID {
+		return false
+	}
+	return true
+}
+
+// --- DIFFERENT ADMIN PAGES
+
+func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.Request) {
+	sessionCookie, err := r.Cookie("admin_session")
+	if err != nil {
+		component := views.Admin(false)
+		component.Render(r.Context(), w)
+		return
+	}
+
+	if !h.hasAccess(sessionCookie.Value) {
+		component := views.Admin(false)
+		component.Render(r.Context(), w)
+		return
+	}
+
+	fmt.Println(r.PathValue("specificPage"))
 }
