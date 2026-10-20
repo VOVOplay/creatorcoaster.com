@@ -73,6 +73,7 @@ func GetStaffMemberList() ([]myTypes.StaffMember, error) {
 	return staffList, nil
 }
 
+// Doesn't return a full blog, the HTML is missing
 func GetAllBlogs() ([]myTypes.Article, error) {
 	if db == nil {
 		return []myTypes.Article{}, myTypes.ErrDatabseOffline
@@ -80,7 +81,7 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 
 	var allBlogs []myTypes.Article
 
-	rawBlogs, err := db.Query("SELECT name, pretty_name, generated_html, date, author, author_pfp_link, read_time FROM blog_posts")
+	rawBlogs, err := db.Query("SELECT name, pretty_name, date, author, author_pfp_link, read_time FROM blog_posts")
 	if err != nil {
 		return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
 	}
@@ -88,7 +89,7 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 
 	for rawBlogs.Next() {
 		var blog myTypes.Article
-		err := rawBlogs.Scan(&blog.Name, &blog.PrettyName, &blog.HTML, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
+		err := rawBlogs.Scan(&blog.Name, &blog.PrettyName, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
 		if err != nil {
 			return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
 		}
@@ -104,25 +105,30 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 	return allBlogs, nil
 }
 
-func GetBlogByName(name string) (myTypes.Article, error) {
+func GetBlogByName(name string, renderer func(string) string) (myTypes.Article, error) {
 	if db == nil {
 		return myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
-	query := "SELECT name, pretty_name, generated_html, date, author, author_pfp_link, read_time FROM blog_posts WHERE name = ?"
+	query := "SELECT name, pretty_name, md_source, date, author, author_pfp_link, read_time FROM blog_posts WHERE name = ?"
 
 	var blog myTypes.Article
+	var markdownSource string
 
-	err := db.QueryRow(query, name).Scan(&blog.Name, &blog.PrettyName, &blog.HTML, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
+	err := db.QueryRow(query, name).Scan(&blog.Name, &blog.PrettyName, &markdownSource, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
 	if err != nil {
 		return myTypes.Article{}, myTypes.ErrArticleNotFound
 	}
+
+	HTML := renderer(markdownSource)
+	blog.HTML = HTML
 
 	blog.Type = myTypes.BlogArticle
 
 	return blog, nil
 }
 
+// Doesn't return full wiki articles, the HTML is missing.
 func GetAllWikiArticles() ([]myTypes.Article, error) {
 	if db == nil {
 		return []myTypes.Article{}, myTypes.ErrDatabseOffline
@@ -130,7 +136,7 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 
 	var allWikiArticles []myTypes.Article
 
-	rawWikiArticles, err := db.Query("SELECT name, pretty_name, generated_html, category_path, last_edited_at, sort_order FROM wiki_articles")
+	rawWikiArticles, err := db.Query("SELECT name, pretty_name, category_path, last_edited_at, sort_order FROM wiki_articles")
 	if err != nil {
 		return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
 	}
@@ -138,7 +144,7 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 
 	for rawWikiArticles.Next() {
 		var wikiArticle myTypes.Article
-		err := rawWikiArticles.Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.HTML, &wikiArticle.CategoryPath, &wikiArticle.Info.Date, &wikiArticle.SortOrder)
+		err := rawWikiArticles.Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.CategoryPath, &wikiArticle.Info.Date, &wikiArticle.SortOrder)
 		if err != nil {
 			return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
 		}
@@ -159,19 +165,23 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 	return allWikiArticles, nil
 }
 
-func GetWikiArticleByName(name string) (myTypes.Article, error) {
+func GetWikiArticleByName(name string, renderer func(string) string) (myTypes.Article, error) {
 	if db == nil {
 		return myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
-	query := "SELECT name, pretty_name, generated_html, category_path, last_edited_at FROM wiki_articles WHERE name = ?"
+	query := "SELECT name, pretty_name, md_source, category_path, last_edited_at FROM wiki_articles WHERE name = ?"
 
 	var wikiArticle myTypes.Article
+	var markdownSource string
 
-	err := db.QueryRow(query, name).Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.HTML, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
+	err := db.QueryRow(query, name).Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &markdownSource, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
 	if err != nil {
 		return myTypes.Article{}, myTypes.ErrArticleNotFound
 	}
+
+	HTML := renderer(markdownSource)
+	wikiArticle.HTML = HTML
 
 	wikiArticle.Type = myTypes.WikiArticle
 	return wikiArticle, nil

@@ -2,7 +2,6 @@ package markdown
 
 import (
 	"bytes"
-	"log"
 
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/parser"
@@ -43,7 +42,7 @@ func GenerateHTMLFromString(sourceString string) string {
 	var buf bytes.Buffer
 	err := md.Convert(source, &buf)
 	if err != nil {
-		log.Fatal(err)
+		return `<p class="md-paragraph">Could not generate HTML.</p>`
 	}
 
 	return buf.String()

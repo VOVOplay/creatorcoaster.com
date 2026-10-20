@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
+	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
 
@@ -41,7 +42,7 @@ func (h *BlogHandler) HandleBlog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestedBlog, err := database.GetBlogByName(requestedBlogName)
+	requestedBlog, err := database.GetBlogByName(requestedBlogName, markdown.GenerateHTMLFromString)
 	if err != nil {
 		component := views.NotFound()
 		component.Render(r.Context(), w)

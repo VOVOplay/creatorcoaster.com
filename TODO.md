@@ -26,6 +26,7 @@ Legend:
     - ❌ Making the wiki page usable on mobile
     - ❌ Fix issue where the sidebar state resets when clicking to a different wiki article
     - ❌ Figure out sorting for categories
+    - ❌ Redo some of the old code (e.g. HandleBlog) to use URL wildcards, like the admin page
 
 - Before release:
     - ❌ Setting up the real prod database and making it accessible from pterodactyl

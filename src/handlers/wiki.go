@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
+	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
 	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 )
@@ -28,7 +29,7 @@ func (h *WikiHandler) HandleWiki(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	requestedArticle, err := database.GetWikiArticleByName(requestedArticleName)
+	requestedArticle, err := database.GetWikiArticleByName(requestedArticleName, markdown.GenerateHTMLFromString)
 	if err != nil {
 		component := views.NotFound()
 		component.Render(r.Context(), w)
