@@ -187,6 +187,22 @@ func GetWikiArticleByName(name string, renderer func(string) string) (myTypes.Ar
 	return wikiArticle, nil
 }
 
+func SaveWikiArticle(wikiArticle myTypes.Article) error {
+	if db == nil {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "INSERT INTO wiki_articles (name, pretty_name, md_source, category_path, last_edited_at, sort_order) VALUES (?, ?, ?, ?, ?, ?)"
+	_, err := db.Exec(query, wikiArticle.Name, wikiArticle.PrettyName, wikiArticle.MarkdownSource, wikiArticle.CategoryPath, wikiArticle.Info.Date, wikiArticle.SortOrder)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// --- Variables
+
 func GetVariableByName(name string) (string, error) {
 	if db == nil {
 		return "", myTypes.ErrDatabseOffline

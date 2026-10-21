@@ -13,6 +13,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/VOVOplay/creatorcoaster.com/src/database"
+	"github.com/VOVOplay/creatorcoaster.com/src/markdown"
+	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 	"github.com/VOVOplay/creatorcoaster.com/src/views"
 	"github.com/a-h/templ"
 	"golang.org/x/oauth2"
@@ -221,6 +224,8 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 	switch r.PathValue("specificCommand") {
 	case "upload-wiki":
 		h.handleUploadedWikiArticle(w, r)
+	case "preview-wiki":
+		h.handlePreviewWiki(w, r)
 	}
 }
 
@@ -236,7 +241,9 @@ func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.
 	name := r.FormValue("name")
 	prettyName := r.FormValue("pretty-name")
 	categoryPath := r.FormValue("category-path")
+
 	markdownSource := r.FormValue("md-source")
+	HTML := markdown.GenerateHTMLFromString(markdownSource)
 
 	sortOrderString := r.FormValue("sort-order")
 	sortOrder, err := strconv.Atoi(sortOrderString)
@@ -247,7 +254,28 @@ func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.
 
 	lastEditedAt := time.Now().Unix()
 
-	fmt.Printf("%q\n", markdownSource)
+	wikiArticle := myTypes.Article{
+		Name:           name,
+		PrettyName:     prettyName,
+		HTML:           HTML,
+		MarkdownSource: markdownSource,
+		CategoryPath:   categoryPath,
+		SortOrder:      sortOrder,
+		Type:           myTypes.WikiArticle,
+		Info: myTypes.ArticleInfo{
+			Date: lastEditedAt,
+		},
+	}
 
-	w.Write([]byte(name + " " + prettyName + " " + categoryPath + " " + strconv.Itoa(sortOrder) + " " + strconv.Itoa(int(lastEditedAt)) + " " + markdownSource))
+	err = database.SaveWikiArticle(wikiArticle)
+	if err != nil {
+		fmt.Fprintf(w, "Database error: %v", err)
+		return
+	}
+
+	fmt.Fprintf(w, "Successfully saved wiki article '%v'", wikiArticle.Name)
+}
+
+func (h *AdminHandler) handlePreviewWiki(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "hey")
 }

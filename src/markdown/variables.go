@@ -167,7 +167,7 @@ func (r *CustomChannelVariableRenderer) renderChannelVariable(w util.BufWriter, 
 			return ast.WalkContinue, nil
 		}
 
-		fmt.Fprintf(w, `<a href="%v%v"><span class="md-discord-mention">%v</span></a>`, myTypes.ChannelPartialURL, channel.ID, channel.Name)
+		fmt.Fprintf(w, `<a href="%v%v"><span class="md-discord-mention">#%v</span></a>`, myTypes.ChannelPartialURL, channel.ID, channel.Name)
 	}
 
 	return ast.WalkContinue, nil

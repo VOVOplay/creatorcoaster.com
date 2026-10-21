@@ -1,13 +1,14 @@
 package myTypes
 
 type Article struct {
-	Name         string
-	PrettyName   string
-	HTML         string
-	CategoryPath string
-	SortOrder    int // The order in which it should be displayed. Any number can be used multiple times, since the primary thing sorting it is still the categories.
-	Type         ArticleType
-	Info         ArticleInfo
+	Name           string
+	PrettyName     string
+	HTML           string
+	MarkdownSource string
+	CategoryPath   string
+	SortOrder      int // The order in which it should be displayed. Any number can be used multiple times, since the primary thing sorting it is still the categories.
+	Type           ArticleType
+	Info           ArticleInfo
 }
 
 type ArticleInfo struct {
