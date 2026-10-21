@@ -194,12 +194,12 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	fmt.Println(r.PathValue("specificPage"))
-
 	var component templ.Component
 	switch r.PathValue("specificPage") {
 	case "upload-wiki":
 		component = views.UploadWikiView()
+	default:
+		component = views.NotFound()
 	}
 
 	component.Render(r.Context(), w)
@@ -219,13 +219,11 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(r.PathValue("specificCommand"))
-
 	switch r.PathValue("specificCommand") {
 	case "upload-wiki":
 		h.handleUploadedWikiArticle(w, r)
 	case "preview-wiki":
-		h.handlePreviewWiki(w, r)
+		h.handleWikiPreview(w, r)
 	}
 }
 
@@ -248,8 +246,7 @@ func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.
 	sortOrderString := r.FormValue("sort-order")
 	sortOrder, err := strconv.Atoi(sortOrderString)
 	if err != nil {
-		fmt.Fprintf(w, "The sort order appears to not be an integer, try again loser")
-		return
+		sortOrder = 999
 	}
 
 	lastEditedAt := time.Now().Unix()
@@ -276,6 +273,41 @@ func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.
 	fmt.Fprintf(w, "Successfully saved wiki article '%v'", wikiArticle.Name)
 }
 
-func (h *AdminHandler) handlePreviewWiki(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "hey")
+func (h *AdminHandler) handleWikiPreview(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+
+	name := r.FormValue("name")
+	prettyName := r.FormValue("pretty-name")
+	categoryPath := r.FormValue("category-path")
+
+	markdownSource := r.FormValue("md-source")
+	HTML := markdown.GenerateHTMLFromString(markdownSource)
+
+	sortOrderString := r.FormValue("sort-order")
+	sortOrder, err := strconv.Atoi(sortOrderString)
+	if err != nil {
+		sortOrder = 999
+	}
+
+	lastEditedAt := time.Now().Unix()
+
+	wikiArticle := myTypes.Article{
+		Name:           name,
+		PrettyName:     prettyName,
+		HTML:           HTML,
+		MarkdownSource: markdownSource,
+		CategoryPath:   categoryPath,
+		SortOrder:      sortOrder,
+		Type:           myTypes.WikiArticle,
+		Info: myTypes.ArticleInfo{
+			Date: lastEditedAt,
+		},
+	}
+
+	component := views.GenericArticle(wikiArticle)
+	component.Render(r.Context(), w)
 }

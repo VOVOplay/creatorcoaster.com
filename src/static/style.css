@@ -815,6 +815,73 @@ footer {
 
 /* BLOG */
 
+/* ADMIN */
+
+.admin-half-page {
+    height: 100%;
+    width: 100%;
+}
+
+.admin-half-page.left {
+    border-right: 1px solid var(--tertiary-color);
+}
+
+.admin-form input {
+    background-color: var(--tertiary-color);
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    color: white;
+
+    height: 30px;
+    width: 500px;
+
+    margin-bottom: 10px;
+}
+
+.admin-form input:focus {
+    outline: 1px solid var(--darker-text-color);
+}
+
+.admin-form textarea {
+    background-color: var(--tertiary-color);
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    color: white;
+
+    height: 300px;
+    width: 500px;
+}
+
+.admin-form textarea:focus {
+    outline: 1px solid var(--darker-text-color);
+}
+
+.admin-form button {
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    color: white;
+
+    height: 40px;
+    width: 80px;
+    
+    font-size: medium;
+}
+
+.admin-form button:hover {
+    cursor: pointer;
+    border-color: var(--cc-brand-color);
+}
+
+.admin-form .submit-button {
+    background-color: rgb(1, 169, 71);
+}
+
+.admin-form .preview-button {
+    background-color: var(--tertiary-color);
+}
+
+/* ADMIN */
+
 @media (max-width: 640px) {
     nav a {
         padding: 0 12px;

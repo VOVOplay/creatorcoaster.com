@@ -30,42 +30,51 @@ templ AdminLoggedInView() {
 
 templ UploadWikiView() {
     @Layout("Upload Wiki | Admin | Creator Coaster") {
-        <div class="text-div">
-            <form hx-post="/api/admin/upload-wiki" hx-target="#response-section" hx-swap="outerHTML">
-                <div>
-                    <label for="name">Name (not pretty):</label>
-                    <br>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div>
-                    <label for="pretty-name">Pretty Name:</label>
-                    <br>
-                    <input type="text" id="pretty-name" name="pretty-name" required>
-                </div>
-                <div>
-                    <label for="category-path">Category Path:</label>
-                    <br>
-                    <input type="text" id="category-path" name="category-path" required>
-                </div>
-                <div>
-                    <label for="sort-order">Sort order (in its category):</label>
-                    <br>
-                    <input type="number" id="sort-order" name="sort-order" required>
-                </div>
+        <div class="fill-screen-div">
+            <div class="admin-half-page left">
+                <a href="/admin/">Go back</a>
+                <h2 class="md-heading">Input</h2>
+                <form hx-post="/api/admin/upload-wiki" hx-target="#response-section" hx-swap="outerHTML" class="admin-form">
+                    <div>
+                        <label for="name">Name (not pretty):</label>
+                        <br>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div>
+                        <label for="pretty-name">Pretty Name:</label>
+                        <br>
+                        <input type="text" id="pretty-name" name="pretty-name" required>
+                    </div>
+                    <div>
+                        <label for="category-path">Category Path:</label>
+                        <br>
+                        <input type="text" id="category-path" name="category-path" required>
+                    </div>
+                    <div>
+                        <label for="sort-order">Sort order (in its category):</label>
+                        <br>
+                        <input type="number" id="sort-order" name="sort-order" required>
+                    </div>
 
-                <div>
-                    <label for="md-source">MD Source:</label>
-                    <br>
-                    <textarea id="md-source" name="md-source" required></textarea>     
-                </div>
+                    <div>
+                        <label for="md-source">MD Source:</label>
+                        <br>
+                        <textarea id="md-source" name="md-source" required></textarea>     
+                    </div>
                 
-                <br>
-
-                <button type="submit">Submit</button>
-            </form>
-            <div id="response-section"></div>
-            <hr>
-            <a href="/admin">Go back</a>
+                    <button hx-post="/api/admin/preview-wiki" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview</button> | <button type="submit" class="submit-button">Submit</button>
+                </form>
+                <div id="response-section"></div>
+            </div>
+            <div class="admin-half-page">
+                <div class="free-area-for-text">
+                    <div class="text-div">
+                        <div id="preview-contents">
+                            <h2 class="md-heading">Preview Section</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     }
 }
