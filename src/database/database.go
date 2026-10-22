@@ -201,6 +201,20 @@ func SaveWikiArticle(wikiArticle myTypes.Article) error {
 	return nil
 }
 
+func SaveBlogPost(blog myTypes.Article) error {
+	if db == nil {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "INSERT INTO blog_posts (name, pretty_name, md_source, date, author, author_pfp_link, read_time) VALUES (?, ?, ?, ?, ?, ?, ?)"
+	_, err := db.Exec(query, blog.Name, blog.PrettyName, blog.MarkdownSource, blog.Info.Date, blog.Info.Author, blog.Info.AuthorPFPLink, blog.Info.ReadTime)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // --- Variables
 
 func GetVariableByName(name string) (string, error) {
