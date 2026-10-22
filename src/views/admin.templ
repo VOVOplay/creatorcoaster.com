@@ -34,7 +34,7 @@ templ UploadWikiView() {
             <div class="admin-half-page left">
                 <a href="/admin/">Go back</a>
                 <h2 class="md-heading">Input</h2>
-                <form hx-post="/api/admin/upload-wiki" hx-target="#response-section" hx-swap="outerHTML" class="admin-form">
+                <form hx-post="/api/admin/upload-wiki" hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
                     <div>
                         <label for="name">Name (not pretty):</label>
                         <br>
