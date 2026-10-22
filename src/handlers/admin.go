@@ -229,11 +229,10 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 
 // ---
 
-func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.Request) {
+func (h *AdminHandler) helperAssembleWikiArticle(r *http.Request) (myTypes.Article, error) {
 	err := r.ParseForm()
 	if err != nil {
-		http.Error(w, "Bad request", http.StatusBadRequest)
-		return
+		return myTypes.Article{}, err
 	}
 
 	name := r.FormValue("name")
@@ -262,6 +261,15 @@ func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.
 		Info: myTypes.ArticleInfo{
 			Date: lastEditedAt,
 		},
+	}
+
+	return wikiArticle, nil
+}
+
+func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.Request) {
+	wikiArticle, err := h.helperAssembleWikiArticle(r)
+	if err != nil {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
 	}
 
 	err = database.SaveWikiArticle(wikiArticle)
@@ -274,38 +282,9 @@ func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.
 }
 
 func (h *AdminHandler) handleWikiPreview(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	wikiArticle, err := h.helperAssembleWikiArticle(r)
 	if err != nil {
-		http.Error(w, "Bad request", http.StatusBadRequest)
-		return
-	}
-
-	name := r.FormValue("name")
-	prettyName := r.FormValue("pretty-name")
-	categoryPath := r.FormValue("category-path")
-
-	markdownSource := r.FormValue("md-source")
-	HTML := markdown.GenerateHTMLFromString(markdownSource)
-
-	sortOrderString := r.FormValue("sort-order")
-	sortOrder, err := strconv.Atoi(sortOrderString)
-	if err != nil {
-		sortOrder = 999
-	}
-
-	lastEditedAt := time.Now().Unix()
-
-	wikiArticle := myTypes.Article{
-		Name:           name,
-		PrettyName:     prettyName,
-		HTML:           HTML,
-		MarkdownSource: markdownSource,
-		CategoryPath:   categoryPath,
-		SortOrder:      sortOrder,
-		Type:           myTypes.WikiArticle,
-		Info: myTypes.ArticleInfo{
-			Date: lastEditedAt,
-		},
+		http.Error(w, "Bad Request", http.StatusBadRequest)
 	}
 
 	component := views.GenericArticle(wikiArticle)
