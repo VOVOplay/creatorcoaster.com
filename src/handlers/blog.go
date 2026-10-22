@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
@@ -19,24 +20,12 @@ func NewBlogHandler() *BlogHandler {
 	return &BlogHandler{}
 }
 
-func (h *BlogHandler) HandleBlog(w http.ResponseWriter, r *http.Request) {
+func (h *BlogHandler) HandleSpecificBlog(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "public, max-age=60")
 
-	if r.URL.String() == "/blog/" { // blog landing page
-		allBlogs, err := database.GetAllBlogs()
-		databaseOkay := true
-		if err != nil {
-			databaseOkay = false
-		}
+	requestedBlogName := r.PathValue("specificBlogPost")
 
-		component := views.BlogLandingPage(allBlogs, databaseOkay)
-		component.Render(r.Context(), w)
-
-		return
-	}
-
-	requestedBlogName, err := h.findWhichBlogWasRequested(r)
-	if err != nil {
+	if !h.helperIsValidURL(r.URL) {
 		component := views.NotFound()
 		component.Render(r.Context(), w)
 		return
@@ -53,20 +42,23 @@ func (h *BlogHandler) HandleBlog(w http.ResponseWriter, r *http.Request) {
 	component.Render(r.Context(), w)
 }
 
-func (h *BlogHandler) findWhichBlogWasRequested(r *http.Request) (string, error) {
-	URL := r.URL.String()
-	splitURL := strings.Split(URL, "/")
+func (h *BlogHandler) HandleBlogLandingPage(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Cache-Control", "public, max-age=60")
 
-	var cleanedSplitURL []string
-	for _, URLSection := range splitURL {
-		if URLSection != "" {
-			cleanedSplitURL = append(cleanedSplitURL, URLSection)
-		}
+	allBlogs, err := database.GetAllBlogs()
+	databaseOkay := true
+	if err != nil {
+		databaseOkay = false
 	}
 
-	if len(cleanedSplitURL) != 2 { // two parts: /blog/blog-post
-		return "", InvalidArticleName
-	} else {
-		return cleanedSplitURL[1], nil
+	component := views.BlogLandingPage(allBlogs, databaseOkay)
+	component.Render(r.Context(), w)
+}
+
+func (h *BlogHandler) helperIsValidURL(URL *url.URL) bool {
+	pathSections := strings.Split(URL.Path, "/")
+	if len(pathSections) > 3 && pathSections[3] != "" {
+		return false
 	}
+	return true
 }

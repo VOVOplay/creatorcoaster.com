@@ -48,15 +48,16 @@ func configureRouter(config config.Config) *http.ServeMux {
 
 	router.HandleFunc("GET /wiki/", wikiHandler.HandleWiki)
 
-	router.HandleFunc("GET /blog/", blogHandler.HandleBlog)
+	router.HandleFunc("GET /blog/", blogHandler.HandleBlogLandingPage)
+	router.HandleFunc("GET /blog/{specificBlogPost}/", blogHandler.HandleSpecificBlog)
 
 	router.HandleFunc("GET /admin/", adminHandler.HandleAdmin)
-	router.HandleFunc("GET /admin/{specificPage}", adminHandler.HandleSpecificAdminPages)
+	router.HandleFunc("GET /admin/{specificPage}/", adminHandler.HandleSpecificAdminPages)
 
-	router.HandleFunc("GET /auth/discord/callback", adminHandler.HandleCallback)
-	router.HandleFunc("GET /auth/discord/logout", adminHandler.HandleAdminLogout)
+	router.HandleFunc("GET /auth/discord/callback/", adminHandler.HandleCallback)
+	router.HandleFunc("GET /auth/discord/logout/", adminHandler.HandleAdminLogout)
 
-	router.HandleFunc("POST /api/admin/{specificCommand}", adminHandler.HandleAPI)
+	router.HandleFunc("POST /api/admin/{specificCommand}/", adminHandler.HandleAPI)
 
 	return router
 }

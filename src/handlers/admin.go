@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -180,6 +181,15 @@ func (h *AdminHandler) hasAccess(signedValue string) bool {
 
 // --- DIFFERENT ADMIN PAGES
 
+func (h *AdminHandler) helperIsValidURL(URL *url.URL) bool {
+	fmt.Println(URL.Path)
+	pathSections := strings.Split(URL.Path, "/")
+	if len(pathSections) > 3 && pathSections[3] != "" {
+		return false
+	}
+	return true
+}
+
 func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.Request) {
 	sessionCookie, err := r.Cookie("admin_session")
 	if err != nil {
@@ -195,6 +205,13 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 	}
 
 	var component templ.Component
+
+	if !h.helperIsValidURL(r.URL) {
+		component = views.NotFound()
+		component.Render(r.Context(), w)
+		return
+	}
+
 	switch r.PathValue("specificPage") {
 	case "upload-wiki":
 		component = views.UploadWikiView()

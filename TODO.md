@@ -14,7 +14,7 @@ Legend:
     - ❌ Tiny text (`-#`)
 
 - Admin panel:
-    - ➖ Uploading wiki articles
+    - ✅ Uploading wiki articles
     - ❌ Uploading blog articles
     - ❌ Managing wiki articles (changing any of their parameters - category, content, name, date, order...)
     - ❌ Managing blog articles (changing any of their parameters - content, name, date, pretty-name...)
@@ -26,7 +26,7 @@ Legend:
     - ❌ Making the wiki page usable on mobile
     - ❌ Fix issue where the sidebar state resets when clicking to a different wiki article
     - ❌ Figure out sorting for categories
-    - ❌ Redo some of the old code (e.g. HandleBlog) to use URL wildcards, like the admin page
+    - ✅ Redo some of the old code (e.g. HandleBlog) to use URL wildcards, like the admin page
 
 - Before release:
     - ❌ Setting up the real prod database and making it accessible from pterodactyl
