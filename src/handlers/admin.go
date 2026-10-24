@@ -182,7 +182,6 @@ func (h *AdminHandler) hasAccess(signedValue string) bool {
 // --- DIFFERENT ADMIN PAGES
 
 func (h *AdminHandler) helperIsValidURL(URL *url.URL) bool {
-	fmt.Println(URL.Path)
 	pathSections := strings.Split(URL.Path, "/")
 	if len(pathSections) > 3 && pathSections[3] != "" {
 		return false
@@ -215,6 +214,8 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 	switch r.PathValue("specificPage") {
 	case "upload-wiki":
 		component = views.UploadWikiView()
+	case "upload-blog":
+		component = views.UploadBlogView()
 	default:
 		component = views.NotFound()
 	}
@@ -241,6 +242,10 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 		h.handleUploadedWikiArticle(w, r)
 	case "preview-wiki":
 		h.handleWikiPreview(w, r)
+	case "upload-blog":
+		h.handleUploadedBlogArticle(w, r)
+	case "preview-blog":
+		h.handleBlogPreview(w, r)
 	}
 }
 
@@ -305,5 +310,81 @@ func (h *AdminHandler) handleWikiPreview(w http.ResponseWriter, r *http.Request)
 	}
 
 	component := views.GenericArticle(wikiArticle)
+	component.Render(r.Context(), w)
+}
+
+// ---
+
+func (h *AdminHandler) helperFigureOutReadTime(markdownSource string) string {
+	wordsList := strings.Split(markdownSource, " ")
+	wordCount := len(wordsList)
+
+	readTimeMinutes := wordCount / 200
+
+	if readTimeMinutes < 1 {
+		return "<1 minute"
+	} else if readTimeMinutes == 1 {
+		return "1 minute"
+	} else {
+		return fmt.Sprintf("%v minutes", readTimeMinutes)
+	}
+}
+
+func (h *AdminHandler) helperAssembleBlogPost(r *http.Request) (myTypes.Article, error) {
+	err := r.ParseForm()
+	if err != nil {
+		return myTypes.Article{}, err
+	}
+
+	name := r.FormValue("name")
+	prettyName := r.FormValue("pretty-name")
+	author := r.FormValue("author")
+	authorPFPLink := r.FormValue("author-pfp-link")
+
+	markdownSource := r.FormValue("md-source")
+	HTML := markdown.GenerateHTMLFromString(markdownSource)
+
+	date := time.Now().Unix()
+
+	readTime := h.helperFigureOutReadTime(markdownSource)
+
+	blog := myTypes.Article{
+		Name:           name,
+		PrettyName:     prettyName,
+		MarkdownSource: markdownSource,
+		HTML:           HTML,
+		Type:           myTypes.BlogArticle,
+		Info: myTypes.ArticleInfo{
+			Author:        author,
+			AuthorPFPLink: authorPFPLink,
+			Date:          date,
+			ReadTime:      readTime,
+		},
+	}
+	return blog, nil
+}
+
+func (h *AdminHandler) handleUploadedBlogArticle(w http.ResponseWriter, r *http.Request) {
+	blog, err := h.helperAssembleBlogPost(r)
+	if err != nil {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+	}
+
+	err = database.SaveBlogPost(blog)
+	if err != nil {
+		fmt.Fprintf(w, "Database error: %v", err)
+		return
+	}
+
+	fmt.Fprintf(w, "Successfully saved blog post '%v'", blog.Name)
+}
+
+func (h *AdminHandler) handleBlogPreview(w http.ResponseWriter, r *http.Request) {
+	blogArticle, err := h.helperAssembleBlogPost(r)
+	if err != nil {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+	}
+
+	component := views.GenericArticle(blogArticle)
 	component.Render(r.Context(), w)
 }

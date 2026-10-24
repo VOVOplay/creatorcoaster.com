@@ -33,7 +33,7 @@ templ UploadWikiView() {
         <div class="fill-screen-div">
             <div class="admin-half-page left">
                 <a href="/admin/">Go back</a>
-                <h2 class="md-heading">Input</h2>
+                <h2 class="md-heading">Wiki Upload</h2>
                 <form hx-post="/api/admin/upload-wiki" hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
                     <div>
                         <label for="name">Name (not pretty):</label>
@@ -63,6 +63,57 @@ templ UploadWikiView() {
                     </div>
                 
                     <button hx-post="/api/admin/preview-wiki" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview</button> | <button type="submit" class="submit-button">Submit</button>
+                </form>
+                <div id="response-section"></div>
+            </div>
+            <div class="admin-half-page">
+                <div class="free-area-for-text">
+                    <div class="text-div">
+                        <div id="preview-contents">
+                            <h2 class="md-heading">Preview Section</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+templ UploadBlogView() {
+    @Layout("Upload Blog | Admin | Creator Coaster") {
+        <div class="fill-screen-div">
+            <div class="admin-half-page left">
+                <a href="/admin/">Go back</a>
+                <h2 class="md-heading">Blog Upload</h2>
+                <form hx-post="/api/admin/upload-blog" hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
+                    <div>
+                        <label for="name">Name (not pretty):</label>
+                        <br>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div>
+                        <label for="pretty-name">Pretty Name:</label>
+                        <br>
+                        <input type="text" id="pretty-name" name="pretty-name" required>
+                    </div>
+                    <div>
+                        <label for="author">Author:</label>
+                        <br>
+                        <input type="text" id="author" name="author" required>
+                    </div>
+                    <div>
+                        <label for="author-pfp-link">Author PFP Link:</label>
+                        <br>
+                        <input type="text" id="author-pfp-link" name="author-pfp-link" required>
+                    </div>
+
+                    <div>
+                        <label for="md-source">MD Source:</label>
+                        <br>
+                        <textarea id="md-source" name="md-source" required></textarea>     
+                    </div>
+                
+                    <button hx-post="/api/admin/preview-blog" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview</button> | <button type="submit" class="submit-button">Submit</button>
                 </form>
                 <div id="response-section"></div>
             </div>
