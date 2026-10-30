@@ -15,8 +15,8 @@ Legend:
 
 - Admin panel:
     - ✅ Uploading wiki articles
-    - ❌ Uploading blog articles
-    - ❌ Managing wiki articles (changing any of their parameters - category, content, name, date, order...)
+    - ✅ Uploading blog articles
+    - ➖ Managing wiki articles (changing any of their parameters - category, content, name, date, order...)
     - ❌ Managing blog articles (changing any of their parameters - content, name, date, pretty-name...)
     - ❌ Uploading all types of variables
     - ❌ Managing all types of variables
@@ -33,3 +33,7 @@ Legend:
     - ❌ Somehow make the schema not be a part of the bot nor the website, so theres one source of truth for that
     - ❌ Fix up the bot and release the version that saves the staff list
     - ❌ Figure out the compilation properly
+
+
+Dont forget:
+    - When editing a blog, the Date should NOT change unlike with the wiki

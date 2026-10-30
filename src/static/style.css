@@ -721,7 +721,7 @@ footer {
     display: flex;
     flex-direction: column;
 
-    background-color: var();
+    background-color: var(--main-bg-color);
 
     border: 1px solid var(--tertiary-color);
     border-radius: 10px;
@@ -879,6 +879,25 @@ footer {
 .admin-form .preview-button {
     background-color: var(--tertiary-color);
 }
+
+.admin-article-card {
+    background-color: var(--main-bg-color);
+
+    border: 1px solid var(--tertiary-color);
+    border-radius: 10px;
+    
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.admin-article-card .info {
+    margin-right: auto;
+}
+
 
 /* ADMIN */
 

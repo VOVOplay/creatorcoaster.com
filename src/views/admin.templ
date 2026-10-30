@@ -1,6 +1,7 @@
 package views
 
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
+import "fmt"
 
 templ Admin(loggedIn bool) {
     @Layout("Admin | Creator Coaster") {
@@ -27,41 +28,79 @@ templ AdminLoggedInView() {
     </div> 
 }
 
-// ---
+// --- WIKI
 
-
-templ UploadWikiView() {
+// This component serves both for uploading and editing wiki articles. However the API is seperate
+templ EditSpecificWikiArticle(wikiArticle myTypes.Article) {
     @Layout("Upload Wiki | Admin | Creator Coaster") {
+        {{
+            isNewArticle := wikiArticle == myTypes.Article{}
+
+            heading := "Wiki Upload"
+            if !isNewArticle {
+                heading = "Edit Wiki Article"
+            }
+
+            API := "/api/admin/upload-wiki"
+            if !isNewArticle {
+                API = "/api/admin/update-wiki"
+            }
+
+            var previousName string
+            if !isNewArticle {
+                previousName = wikiArticle.Name
+            }
+
+            // These values will be an empty string if it's a new article, therefore we can use them in the HTML even if it's a new article
+            var nameValue string
+            var prettyNameValue string
+            var categoryPathValue string
+            var sortOrderValue int
+            var markdownSourceValue string
+            if !isNewArticle {
+                nameValue = wikiArticle.Name
+                prettyNameValue = wikiArticle.PrettyName
+                categoryPathValue = wikiArticle.CategoryPath
+                sortOrderValue = wikiArticle.SortOrder
+                markdownSourceValue = wikiArticle.MarkdownSource
+            }
+
+        }}
         <div class="fill-screen-div">
             <div class="admin-half-page left">
-                <a href="/admin/">Go back</a>
-                <h2 class="md-heading">Wiki Upload</h2>
-                <form hx-post="/api/admin/upload-wiki" hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
+                <a href="javascript:history.back()">Go back</a>
+                <h2 class="md-heading">{ heading }</h2>
+                <form hx-post={ API } hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
+                    // Hidden field for the old name
+                    if !isNewArticle {
+                        <input class="hidden" type="text" id="previous-name" name="previous-name" value={ previousName } required>
+                    }
+
                     <div>
                         <label for="name">Name (not pretty):</label>
                         <br>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" value={ nameValue } required>
                     </div>
                     <div>
                         <label for="pretty-name">Pretty Name:</label>
                         <br>
-                        <input type="text" id="pretty-name" name="pretty-name" required>
+                        <input type="text" id="pretty-name" name="pretty-name" value={ prettyNameValue } required>
                     </div>
                     <div>
                         <label for="category-path">Category Path:</label>
                         <br>
-                        <input type="text" id="category-path" name="category-path" required>
+                        <input type="text" id="category-path" name="category-path" value={ categoryPathValue } required>
                     </div>
                     <div>
                         <label for="sort-order">Sort order (in its category):</label>
                         <br>
-                        <input type="number" id="sort-order" name="sort-order" required>
+                        <input type="number" id="sort-order" name="sort-order" value={ sortOrderValue } required>
                     </div>
 
                     <div>
                         <label for="md-source">MD Source:</label>
                         <br>
-                        <textarea id="md-source" name="md-source" required></textarea>     
+                        <textarea id="md-source" name="md-source" required>{ markdownSourceValue }</textarea>     
                     </div>
                 
                     <button hx-post="/api/admin/preview-wiki" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview</button> | <button type="submit" class="submit-button">Submit</button>
@@ -80,6 +119,28 @@ templ UploadWikiView() {
         </div>
     }
 }
+
+templ ManageWikiView(allWikiArticles []myTypes.Article) {
+    @Layout("Manage Wiki Articles | Admin | Creator Coaster") {
+        <div class="text-div">
+            <a href="javascript:history.back()">Go back</a>
+            for _, wikiArticle := range allWikiArticles {
+                <div class="admin-article-card">
+                    <div class="info">
+                        { wikiArticle.PrettyName } (<code class="md-inline-code">{ wikiArticle.Name }</code>)
+                    </div>
+                    <div class="actions">
+                        {{
+                            editURL := fmt.Sprintf("/admin/update-wiki?name=%v", wikiArticle.Name)
+                        }}
+                        <a href={ editURL }>Edit</a> | <a href="/api/admin/delete-wiki">Delete</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
+// --- BLOGS
 
 type AuthorPFPCombination struct {
     AuthorName string
@@ -113,11 +174,11 @@ func getListOfCombinations(allBlogs []myTypes.Article) []AuthorPFPCombination {
     return fullList
 } 
 
-templ UploadBlogView(allBlogs []myTypes.Article, databaseOkay bool) {
+templ UploadBlogView(allBlogs []myTypes.Article) {
     @Layout("Upload Blog | Admin | Creator Coaster") {
         <div class="fill-screen-div">
             <div class="admin-half-page left">
-                <a href="/admin/">Go back</a>
+                <a href="javascript:history.back()">Go back</a>
                 <h2 class="md-heading">Blog Upload</h2>
                 <form hx-post="/api/admin/upload-blog" hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
                     <div>
@@ -151,14 +212,10 @@ templ UploadBlogView(allBlogs []myTypes.Article, databaseOkay bool) {
                 </form>
                 <div id="response-section"></div>
                 <h3 class="md-heading">Previously used name-pfp combinations:</h3>
-                if !databaseOkay {
-                    Database offline.
-                } else {
-                    {{ fullList :=  getListOfCombinations(allBlogs) }}
+                {{ fullList :=  getListOfCombinations(allBlogs) }}
 
-                    for _, combination := range fullList {
-                        <code class="md-inline-code">{combination.AuthorName}</code> - <code class="md-inline-code">{combination.PFPLink}</code>
-                    }
+                for _, combination := range fullList {
+                    <code class="md-inline-code">{combination.AuthorName}</code> - <code class="md-inline-code">{combination.PFPLink}</code>
                 }
             </div>
             <div class="admin-half-page">

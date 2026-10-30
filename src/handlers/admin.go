@@ -213,14 +213,22 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 
 	switch r.PathValue("specificPage") {
 	case "upload-wiki":
-		component = views.UploadWikiView()
-	case "upload-blog":
-		databaseOkay := true
-		allBlogs, err := database.GetAllBlogs()
+		component = views.EditSpecificWikiArticle(myTypes.Article{})
+	case "update-wiki":
+		requestedArticleName := r.URL.Query().Get("name")
+		requestedArticle, err := database.GetWikiArticleByName(requestedArticleName, markdown.GenerateHTMLFromString)
 		if err != nil {
-			databaseOkay = false
+			component = views.NotFound()
+		} else {
+			component = views.EditSpecificWikiArticle(requestedArticle)
 		}
-		component = views.UploadBlogView(allBlogs, databaseOkay)
+
+	case "manage-wiki":
+		allWikiArticles, _ := database.GetAllWikiArticles()
+		component = views.ManageWikiView(allWikiArticles)
+	case "upload-blog":
+		allBlogs, _ := database.GetAllBlogs()
+		component = views.UploadBlogView(allBlogs)
 	default:
 		component = views.NotFound()
 	}
@@ -245,6 +253,8 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 	switch r.PathValue("specificCommand") {
 	case "upload-wiki":
 		h.handleUploadedWikiArticle(w, r)
+	case "update-wiki":
+		h.handleWikiUpdate(w, r)
 	case "preview-wiki":
 		h.handleWikiPreview(w, r)
 	case "upload-blog":
@@ -306,6 +316,23 @@ func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.
 	}
 
 	fmt.Fprintf(w, "Successfully saved wiki article '%v'", wikiArticle.Name)
+}
+
+func (h *AdminHandler) handleWikiUpdate(w http.ResponseWriter, r *http.Request) {
+	newWikiArticle, err := h.helperAssembleWikiArticle(r)
+	if err != nil {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+	}
+
+	previousName := r.FormValue("previous-name")
+
+	err = database.UpdateWikiArticle(newWikiArticle, previousName)
+	if err != nil {
+		fmt.Fprintf(w, "Database error: %v", err)
+		return
+	}
+
+	fmt.Fprintf(w, "Successfully updated wiki article '%v'", newWikiArticle.Name)
 }
 
 func (h *AdminHandler) handleWikiPreview(w http.ResponseWriter, r *http.Request) {

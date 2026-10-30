@@ -173,14 +173,13 @@ func GetWikiArticleByName(name string, renderer func(string) string) (myTypes.Ar
 	query := "SELECT name, pretty_name, md_source, category_path, last_edited_at FROM wiki_articles WHERE name = ?"
 
 	var wikiArticle myTypes.Article
-	var markdownSource string
 
-	err := db.QueryRow(query, name).Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &markdownSource, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
+	err := db.QueryRow(query, name).Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.MarkdownSource, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
 	if err != nil {
 		return myTypes.Article{}, myTypes.ErrArticleNotFound
 	}
 
-	HTML := renderer(markdownSource)
+	HTML := renderer(wikiArticle.MarkdownSource)
 	wikiArticle.HTML = HTML
 
 	wikiArticle.Type = myTypes.WikiArticle
@@ -194,6 +193,20 @@ func SaveWikiArticle(wikiArticle myTypes.Article) error {
 
 	query := "INSERT INTO wiki_articles (name, pretty_name, md_source, category_path, last_edited_at, sort_order) VALUES (?, ?, ?, ?, ?, ?)"
 	_, err := db.Exec(query, wikiArticle.Name, wikiArticle.PrettyName, wikiArticle.MarkdownSource, wikiArticle.CategoryPath, wikiArticle.Info.Date, wikiArticle.SortOrder)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UpdateWikiArticle(newWikiArticle myTypes.Article, previousName string) error {
+	if db == nil {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "UPDATE wiki_articles SET name = ?, pretty_name = ?, md_source = ?, category_path = ?, last_edited_at = ?, sort_order = ? WHERE name = ?"
+	_, err := db.Exec(query, newWikiArticle.Name, newWikiArticle.PrettyName, newWikiArticle.MarkdownSource, newWikiArticle.CategoryPath, newWikiArticle.Info.Date, newWikiArticle.SortOrder, previousName)
 	if err != nil {
 		return err
 	}
