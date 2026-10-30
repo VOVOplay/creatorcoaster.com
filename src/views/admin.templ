@@ -1,5 +1,7 @@
 package views
 
+import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
+
 templ Admin(loggedIn bool) {
     @Layout("Admin | Creator Coaster") {
         if !loggedIn {
@@ -79,7 +81,39 @@ templ UploadWikiView() {
     }
 }
 
-templ UploadBlogView() {
+type AuthorPFPCombination struct {
+    AuthorName string
+    PFPLink string
+}
+
+func (combination AuthorPFPCombination) isUnique(fullList []AuthorPFPCombination) bool {
+    for _, existingAuthorPFPCombination := range fullList {
+        if combination == existingAuthorPFPCombination {
+            return false
+        }
+    }
+
+    return true
+}
+
+func getListOfCombinations(allBlogs []myTypes.Article) []AuthorPFPCombination {
+    fullList := []AuthorPFPCombination{}
+
+    for _, blog := range allBlogs {
+        authorPFPCombination := AuthorPFPCombination{
+            AuthorName: blog.Info.Author,
+            PFPLink: blog.Info.AuthorPFPLink,
+        }
+
+        if authorPFPCombination.isUnique(fullList) {
+            fullList = append(fullList, authorPFPCombination)
+        }
+    }
+
+    return fullList
+} 
+
+templ UploadBlogView(allBlogs []myTypes.Article, databaseOkay bool) {
     @Layout("Upload Blog | Admin | Creator Coaster") {
         <div class="fill-screen-div">
             <div class="admin-half-page left">
@@ -116,6 +150,16 @@ templ UploadBlogView() {
                     <button hx-post="/api/admin/preview-blog" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview</button> | <button type="submit" class="submit-button">Submit</button>
                 </form>
                 <div id="response-section"></div>
+                <h3 class="md-heading">Previously used name-pfp combinations:</h3>
+                if !databaseOkay {
+                    Database offline.
+                } else {
+                    {{ fullList :=  getListOfCombinations(allBlogs) }}
+
+                    for _, combination := range fullList {
+                        <code class="md-inline-code">{combination.AuthorName}</code> - <code class="md-inline-code">{combination.PFPLink}</code>
+                    }
+                }
             </div>
             <div class="admin-half-page">
                 <div class="free-area-for-text">

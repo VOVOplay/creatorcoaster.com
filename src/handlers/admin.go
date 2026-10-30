@@ -215,7 +215,12 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 	case "upload-wiki":
 		component = views.UploadWikiView()
 	case "upload-blog":
-		component = views.UploadBlogView()
+		databaseOkay := true
+		allBlogs, err := database.GetAllBlogs()
+		if err != nil {
+			databaseOkay = false
+		}
+		component = views.UploadBlogView(allBlogs, databaseOkay)
 	default:
 		component = views.NotFound()
 	}
