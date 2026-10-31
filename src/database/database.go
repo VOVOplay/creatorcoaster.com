@@ -255,6 +255,20 @@ func UpdateBlogPost(newBlogPost myTypes.Article, previousName string) error {
 	return nil
 }
 
+func DeleteBlogArticle(name string) error {
+	if db == nil {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "DELETE FROM blog_posts WHERE name = ?"
+	_, err := db.Exec(query, name)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // --- Variables
 
 func GetVariableByName(name string) (string, error) {

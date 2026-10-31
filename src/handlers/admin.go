@@ -278,6 +278,8 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 		h.handleBlogUpload(w, r)
 	case "update-blog":
 		h.handleBlogUpdate(w, r)
+	case "delete-blog":
+		h.handleBlogDeletion(w, r)
 	case "preview-blog":
 		h.handleBlogPreview(w, r)
 	}
@@ -475,4 +477,24 @@ func (h *AdminHandler) handleBlogUpdate(w http.ResponseWriter, r *http.Request) 
 	}
 
 	fmt.Fprintf(w, "Successfully saved blog post '%v'", blog.Name)
+}
+
+func (h *AdminHandler) handleBlogDeletion(w http.ResponseWriter, r *http.Request) {
+	blogName := r.URL.Query().Get("name")
+
+	confirmed := r.URL.Query().Get("confirmed")
+	if confirmed == "yes" {
+		err := database.DeleteBlogArticle(blogName)
+		if err != nil {
+			fmt.Fprintf(w, "Could not delete article: '%v'", err)
+			return
+		}
+
+		fmt.Fprintf(w, "") // This replaces the admin card, that's why it's nothing.
+	} else {
+		// Confirmation prompt
+		deletionURL := fmt.Sprintf("/api/admin/delete-blog?name=%v&confirmed=yes", blogName)
+		fmt.Fprintf(w, `Are you sure? <a href="/admin/manage-blog">No</a> | <a hx-delete="%v" hx-target="#admin-article-card-%v" hx-swap="outerHTML">Yes</a>`, deletionURL, blogName)
+	}
+
 }
