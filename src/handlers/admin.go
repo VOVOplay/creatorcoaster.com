@@ -226,9 +226,23 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 	case "manage-wiki":
 		allWikiArticles, _ := database.GetAllWikiArticles()
 		component = views.ManageWikiView(allWikiArticles)
+	// --
 	case "upload-blog":
 		allBlogs, _ := database.GetAllBlogs()
-		component = views.UploadBlogView(allBlogs)
+		component = views.EditSpecificBlog(myTypes.Article{}, allBlogs)
+	case "update-blog":
+		allBlogs, _ := database.GetAllBlogs()
+
+		requestedBlogName := r.URL.Query().Get("name")
+		requestedBlog, err := database.GetBlogByName(requestedBlogName, markdown.GenerateHTMLFromString)
+		if err != nil {
+			component = views.NotFound()
+		} else {
+			component = views.EditSpecificBlog(requestedBlog, allBlogs)
+		}
+	case "manage-blog":
+		allBlogs, _ := database.GetAllBlogs()
+		component = views.ManageBlogView(allBlogs)
 	default:
 		component = views.NotFound()
 	}
@@ -252,15 +266,18 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 
 	switch r.PathValue("specificCommand") {
 	case "upload-wiki":
-		h.handleUploadedWikiArticle(w, r)
+		h.handleWikiUpload(w, r)
 	case "update-wiki":
 		h.handleWikiUpdate(w, r)
 	case "delete-wiki":
 		h.handleWikiDeletion(w, r)
 	case "preview-wiki":
 		h.handleWikiPreview(w, r)
+	// --
 	case "upload-blog":
-		h.handleUploadedBlogArticle(w, r)
+		h.handleBlogUpload(w, r)
+	case "update-blog":
+		h.handleBlogUpdate(w, r)
 	case "preview-blog":
 		h.handleBlogPreview(w, r)
 	}
@@ -305,7 +322,7 @@ func (h *AdminHandler) helperAssembleWikiArticle(r *http.Request) (myTypes.Artic
 	return wikiArticle, nil
 }
 
-func (h *AdminHandler) handleUploadedWikiArticle(w http.ResponseWriter, r *http.Request) {
+func (h *AdminHandler) handleWikiUpload(w http.ResponseWriter, r *http.Request) {
 	wikiArticle, err := h.helperAssembleWikiArticle(r)
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
@@ -418,7 +435,7 @@ func (h *AdminHandler) helperAssembleBlogPost(r *http.Request) (myTypes.Article,
 	return blog, nil
 }
 
-func (h *AdminHandler) handleUploadedBlogArticle(w http.ResponseWriter, r *http.Request) {
+func (h *AdminHandler) handleBlogUpload(w http.ResponseWriter, r *http.Request) {
 	blog, err := h.helperAssembleBlogPost(r)
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
@@ -441,4 +458,21 @@ func (h *AdminHandler) handleBlogPreview(w http.ResponseWriter, r *http.Request)
 
 	component := views.GenericArticle(blogArticle)
 	component.Render(r.Context(), w)
+}
+
+func (h *AdminHandler) handleBlogUpdate(w http.ResponseWriter, r *http.Request) {
+	blog, err := h.helperAssembleBlogPost(r)
+	if err != nil {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+	}
+
+	previousName := r.FormValue("previous-name")
+
+	err = database.UpdateBlogPost(blog, previousName)
+	if err != nil {
+		fmt.Fprintf(w, "Database error: %v", err)
+		return
+	}
+
+	fmt.Fprintf(w, "Successfully saved blog post '%v'", blog.Name)
 }

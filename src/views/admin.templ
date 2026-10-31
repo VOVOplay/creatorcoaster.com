@@ -123,6 +123,7 @@ templ EditSpecificWikiArticle(wikiArticle myTypes.Article) {
 templ ManageWikiView(allWikiArticles []myTypes.Article) {
     @Layout("Manage Wiki Articles | Admin | Creator Coaster") {
         <div class="text-div">
+            <h1 class="md-heading">Manage Wiki</h1>
             <a href="javascript:history.back()">Go back</a>
             for _, wikiArticle := range allWikiArticles {
                 {{ 
@@ -181,38 +182,77 @@ func getListOfCombinations(allBlogs []myTypes.Article) []AuthorPFPCombination {
     return fullList
 } 
 
-templ UploadBlogView(allBlogs []myTypes.Article) {
+// This component serves both for uploading and editing wiki articles. However the API is seperate
+templ EditSpecificBlog(blog myTypes.Article, allBlogs []myTypes.Article) {
     @Layout("Upload Blog | Admin | Creator Coaster") {
+        {{
+            isNewArticle := blog == myTypes.Article{}
+
+            heading := "Wiki Upload"
+            if !isNewArticle {
+                heading = "Edit Wiki Article"
+            }
+
+            API := "/api/admin/upload-blog"
+            if !isNewArticle {
+                API = "/api/admin/update-blog"
+            }
+
+            var previousName string
+            if !isNewArticle {
+                previousName = blog.Name
+            }
+
+            // These values will be an empty string if it's a new article, therefore we can use them in the HTML even if it's a new article
+            var nameValue string
+            var prettyNameValue string
+            var authorValue string
+            var authorPFPLinkValue string
+            var markdownSourceValue string
+            if !isNewArticle {
+                nameValue = blog.Name
+                prettyNameValue = blog.PrettyName
+                authorValue = blog.Info.Author
+                authorPFPLinkValue = blog.Info.AuthorPFPLink
+                markdownSourceValue = blog.MarkdownSource
+            }
+
+        }}
         <div class="fill-screen-div">
             <div class="admin-half-page left">
                 <a href="javascript:history.back()">Go back</a>
-                <h2 class="md-heading">Blog Upload</h2>
-                <form hx-post="/api/admin/upload-blog" hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
+                <h2 class="md-heading">{ heading }</h2>
+                <form hx-post={ API } hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
+                    // Hidden field for the old name
+                    if !isNewArticle {
+                        <input class="hidden" type="text" id="previous-name" name="previous-name" value={ previousName } required>
+                    }
+
                     <div>
                         <label for="name">Name (not pretty):</label>
                         <br>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" value={ nameValue } required>
                     </div>
                     <div>
                         <label for="pretty-name">Pretty Name:</label>
                         <br>
-                        <input type="text" id="pretty-name" name="pretty-name" required>
+                        <input type="text" id="pretty-name" name="pretty-name" value={ prettyNameValue } required>
                     </div>
                     <div>
                         <label for="author">Author:</label>
                         <br>
-                        <input type="text" id="author" name="author" required>
+                        <input type="text" id="author" name="author" value={ authorValue } required>
                     </div>
                     <div>
                         <label for="author-pfp-link">Author PFP Link:</label>
                         <br>
-                        <input type="text" id="author-pfp-link" name="author-pfp-link" required>
+                        <input type="text" id="author-pfp-link" name="author-pfp-link" value={ authorPFPLinkValue } required>
                     </div>
 
                     <div>
                         <label for="md-source">MD Source:</label>
                         <br>
-                        <textarea id="md-source" name="md-source" required></textarea>     
+                        <textarea id="md-source" name="md-source" required>{ markdownSourceValue }</textarea>     
                     </div>
                 
                     <button hx-post="/api/admin/preview-blog" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview</button> | <button type="submit" class="submit-button">Submit</button>
@@ -234,6 +274,35 @@ templ UploadBlogView(allBlogs []myTypes.Article) {
                     </div>
                 </div>
             </div>
+        </div>
+    }
+}
+
+templ ManageBlogView(allBlogs []myTypes.Article) {
+    @Layout("Manage Blogs | Admin | Creator Coaster") {
+        <div class="text-div">
+            <h1 class="md-heading">Manage Blogs</h1>
+            <a href="javascript:history.back()">Go back</a>
+            for _, blog := range allBlogs {
+                {{ 
+                    adminArticleCardID := fmt.Sprintf("admin-article-card-%v", blog.Name)
+                    actionsID := fmt.Sprintf("actions-%v", blog.Name) 
+                    actionsTargetID := fmt.Sprintf("#%v", actionsID)
+                }}
+                <div class="admin-article-card" id={ adminArticleCardID }>
+                    <div class="info">
+                        { blog.PrettyName } (<code class="md-inline-code">{ blog.Name }</code>)
+                    </div>
+                    
+                    <div id={ actionsID }>
+                        {{
+                            editURL := fmt.Sprintf("/admin/update-blog?name=%v", blog.Name)
+                            deleteURL := fmt.Sprintf("/api/admin/delete-blog?name=%v&confirmed=no", blog.Name)
+                        }}
+                        <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+                    </div>
+                </div>
+            }
         </div>
     }
 }

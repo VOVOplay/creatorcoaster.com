@@ -113,14 +113,13 @@ func GetBlogByName(name string, renderer func(string) string) (myTypes.Article, 
 	query := "SELECT name, pretty_name, md_source, date, author, author_pfp_link, read_time FROM blog_posts WHERE name = ?"
 
 	var blog myTypes.Article
-	var markdownSource string
 
-	err := db.QueryRow(query, name).Scan(&blog.Name, &blog.PrettyName, &markdownSource, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
+	err := db.QueryRow(query, name).Scan(&blog.Name, &blog.PrettyName, &blog.MarkdownSource, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
 	if err != nil {
 		return myTypes.Article{}, myTypes.ErrArticleNotFound
 	}
 
-	HTML := renderer(markdownSource)
+	HTML := renderer(blog.MarkdownSource)
 	blog.HTML = HTML
 
 	blog.Type = myTypes.BlogArticle
@@ -235,6 +234,20 @@ func SaveBlogPost(blog myTypes.Article) error {
 
 	query := "INSERT INTO blog_posts (name, pretty_name, md_source, date, author, author_pfp_link, read_time) VALUES (?, ?, ?, ?, ?, ?, ?)"
 	_, err := db.Exec(query, blog.Name, blog.PrettyName, blog.MarkdownSource, blog.Info.Date, blog.Info.Author, blog.Info.AuthorPFPLink, blog.Info.ReadTime)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UpdateBlogPost(newBlogPost myTypes.Article, previousName string) error {
+	if db == nil {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "UPDATE blog_posts SET name = ?, pretty_name = ?, md_source = ?, author = ?, author_pfp_link = ?, read_time = ? WHERE name = ?"
+	_, err := db.Exec(query, newBlogPost.Name, newBlogPost.PrettyName, newBlogPost.MarkdownSource, newBlogPost.Info.Author, newBlogPost.Info.AuthorPFPLink, newBlogPost.Info.ReadTime, previousName)
 	if err != nil {
 		return err
 	}

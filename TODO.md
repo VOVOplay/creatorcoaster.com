@@ -17,7 +17,7 @@ Legend:
     - ✅ Uploading wiki articles
     - ✅ Uploading blog articles
     - ✅ Managing wiki articles (changing any of their parameters - category, content, name, date, order...)
-    - ❌ Managing blog articles (changing any of their parameters - content, name, date, pretty-name...)
+    - ➖ Managing blog articles (changing any of their parameters - content, name, date, pretty-name...)
     - ❌ Uploading all types of variables
     - ❌ Managing all types of variables
 
