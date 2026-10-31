@@ -255,6 +255,8 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 		h.handleUploadedWikiArticle(w, r)
 	case "update-wiki":
 		h.handleWikiUpdate(w, r)
+	case "delete-wiki":
+		h.handleWikiDeletion(w, r)
 	case "preview-wiki":
 		h.handleWikiPreview(w, r)
 	case "upload-blog":
@@ -333,6 +335,26 @@ func (h *AdminHandler) handleWikiUpdate(w http.ResponseWriter, r *http.Request) 
 	}
 
 	fmt.Fprintf(w, "Successfully updated wiki article '%v'", newWikiArticle.Name)
+}
+
+func (h *AdminHandler) handleWikiDeletion(w http.ResponseWriter, r *http.Request) {
+	articleName := r.URL.Query().Get("name")
+
+	confirmed := r.URL.Query().Get("confirmed")
+	if confirmed == "yes" {
+		err := database.DeleteWikiArticle(articleName)
+		if err != nil {
+			fmt.Fprintf(w, "Could not delete article: '%v'", err)
+			return
+		}
+
+		fmt.Fprintf(w, "") // This replaces the admin card, that's why it's nothing.
+	} else {
+		// Confirmation prompt
+		deletionURL := fmt.Sprintf("/api/admin/delete-wiki?name=%v&confirmed=yes", articleName)
+		fmt.Fprintf(w, `Are you sure? <a href="/admin/manage-wiki">No</a> | <a hx-delete="%v" hx-target="#admin-article-card-%v" hx-swap="outerHTML">Yes</a>`, deletionURL, articleName)
+	}
+
 }
 
 func (h *AdminHandler) handleWikiPreview(w http.ResponseWriter, r *http.Request) {

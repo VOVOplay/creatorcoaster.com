@@ -214,6 +214,20 @@ func UpdateWikiArticle(newWikiArticle myTypes.Article, previousName string) erro
 	return nil
 }
 
+func DeleteWikiArticle(name string) error {
+	if db == nil {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "DELETE FROM wiki_articles WHERE name = ?"
+	_, err := db.Exec(query, name)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func SaveBlogPost(blog myTypes.Article) error {
 	if db == nil {
 		return myTypes.ErrDatabseOffline

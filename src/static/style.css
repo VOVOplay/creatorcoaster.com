@@ -80,6 +80,7 @@ a {
 }
 a:hover {
     color: #6ceeff;
+    cursor: pointer;
 }
 
 a,
