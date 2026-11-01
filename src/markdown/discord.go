@@ -38,13 +38,13 @@ type variableCacheKey struct {
 //
 // The only errors returned are errors occurred while looking up a variable
 // in the database.
-func GenerateDiscordMarkdownFromString(s string) (string, error) {
+func GenerateDiscordMarkdownFromString(source string) (string, error) {
 	var b strings.Builder
-	b.Grow(len(s))
+	b.Grow(len(source))
 
 	var variableCache map[variableCacheKey]string
 
-	for line := range strings.Lines(s) {
+	for line := range strings.Lines(source) {
 		if isHorizontalRule(line) {
 			continue
 		}
@@ -127,12 +127,12 @@ func parseVariable(line string, start int) (kind variableKind, name string, end 
 		}
 	}
 
-	for offset, r := range line[nameStart:] {
-		if unicode.IsSpace(r) {
+	for offset, rune := range line[nameStart:] {
+		if unicode.IsSpace(rune) {
 			return 0, "", 0, false
 		}
 
-		if r == '}' {
+		if rune == '}' {
 			end = nameStart + offset
 			if end == nameStart {
 				return 0, "", 0, false
