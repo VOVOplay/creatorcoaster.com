@@ -303,18 +303,29 @@ func GetChannelVariableByName(name string) (myTypes.ChannelVariable, error) {
 	return channel, nil
 }
 
-func GetRoleUserVariableByName(name string) (string, error) {
+func GetRoleUserVariableByName(name string) (myTypes.RoleUserVariable, error) {
 	if db == nil {
-		return "", myTypes.ErrDatabseOffline
+		return myTypes.RoleUserVariable{}, myTypes.ErrDatabseOffline
 	}
 
-	query := "SELECT pretty_name FROM markdown_role_user_variables WHERE variable_name = ?"
+	query := "SELECT role_user_name, role_user_id, variable_type FROM markdown_role_user_variables WHERE variable_name = ?"
 
-	var variableValue string
-	err := db.QueryRow(query, name).Scan(&variableValue)
+	var roleUserVariable myTypes.RoleUserVariable
+	var variableType int
+	err := db.QueryRow(query, name).Scan(&roleUserVariable.Name, &roleUserVariable.ID, &variableType)
 	if err != nil {
-		return "", myTypes.ErrVariableNotFound
+		return myTypes.RoleUserVariable{}, myTypes.ErrVariableNotFound
 	}
 
-	return variableValue, nil
+	switch variableType {
+	case int(myTypes.Role):
+		roleUserVariable.Type = myTypes.Role
+	case int(myTypes.User):
+		roleUserVariable.Type = myTypes.User
+	default:
+		fmt.Println("Warning: Got value other than 0/1 from database in table 'markdown_role_user_variables' for field `variable_type`")
+		roleUserVariable.Type = myTypes.User
+	}
+
+	return roleUserVariable, nil
 }

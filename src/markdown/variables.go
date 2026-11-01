@@ -241,13 +241,13 @@ func (r *CustomRoleUserVariableRenderer) renderRoleUserVariable(w util.BufWriter
 	if entering {
 		n := node.(*RoleUserVariable)
 
-		prettyName, err := database.GetRoleUserVariableByName(string(n.Name))
+		roleUserName, err := database.GetRoleUserVariableByName(string(n.Name))
 		if err != nil {
 			fmt.Fprintf(w, "{@%v}", string(n.Name)) // replicating the original look
 			return ast.WalkContinue, nil
 		}
 
-		fmt.Fprintf(w, `<span class="md-discord-mention">@%v</span>`, prettyName)
+		fmt.Fprintf(w, `<span class="md-discord-mention">@%v</span>`, roleUserName.Name)
 	}
 
 	return ast.WalkContinue, nil
