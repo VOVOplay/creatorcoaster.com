@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"unicode"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
 )
@@ -32,6 +33,8 @@ type variableCacheKey struct {
 //
 // Input Markdown must already be Discord-compatible besides horizontal rules
 // (no Setext-style headings, raw HTML, images, indented code blocks, etc).
+// Variable names must not contain any whitespace, and are terminated by
+// closing braces (and begun with opening braces).
 //
 // The only errors returned are errors occurred while looking up a variable
 // in the database.
@@ -53,40 +56,16 @@ func GenerateDiscordMarkdownFromString(s string) (string, error) {
 				continue
 			}
 
-			nameStart := i + 1
-			var kind variableKind
-
-			if nameStart < len(line) {
-				switch line[nameStart] {
-				case '#':
-					kind = channelVar
-					nameStart++
-				case '@':
-					kind = roleUserVar
-					nameStart++
-				}
-			}
-
-			if nameStart >= len(line) || !isVariableNameStart(line[nameStart]) {
-				continue
-			}
-
-			end := nameStart
-			for end < len(line) && isVariableNameChar(line[end]) {
-				end++
-			}
-
-			if end >= len(line) || line[end] != '}' {
+			kind, name, end, ok := parseVariable(line, i)
+			if !ok {
 				continue
 			}
 
 			b.WriteString(line[last:i])
 
-			name := line[nameStart:end]
 			key := variableCacheKey{kind: kind, name: name}
 
 			value, found := variableCache[key]
-
 			if !found {
 				var err error
 				value, err = expandVariable(kind, name)
@@ -134,6 +113,38 @@ func isHorizontalRule(line string) bool {
 	return true
 }
 
+func parseVariable(line string, start int) (kind variableKind, name string, end int, ok bool) {
+	nameStart := start + 1
+
+	if nameStart < len(line) {
+		switch line[nameStart] {
+		case '#':
+			kind = channelVar
+			nameStart++
+		case '@':
+			kind = roleUserVar
+			nameStart++
+		}
+	}
+
+	for offset, r := range line[nameStart:] {
+		if unicode.IsSpace(r) {
+			return 0, "", 0, false
+		}
+
+		if r == '}' {
+			end = nameStart + offset
+			if end == nameStart {
+				return 0, "", 0, false
+			}
+
+			return kind, line[nameStart:end], end, true
+		}
+	}
+
+	return 0, "", 0, false
+}
+
 func expandVariable(kind variableKind, name string) (string, error) {
 	switch kind {
 	case standardVar:
@@ -148,14 +159,7 @@ func expandVariable(kind variableKind, name string) (string, error) {
 		if err != nil {
 			return "", fmt.Errorf("get channel variable %q: %w", name, err)
 		}
-		s := strconv.FormatUint(channel.ID, 10)
-
-		var b strings.Builder
-		b.Grow(len(s) + 3)
-		b.WriteString("<#")
-		b.WriteString(s)
-		b.WriteByte('>')
-		return b.String(), nil
+		return "<#" + strconv.FormatUint(channel.ID, 10) + ">", nil
 
 	case roleUserVar:
 		// TODO: Update to use <@UserID> and <@&RoleID> syntax rather
@@ -171,12 +175,4 @@ func expandVariable(kind variableKind, name string) (string, error) {
 	default:
 		return "", fmt.Errorf("unknown variable kind %d", kind)
 	}
-}
-
-func isVariableNameStart(c byte) bool {
-	return c == '_' || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
-}
-
-func isVariableNameChar(c byte) bool {
-	return isVariableNameStart(c) || (c >= '0' && c <= '9')
 }
