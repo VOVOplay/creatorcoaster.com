@@ -7,6 +7,7 @@ import (
 	"unicode"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/database"
+	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 )
 
 type variableKind int
@@ -162,15 +163,18 @@ func expandVariable(kind variableKind, name string) (string, error) {
 		return "<#" + strconv.FormatUint(channel.ID, 10) + ">", nil
 
 	case roleUserVar:
-		// TODO: Update to use <@UserID> and <@&RoleID> syntax rather
-		// than the "pretty name" once the database returns a
-		// myTypes.RoleUserVariable instead of string.
-
-		prettyName, err := database.GetRoleUserVariableByName(name)
+		variable, err := database.GetRoleUserVariableByName(name)
 		if err != nil {
 			return "", fmt.Errorf("get role/user variable %q: %w", name, err)
 		}
-		return prettyName, nil
+		switch variable.Type {
+		case myTypes.Role:
+			return "<@&" + strconv.FormatUint(variable.ID, 10) + ">", nil
+		case myTypes.User:
+			return "<@" + strconv.FormatUint(variable.ID, 10) + ">", nil
+		default:
+			return "", fmt.Errorf("unknown role/user variable type %d", variable.Type)
+		}
 
 	default:
 		return "", fmt.Errorf("unknown variable kind %d", kind)
