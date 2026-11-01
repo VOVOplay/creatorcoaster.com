@@ -19,16 +19,16 @@ type VariableExtension struct{}
 func (e *VariableExtension) Extend(m goldmark.Markdown) {
 	m.Parser().AddOptions(
 		parser.WithInlineParsers(
-			util.Prioritized(&VariableParser{}, 500),
-			util.Prioritized(&ChannelVariableParser{}, 500),
-			util.Prioritized(&RoleUserVariableParser{}, 500),
+			util.Prioritized(&VariableParser{}, 500),         // tries this first
+			util.Prioritized(&ChannelVariableParser{}, 499),  // then this
+			util.Prioritized(&RoleUserVariableParser{}, 498), // and then this
 		),
 	)
 	m.Renderer().AddOptions(
 		renderer.WithNodeRenderers(
 			util.Prioritized(&CustomVariableRenderer{}, 500),
-			util.Prioritized(&CustomChannelVariableRenderer{}, 500),
-			util.Prioritized(&CustomRoleUserVariableRenderer{}, 500),
+			util.Prioritized(&CustomChannelVariableRenderer{}, 499),
+			util.Prioritized(&CustomRoleUserVariableRenderer{}, 498),
 		),
 	)
 }
@@ -131,20 +131,25 @@ func (n *ChannelVariable) Dump(source []byte, level int) {
 type ChannelVariableParser struct{}
 
 func (p *ChannelVariableParser) Trigger() []byte {
-	return []byte{'#'}
+	return []byte("{")
 }
 
 func (p *ChannelVariableParser) Parse(parent ast.Node, block text.Reader, pc parser.Context) ast.Node {
 	line, _ := block.PeekLine()
 
-	end := bytes.IndexAny(line, " \n\r")
-	if end == -1 { // not found
-		end = len(line)
+	// is it really {#
+	if len(line) < 2 || line[1] != '#' {
+		return nil
 	}
 
-	channelVariableName := line[1:end]
+	end := bytes.IndexByte(line, '}')
+	if end == -1 { // not found
+		return nil
+	}
 
-	block.Advance(end)
+	channelVariableName := line[2:end]
+
+	block.Advance(end + 1)
 
 	return NewChannelVariable(channelVariableName)
 }
@@ -163,7 +168,7 @@ func (r *CustomChannelVariableRenderer) renderChannelVariable(w util.BufWriter, 
 
 		channel, err := database.GetChannelVariableByName(string(n.Name))
 		if err != nil {
-			fmt.Fprintf(w, "#%v", string(n.Name)) // replicating the original look
+			fmt.Fprintf(w, "{#%v}", string(n.Name)) // replicating the original look
 			return ast.WalkContinue, nil
 		}
 
@@ -201,20 +206,25 @@ func (n *RoleUserVariable) Dump(source []byte, level int) {
 type RoleUserVariableParser struct{}
 
 func (p *RoleUserVariableParser) Trigger() []byte {
-	return []byte{'@'}
+	return []byte("{")
 }
 
 func (p *RoleUserVariableParser) Parse(parent ast.Node, block text.Reader, pc parser.Context) ast.Node {
 	line, _ := block.PeekLine()
 
-	end := bytes.IndexAny(line, " \n\r")
-	if end == -1 { // not found
-		end = len(line)
+	// is it really {@
+	if len(line) < 2 || line[1] != '@' {
+		return nil
 	}
 
-	roleUserVariableName := line[1:end]
+	end := bytes.IndexByte(line, '}')
+	if end == -1 { // not found
+		return nil
+	}
 
-	block.Advance(end)
+	roleUserVariableName := line[2:end]
+
+	block.Advance(end + 1)
 
 	return NewRoleUserVariable(roleUserVariableName)
 }
@@ -231,13 +241,13 @@ func (r *CustomRoleUserVariableRenderer) renderRoleUserVariable(w util.BufWriter
 	if entering {
 		n := node.(*RoleUserVariable)
 
-		prettyName, err := database.GetRoleUserVariableByName(string(n.Name))
+		roleUserName, err := database.GetRoleUserVariableByName(string(n.Name))
 		if err != nil {
-			fmt.Fprintf(w, "@%v", string(n.Name)) // replicating the original look
+			fmt.Fprintf(w, "{@%v}", string(n.Name)) // replicating the original look
 			return ast.WalkContinue, nil
 		}
 
-		fmt.Fprintf(w, `<span class="md-discord-mention">@%v</span>`, prettyName)
+		fmt.Fprintf(w, `<span class="md-discord-mention">@%v</span>`, roleUserName.Name)
 	}
 
 	return ast.WalkContinue, nil
