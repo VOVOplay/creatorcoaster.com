@@ -22,6 +22,11 @@ Legend:
     - ❌ Fix issue where the sidebar state resets when clicking to a different wiki article
     - ❌ Figure out sorting for categories
 
+- Design suggestions:
+    - Make horizontal rules more muted (gray)
+    - Some bullshit about fonts from eulm idk
+    - Better sidebar for wiki
+
 - Before release:
     - ❌ Setting up the real prod database and making it accessible from pterodactyl
     - ❌ Somehow make the schema not be a part of the bot nor the website, so theres one source of truth for that
