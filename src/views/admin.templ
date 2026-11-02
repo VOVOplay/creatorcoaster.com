@@ -188,9 +188,9 @@ templ EditSpecificBlog(blog myTypes.Article, allBlogs []myTypes.Article) {
         {{
             isNewArticle := blog == myTypes.Article{}
 
-            heading := "Wiki Upload"
+            heading := "Blog Upload"
             if !isNewArticle {
-                heading = "Edit Wiki Article"
+                heading = "Edit Blog Post"
             }
 
             API := "/api/admin/upload-blog"
@@ -263,6 +263,7 @@ templ EditSpecificBlog(blog myTypes.Article, allBlogs []myTypes.Article) {
 
                 for _, combination := range fullList {
                     <code class="md-inline-code">{combination.AuthorName}</code> - <code class="md-inline-code">{combination.PFPLink}</code>
+                    <br>
                 }
             </div>
             <div class="admin-half-page">

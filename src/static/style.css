@@ -821,6 +821,7 @@ footer {
 .admin-half-page {
     height: 100%;
     width: 100%;
+    padding: 5px;
 }
 
 .admin-half-page.left {
