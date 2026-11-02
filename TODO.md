@@ -11,7 +11,6 @@ Legend:
         Text
     )
     - ❌ Rendering markdown meant for discord (e. g. Replacing #CHANNEL with <#CHANEL_ID>...) - seperate from goldmark completely
-    - ❌ Tiny text (`-#`)
 
 - Admin panel:
     - ❌ Uploading all types of variables

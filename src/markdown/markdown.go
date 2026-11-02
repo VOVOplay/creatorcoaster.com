@@ -16,6 +16,7 @@ func GenerateHTMLFromString(sourceString string) string {
 	md := goldmark.New(
 		goldmark.WithExtensions(
 			&VariableExtension{},
+			&TinyTextExtension{},
 		),
 
 		goldmark.WithParserOptions(

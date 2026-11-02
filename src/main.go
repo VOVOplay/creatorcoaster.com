@@ -20,8 +20,6 @@ func main() {
 
 	router := configureRouter(config)
 
-	database.GetStaffMemberList()
-
 	err := http.ListenAndServe(config.Port, router)
 	if err != nil {
 		log.Fatal("Server crashed: ", err)
