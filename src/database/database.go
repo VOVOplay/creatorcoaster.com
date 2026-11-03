@@ -3,6 +3,9 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/VOVOplay/creatorcoaster.com/src/config"
@@ -12,12 +15,12 @@ import (
 
 var db *sql.DB
 
-func Init(databaseConfig config.DatabaseConfig) error {
+func Init(config config.Config) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s",
-		databaseConfig.User,
-		databaseConfig.Password,
-		databaseConfig.Address,
-		databaseConfig.Name,
+		config.DatabaseConfig.User,
+		config.DatabaseConfig.Password,
+		config.DatabaseConfig.Address,
+		config.DatabaseConfig.Name,
 	)
 
 	var err error
@@ -35,6 +38,10 @@ func Init(databaseConfig config.DatabaseConfig) error {
 	db.SetMaxIdleConns(25)
 	db.SetConnMaxLifetime(5 * time.Minute)
 
+	if !config.IsProduction {
+		createDatabase()
+	}
+
 	return nil
 }
 
@@ -42,6 +49,28 @@ func Close() {
 	if db != nil {
 		db.Close()
 	}
+}
+
+func createDatabase() {
+	if db == nil {
+		return
+	}
+
+	schemaPath := filepath.Join("./database/schema.sql")
+	data, err := os.ReadFile(schemaPath)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	dataString := string(data)
+
+	queries := strings.Split(dataString, ";")
+
+	for _, query := range queries {
+		db.Exec(query)
+	}
+
 }
 
 func GetStaffMemberList() ([]myTypes.StaffMember, error) {

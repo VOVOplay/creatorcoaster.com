@@ -6,9 +6,13 @@
 - [wgo](https://github.com/bokwoon95/wgo) (optional)
 
 ## Running locally:
-1) Run the shorthand command from `./src`. This will handle automatic recompilation & reloads when you save a Go file. Use `--open-browser=false` when that isn't welcome.
+1) Run the shorthand command from `./src`. This will handle automatic recompilation & reloads when you save a Go file.
 ```bash
 templ generate -watch -proxy="http://localhost:3000" -cmd="go run ."
+```
+In a code-server instance:
+```bash
+templ generate -watch -cmd="go run ." --open-browser=false
 ```
 
 2) In another terminal window, run:
@@ -37,6 +41,7 @@ DB_PASSWORD="" # The password to that database
 DISCORD_CLIENT_ID="" # The OAuth client ID
 DISCORD_CLIENT_SECRET="" # The OAuth client secret
 REDIRECT_URL="" # The url you set in the discord dev portal as the redirect URL for OAuth
+DISCORD_LOGIN_URL="" # The url for logging in, can be generated at "OAuth2 URL Generator" in the discord dev portal
 
 COOKIE_SECRET="" # A randomly generated string for generating cookie hashes
 

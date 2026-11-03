@@ -12,7 +12,7 @@ import (
 
 func main() {
 	config := config.GetConfig()
-	db_err := database.Init(config.DatabaseConfig)
+	db_err := database.Init(config)
 	if db_err != nil {
 		fmt.Println("WARNING: Could not connect to database.")
 	}

@@ -2,12 +2,18 @@ package views
 
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 import "fmt"
+import "os"
+
+func getDiscordLoginURL() string {
+    return os.Getenv("DISCORD_LOGIN_URL")
+}
 
 templ Admin(loggedIn bool) {
     @Layout("Admin | Creator Coaster") {
         if !loggedIn {
             <div class="text-div">
-                <a href="https://discord.com/oauth2/authorize?client_id=1478409762042413126&response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%3A7331%2Fauth%2Fdiscord%2Fcallback&scope=identify">Log in</a>
+                {{ loginURL := getDiscordLoginURL() }}
+                <a href={ loginURL }>Log in</a>
             </div>
         } else {
             @AdminLoggedInView()
