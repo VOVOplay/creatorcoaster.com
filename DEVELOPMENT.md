@@ -6,7 +6,7 @@
 - [wgo](https://github.com/bokwoon95/wgo) (optional)
 
 ## Running locally:
-1) Run the shorthand command from `./src`. This will handle automatic recompilation & reloads when you save a Go file
+1) Run the shorthand command from `./src`. This will handle automatic recompilation & reloads when you save a Go file. Use `--open-browser=false` when that isn't welcome.
 ```bash
 templ generate -watch -proxy="http://localhost:3000" -cmd="go run ."
 ```
