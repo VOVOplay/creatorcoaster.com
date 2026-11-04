@@ -21,7 +21,7 @@
 
 @font-face {
     font-family: "JetBrains Mono";
-    src:url("/static/fonts/JetBrainsMono-Variable") format("woff2");
+    src:url("/static/fonts/JetBrainsMono-Variable.woff2") format("woff2");
     font-weight: 100 800;
     font-style: normal;
 }
