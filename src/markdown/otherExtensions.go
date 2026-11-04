@@ -33,16 +33,29 @@ type SpacerTransformer struct{}
 
 func (t *SpacerTransformer) Transform(node *ast.Document, reader text.Reader, pc parser.Context) {
 	var targets []ast.Node
+	source := reader.Source()
 
 	// find all empty lines (is a block element and the previous line is blank)
 	ast.Walk(node, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
 		if entering && n.Type() == ast.TypeBlock && n.PreviousSibling() != nil {
 			if n.HasBlankPreviousLines() {
-
-				// goldmark seems to add a blank line after fenced code blocks, that's why we are ignoring it
 				previousSibling := n.PreviousSibling()
+
+				// goldmark adds a new line after a fenced code block
 				if previousSibling.Kind() == ast.KindFencedCodeBlock {
-					return ast.WalkContinue, nil
+					prevLines := previousSibling.Lines()
+					currLines := n.Lines()
+
+					if prevLines.Len() > 0 && currLines.Len() > 0 {
+						endOfPrev := prevLines.At(prevLines.Len() - 1).Stop
+						startOfCurr := currLines.At(0).Start
+
+						between := source[endOfPrev:startOfCurr]
+
+						if !hasActualBlankLine(between) {
+							return ast.WalkContinue, nil
+						}
+					}
 				}
 
 				targets = append(targets, n)
@@ -56,6 +69,19 @@ func (t *SpacerTransformer) Transform(node *ast.Document, reader text.Reader, pc
 		spacer := NewSpacer()
 		n.Parent().InsertBefore(n.Parent(), n, spacer)
 	}
+}
+
+func hasActualBlankLine(b []byte) bool {
+	newlines := 0
+	for _, char := range b {
+		if char == '\n' {
+			newlines++
+			if newlines >= 2 {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // ---

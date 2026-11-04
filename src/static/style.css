@@ -1,12 +1,18 @@
 :root {
-    --main-bg-color: #333333;
-    --secondary-color: #202020;
-    --tertiary-color: #636363;
+    --main-bg-color: #15171c;
+    --secondary-color: #0d0e12;
+    --tertiary-color: #0f1014;
     --cc-brand-color: #30d2e7;
     --cc-lighter-blue: #6ceeff;
     --darker-text-color: #b6b6b6;
-    --yet-another-gray: #2a2a2a;
+    --yet-another-gray: #0f1014;
     --footer-text-and-icons-color: #787878;
+
+    --card-bg-color: #0f1014;
+    --card-border-color: #414141;
+    --card-hover-color: #0b0d10;
+
+    --button-hover-color: #13131c;
 }
 
 * {
@@ -130,6 +136,15 @@ ul, ol {
     display: none !important;
 }
 
+/* https://stackoverflow.com/a/5915056 */
+.select-disable {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
 /* GENERAL */
 
 
@@ -141,6 +156,7 @@ nav {
 
     background-color: var(--secondary-color);
     min-height: 64px;
+    max-height: 64px;
     width: 100%;
 
     display: flex;
@@ -150,12 +166,10 @@ nav {
     overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
-
-    border-bottom: 1px solid var(--tertiary-color);
 }
 
 nav a {
-    min-height: 64px;
+    min-height: 100%;
     flex: 0 0 auto;
 
     display: flex;
@@ -163,21 +177,32 @@ nav a {
     align-items: center;
 
     text-decoration: none;
-    padding: 0 15px;
+    padding: 15px;
 }
 
 nav a:not(:first-child):hover {
-    background-color: rgb(19, 19, 19);
+    background-color: var(--button-hover-color);
 }
 
 nav a img {
-    height: 50px;
+    height: 55px;
+    padding: 5px;
+    margin: 5px;
 }
 
-nav a:first-child {
+
+
+#logo-div {
     margin-right: auto;
     padding: 0;
-    aspect-ratio: 1 / 1;
+
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 800;
+    font-size: x-large;
+}
+
+#logo-div a {
+    padding: 0;
 }
 /* NAVBAR */
 
@@ -193,8 +218,6 @@ footer {
     flex-direction: column;
     
     text-align: center;
-
-    border-top: 1px solid var(--tertiary-color);
 }
 
 .small-footer-text {
@@ -364,13 +387,13 @@ footer {
 }
 
 .team-member-card {
-    border: 1px solid var(--tertiary-color);
+    border: 1px solid var(--card-border-color);
 
     height: 200px;
     width: 150px;
     min-width: 0;
 
-    background-color: rgb(41, 41, 41);
+    background-color: var(--card-bg-color);
 
     margin: 0;
     padding: 10px;
@@ -425,7 +448,7 @@ footer {
     font-family: "JetBrains Mono", monospace;
     font-weight: 800;
     margin-bottom: 0.4rem;
-    margin-top: 1rem;
+    margin-top: 0.7rem;
 }
 
 
@@ -483,6 +506,11 @@ footer {
 .md-large-code code {
     font-family: "Droid Sans Mono", monospace;
     font-size: 83%;
+}
+
+.md-hr {
+    border: none;
+    border-top: 1px solid var(--card-border-color);
 }
 
 .code-container {
@@ -564,8 +592,10 @@ footer {
 
     flex-shrink: 0;
 
-    border-right: 1px solid var(--tertiary-color);
+    border: 1px solid #414141;
+    border-radius: 10px;
 
+    margin: 20px;
     padding: 15px;
 }
 
@@ -694,8 +724,8 @@ footer {
 }
 
 .button-holder a button {
-    background-color: var(--main-bg-color);
-    border: 1px solid var(--tertiary-color);
+    background-color: var(--card-bg-color);
+    border: 1px solid var(--card-border-color);
     border-radius: 10px;
     color: white;
 
@@ -710,7 +740,7 @@ footer {
 }
 
 .button-holder a button:hover {
-    background-color: var(--yet-another-gray);
+    background-color: var(--card-hover-color);
     cursor: pointer;
 }
 
@@ -729,9 +759,9 @@ footer {
     display: flex;
     flex-direction: column;
 
-    background-color: var(--main-bg-color);
+    background-color: var(--card-bg-color);
 
-    border: 1px solid var(--tertiary-color);
+    border: 1px solid var(--card-border-color);
     border-radius: 10px;
 
     padding: 10px;
@@ -741,7 +771,7 @@ footer {
 }
 
 .blog-card:hover {
-    background-color: var(--yet-another-gray);
+    background-color: var(--card-hover-color);
     cursor: pointer;
 }
 
@@ -890,9 +920,9 @@ footer {
 }
 
 .admin-article-card {
-    background-color: var(--main-bg-color);
+    background-color: var(--card-bg-color);
 
-    border: 1px solid var(--tertiary-color);
+    border: 1px solid var(--card-border-color);
     border-radius: 10px;
     
     padding: 10px;
@@ -910,14 +940,10 @@ footer {
 
 /* ADMIN */
 
-@media (max-width: 640px) {
-    nav a {
-        padding: 0 12px;
-        font-size: 0.95rem;
-    }
+@media (max-width: 660px) {
 
-    nav a img {
-        height: 44px;
+    #logo-div a #cc-text {
+        display: none;
     }
 
     #main-about-us-container {
@@ -956,5 +982,11 @@ footer {
 
     .blog-card .right-section {
         text-align: left;
+    }
+}
+
+@media (max-width: 370px) {
+    #logo-div a img {
+        display: none;
     }
 }

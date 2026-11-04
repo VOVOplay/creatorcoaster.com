@@ -36,6 +36,7 @@ func GenerateHTMLFromString(sourceString string) string {
 				util.Prioritized(&CustomUnorderedListRenderer{}, 10),
 				util.Prioritized(&CustomSmallCodeRenderer{}, 10),
 				util.Prioritized(&CustomSpacerRenderer{}, 10),
+				util.Prioritized(&CustomHorizontalRuleRenderer{}, 10),
 			),
 		),
 	)

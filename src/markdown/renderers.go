@@ -126,6 +126,19 @@ func (r *CustomSpacerRenderer) renderSpacer(w util.BufWriter, source []byte, nod
 	return ast.WalkContinue, nil
 }
 
+type CustomHorizontalRuleRenderer struct{}
+
+func (r *CustomHorizontalRuleRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegisterer) {
+	reg.Register(ast.KindThematicBreak, r.renderHorizontalRule)
+}
+
+func (r *CustomHorizontalRuleRenderer) renderHorizontalRule(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
+	if entering {
+		w.WriteString(`<hr class="md-hr">`)
+	}
+	return ast.WalkContinue, nil
+}
+
 // --- INLINE
 
 type CustomSmallCodeRenderer struct{}
