@@ -3,8 +3,10 @@
     --secondary-color: #202020;
     --tertiary-color: #636363;
     --cc-brand-color: #30d2e7;
+    --cc-lighter-blue: #6ceeff;
     --darker-text-color: #b6b6b6;
     --yet-another-gray: #2a2a2a;
+    --footer-text-and-icons-color: #787878;
 }
 
 * {
@@ -79,7 +81,7 @@ a {
     text-decoration: none;
 }
 a:hover {
-    color: #6ceeff;
+    color: var(--cc-lighter-blue);
     cursor: pointer;
 }
 
@@ -196,7 +198,7 @@ footer {
 }
 
 .small-footer-text {
-    color: #787878;
+    color: var(--footer-text-and-icons-color);
     font-size: 0.8rem;
 
     margin-top: 0;
@@ -237,7 +239,7 @@ footer {
 }
 
 .darker-footer-link {
-    color: #787878;
+    color: var(--footer-text-and-icons-color);
 }
 .darker-footer-link:hover {
     color: var(--darker-text-color);
@@ -397,7 +399,7 @@ footer {
     word-break: break-word;
 }
 .team-member-card .role{
-    color: #a3a3a3;
+    color: var(--darker-text-color);
     overflow-wrap: break-word;
 }
 
