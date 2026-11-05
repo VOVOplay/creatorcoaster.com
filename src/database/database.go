@@ -15,6 +15,8 @@ import (
 
 var db *sql.DB
 
+// Initializes the database and opens a connection for the lifetime of the program.
+// database.Close() must be called when the process ends.
 func Init(config config.Config) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s",
 		config.DatabaseConfig.User,
@@ -45,6 +47,7 @@ func Init(config config.Config) error {
 	return nil
 }
 
+// Closes the database connection
 func Close() {
 	if db != nil {
 		db.Close()
@@ -73,6 +76,8 @@ func createDatabase() {
 
 }
 
+// Gets the staff member list from the table 'staff_list'
+// If the staff_list is empty, it returns []myTypes.StaffMember{}, this behavior has to be handled in the callsite.
 func GetStaffMemberList() ([]myTypes.StaffMember, error) {
 	if db == nil {
 		return []myTypes.StaffMember{}, myTypes.ErrDatabseOffline
@@ -102,7 +107,8 @@ func GetStaffMemberList() ([]myTypes.StaffMember, error) {
 	return staffList, nil
 }
 
-// Doesn't return a full blog, the HTML is missing
+// Gets all of the blogs.
+// The HTML field is missing in all of the articles.
 func GetAllBlogs() ([]myTypes.Article, error) {
 	if db == nil {
 		return []myTypes.Article{}, myTypes.ErrDatabseOffline
@@ -134,6 +140,8 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 	return allBlogs, nil
 }
 
+// Gets a blog by its name.
+// renderer is the method that will render the HTML, aka. markdown.GenerateHTMLFromString()
 func GetBlogByName(name string, renderer func(string) string) (myTypes.Article, error) {
 	if db == nil {
 		return myTypes.Article{}, myTypes.ErrDatabseOffline
@@ -156,7 +164,8 @@ func GetBlogByName(name string, renderer func(string) string) (myTypes.Article, 
 	return blog, nil
 }
 
-// Doesn't return full wiki articles, the HTML is missing.
+// Gets all of the wiki articles.
+// The HTML field is missing in all of the articles.
 func GetAllWikiArticles() ([]myTypes.Article, error) {
 	if db == nil {
 		return []myTypes.Article{}, myTypes.ErrDatabseOffline
@@ -193,6 +202,8 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 	return allWikiArticles, nil
 }
 
+// Gets a wiki article by its name.
+// renderer is the method that will render the HTML, aka. markdown.GenerateHTMLFromString()
 func GetWikiArticleByName(name string, renderer func(string) string) (myTypes.Article, error) {
 	if db == nil {
 		return myTypes.Article{}, myTypes.ErrDatabseOffline
@@ -214,6 +225,7 @@ func GetWikiArticleByName(name string, renderer func(string) string) (myTypes.Ar
 	return wikiArticle, nil
 }
 
+// Saves a wiki article to the database.
 func SaveWikiArticle(wikiArticle myTypes.Article) error {
 	if db == nil {
 		return myTypes.ErrDatabseOffline
@@ -228,6 +240,8 @@ func SaveWikiArticle(wikiArticle myTypes.Article) error {
 	return nil
 }
 
+// Updates a wiki article in the database.
+// The previousName value is the old name. Even if the name hasn't changed, this value has to be provided.
 func UpdateWikiArticle(newWikiArticle myTypes.Article, previousName string) error {
 	if db == nil {
 		return myTypes.ErrDatabseOffline
@@ -242,6 +256,7 @@ func UpdateWikiArticle(newWikiArticle myTypes.Article, previousName string) erro
 	return nil
 }
 
+// Deletes a wiki article from the database by name.
 func DeleteWikiArticle(name string) error {
 	if db == nil {
 		return myTypes.ErrDatabseOffline
@@ -256,6 +271,7 @@ func DeleteWikiArticle(name string) error {
 	return nil
 }
 
+// Saves a blog post to the database.
 func SaveBlogPost(blog myTypes.Article) error {
 	if db == nil {
 		return myTypes.ErrDatabseOffline
@@ -270,6 +286,8 @@ func SaveBlogPost(blog myTypes.Article) error {
 	return nil
 }
 
+// Updates a blog post in the database.
+// The previousName value is the old name. Even if the name hasn't changed, this value has to be provided.
 func UpdateBlogPost(newBlogPost myTypes.Article, previousName string) error {
 	if db == nil {
 		return myTypes.ErrDatabseOffline
@@ -284,6 +302,7 @@ func UpdateBlogPost(newBlogPost myTypes.Article, previousName string) error {
 	return nil
 }
 
+// Deletes a blog post in the database.
 func DeleteBlogArticle(name string) error {
 	if db == nil {
 		return myTypes.ErrDatabseOffline
@@ -300,6 +319,7 @@ func DeleteBlogArticle(name string) error {
 
 // --- Variables
 
+// Returns a string of a standard variable's contents.
 func GetVariableByName(name string) (string, error) {
 	if db == nil {
 		return "", myTypes.ErrDatabseOffline
@@ -316,6 +336,7 @@ func GetVariableByName(name string) (string, error) {
 	return variableValue, nil
 }
 
+// Returns a channel variable.
 func GetChannelVariableByName(name string) (myTypes.ChannelVariable, error) {
 	if db == nil {
 		return myTypes.ChannelVariable{}, myTypes.ErrDatabseOffline
@@ -332,6 +353,7 @@ func GetChannelVariableByName(name string) (myTypes.ChannelVariable, error) {
 	return channel, nil
 }
 
+// Returns a role-user variable.
 func GetRoleUserVariableByName(name string) (myTypes.RoleUserVariable, error) {
 	if db == nil {
 		return myTypes.RoleUserVariable{}, myTypes.ErrDatabseOffline

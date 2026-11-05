@@ -8,12 +8,15 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// The main configuration from enviromental variables.
+// Also includes the database configuration.
 type Config struct {
-	Port           string
-	IsProduction   bool
+	Port           string // The port which the program should be served on
+	IsProduction   bool   // Is this prod?
 	DatabaseConfig DatabaseConfig
 }
 
+// The configuration used to connect to the database
 type DatabaseConfig struct {
 	User     string
 	Address  string
@@ -21,6 +24,8 @@ type DatabaseConfig struct {
 	Password string
 }
 
+// Gets all of the config from enviromental variables.
+// This includes the database configuration as well.
 func GetConfig() Config {
 	err := godotenv.Load("./config/.env")
 	if err != nil {

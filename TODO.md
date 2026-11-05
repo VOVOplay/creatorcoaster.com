@@ -10,7 +10,7 @@ Legend:
         Text
         Text
     )
-    - ❌ Rendering markdown meant for discord (e. g. Replacing #CHANNEL with <#CHANEL_ID>...) - seperate from goldmark completely
+    - ➖ Rendering markdown meant for discord (e. g. Replacing #CHANNEL with <#CHANEL_ID>...) - seperate from goldmark completely
 
 - Admin panel:
     - ❌ Uploading all types of variables
@@ -22,10 +22,8 @@ Legend:
     - ❌ Fix issue where the sidebar state resets when clicking to a different wiki article
     - ❌ Figure out sorting for categories
 
-- Design suggestions:
-    - Make horizontal rules more muted (gray)
-    - Some bullshit about fonts from eulm idk
-    - Better sidebar for wiki
+- Design improvements:
+    - ❌ Better sidebar for wiki
 
 - Before release:
     - ❌ Setting up the real prod database and making it accessible from pterodactyl

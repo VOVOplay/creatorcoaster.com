@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 )
 
+// Loads the contents of a static markdown file in /config/static-markdown-content
 func LoadStaticMarkdownFile(fileName string) string {
 	filePath := filepath.Join(fmt.Sprintf("./config/static-markdown-content/%v", fileName))
 	data, err := os.ReadFile(filePath)
