@@ -25,7 +25,7 @@ document.addEventListener('click', async (e) => {
     }
 });
 
-document.addEventListener('click', async (e) => {
+document.addEventListener('click', (e) => {
     const button = e.target.closest('.category-button');
     if (!button) return;
 
@@ -38,7 +38,16 @@ document.addEventListener('click', async (e) => {
     const isHidden = window.getComputedStyle(categoryList).display === 'none';
 
     const chevronImage = button.querySelector('img.chevron');
-    if (!chevronImage) return;
+    if (chevronImage) {
+        chevronImage.classList.toggle('rotated', isHidden);
+    }
 
-    chevronImage.classList.toggle('rotated', isHidden); // rotate it
+    const categoryId = button.dataset.categoryId;
+    if (categoryId) {
+        if (isHidden) {
+            localStorage.setItem(`category_closed${categoryId}`, 'true');
+        } else {
+            localStorage.removeItem(`category_closed${categoryId}`);
+        }
+    }
 });

@@ -4,7 +4,8 @@
     --tertiary-color: #0f1014;
     --cc-brand-color: #30d2e7;
     --cc-lighter-blue: #6ceeff;
-    --darker-text-color: #b6b6b6;
+    --text-color: #d7d7d7;
+    --darker-text-color: #808080;
     --yet-another-gray: #0f1014;
     --footer-text-and-icons-color: #787878;
 
@@ -13,6 +14,7 @@
     --card-hover-color: #0b0d10;
 
     --button-hover-color: #13131c;
+    --sidebar-hover-color: #1d1d2b;
 }
 
 * {
@@ -64,7 +66,7 @@ html {
 body {
     background-color: var(--main-bg-color);
     margin: 0;
-    color: white;
+    color: var(--text-color);
     font-family: 'Inter', system-ui, "Segoe UI";
     line-height: 1.5;
 
@@ -221,7 +223,7 @@ footer {
 }
 
 .small-footer-text {
-    color: var(--footer-text-and-icons-color);
+    color: var(--darker-text-color);
     font-size: 0.8rem;
 
     margin-top: 0;
@@ -262,10 +264,10 @@ footer {
 }
 
 .darker-footer-link {
-    color: var(--footer-text-and-icons-color);
+    color: var(--darker-text-color);
 }
 .darker-footer-link:hover {
-    color: var(--darker-text-color);
+    color: #a6a6a6;
 }
 /* FOOTER */
 
@@ -339,7 +341,7 @@ footer {
 
 #not-found-section button {
     background-color: rgb(40, 40, 40);
-    color: white;
+    color: var(--text-color);
 
     border: 0.5px solid rgb(88, 88, 88);
     border-radius: 30px;
@@ -550,7 +552,7 @@ footer {
 /* For channels, roles & users */
 .md-discord-mention {
     background-color:#444880;
-    color: white;
+    color: var(--text-color);
     text-indent: 0;
     white-space: pre-wrap;
 
@@ -600,10 +602,12 @@ footer {
 }
 
 .sidebar-category .sidebar-category {
+    margin-right: 0px;
     margin-left: 0px;
 }
 
 .sidebar-category .sidebar-category-list {
+    margin-right: 0px;
     margin-left: 15px;
 }
 
@@ -612,7 +616,10 @@ footer {
     display: flex;
     flex-direction: column;
 
-    margin: 0;
+    margin: 3px;
+
+    border-left: 1px solid var(--card-border-color);
+    padding-left: 5px;
 }
 
 .sidebar-category-list-first {
@@ -625,17 +632,36 @@ footer {
     margin-left: 0px;
 }
 
+.sidebar-element {
+    border-radius: 5px;
+    color: var(--darker-text-color);
+    padding: 7px;
+    font-size: medium;
+}
+
+.sidebar-element:hover {
+    background-color: var(--main-bg-color);
+    color: var(--darker-text-color);
+}
+
+.sidebar-element-selected {
+    background-color: var(--sidebar-hover-color);
+}
+
+.sidebar-element-selected:hover {
+    background-color: var(--sidebar-hover-color);
+}
 
 
 .category-button {
     background-color: var(--yet-another-gray);
     border: none;
-    color: var(--darker-text-color);
-    font-size: medium;
 
-    padding: 0;
+    margin-right: auto;
 
     display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 .category-button img {
@@ -644,7 +670,6 @@ footer {
 }
 
 .category-button:hover {
-    color: white;
     cursor: pointer;
 }
 
@@ -669,9 +694,14 @@ footer {
     transition: transform 0.15s ease-in-out; /* Adjust 0.2s to change speed */
     transform-origin: center;
     display: inline-block;
+
+    margin-left: auto;
 }
 
-/* Add this class via JS to rotate the chevron pointing down */
+.folder {
+    margin-right: 5px;
+}
+
 .chevron.rotated {
     transform: rotate(-90deg); 
 }
@@ -727,7 +757,7 @@ footer {
     background-color: var(--card-bg-color);
     border: 1px solid var(--card-border-color);
     border-radius: 10px;
-    color: white;
+    color: var(--text-color);
 
     height: fit-content;
     width: fit-content;
@@ -752,7 +782,7 @@ footer {
 }
 
 .blog-cards a {
-    color: white;
+    color: var(--text-color);
 }
 
 .blog-card {
@@ -869,7 +899,7 @@ footer {
     background-color: var(--tertiary-color);
     border: 1px solid var(--secondary-color);
     border-radius: 5px;
-    color: white;
+    color: var(--text-color);
 
     height: 30px;
     width: 500px;
@@ -885,7 +915,7 @@ footer {
     background-color: var(--tertiary-color);
     border: 1px solid var(--secondary-color);
     border-radius: 5px;
-    color: white;
+    color: var(--text-color);
 
     height: 300px;
     width: 500px;
@@ -898,7 +928,7 @@ footer {
 .admin-form button {
     border: 1px solid var(--secondary-color);
     border-radius: 5px;
-    color: white;
+    color: var(--text-color);
 
     height: 40px;
     width: 80px;

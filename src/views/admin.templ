@@ -139,7 +139,7 @@ templ ManageWikiView(allWikiArticles []myTypes.Article) {
                 }}
                 <div class="admin-article-card" id={ adminArticleCardID }>
                     <div class="info">
-                        { wikiArticle.PrettyName } (<code class="md-inline-code">{ wikiArticle.Name }</code>)
+                        { wikiArticle.PrettyName } (<code class="md-inline-code">{ wikiArticle.Name } - { wikiArticle.CategoryPath }</code>)
                     </div>
                     
                     <div id={ actionsID }>

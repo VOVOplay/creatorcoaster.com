@@ -19,11 +19,8 @@ Legend:
 - Other:
     - ➖ Designing and coding the landing page
     - ❌ Making the wiki page usable on mobile
-    - ❌ Fix issue where the sidebar state resets when clicking to a different wiki article
     - ❌ Figure out sorting for categories
-
-- Design improvements:
-    - ❌ Better sidebar for wiki
+    - ❌ Applying a UGC policy to articles
 
 - Before release:
     - ❌ Setting up the real prod database and making it accessible from pterodactyl
