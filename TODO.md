@@ -15,6 +15,11 @@ Legend:
 - Admin panel:
     - ❌ Uploading all types of variables
     - ❌ Managing all types of variables
+    - ➖ Add pre-defined categories (instead of each article having its own path, they'll have to choose from one of the already existing categories)
+        - ❌ Add it in the admin panel
+        - ✅ Add it in the database
+        - ✅ Update code currently using category paths
+        - ➖ Update the wiki article upload/edit pages
 
 - Other:
     - ➖ Designing and coding the landing page

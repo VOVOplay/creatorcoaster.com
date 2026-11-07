@@ -60,13 +60,13 @@ templ EditSpecificWikiArticle(wikiArticle myTypes.Article) {
             // These values will be an empty string if it's a new article, therefore we can use them in the HTML even if it's a new article
             var nameValue string
             var prettyNameValue string
-            var categoryPathValue string
+            var parentCategoryIdValue int
             var sortOrderValue int
             var markdownSourceValue string
             if !isNewArticle {
                 nameValue = wikiArticle.Name
                 prettyNameValue = wikiArticle.PrettyName
-                categoryPathValue = wikiArticle.CategoryPath
+                parentCategoryIdValue = wikiArticle.ParentCategoryId
                 sortOrderValue = wikiArticle.SortOrder
                 markdownSourceValue = wikiArticle.MarkdownSource
             }
@@ -93,9 +93,9 @@ templ EditSpecificWikiArticle(wikiArticle myTypes.Article) {
                         <input type="text" id="pretty-name" name="pretty-name" value={ prettyNameValue } required>
                     </div>
                     <div>
-                        <label for="category-path">Category Path:</label>
+                        <label for="parent-category-id">Parent Category ID (int for now):</label>
                         <br>
-                        <input type="text" id="category-path" name="category-path" value={ categoryPathValue } required>
+                        <input type="number" id="parent-category-id" name="parent-category-id" value={ parentCategoryIdValue } required>
                     </div>
                     <div>
                         <label for="sort-order">Sort order (in its category):</label>
@@ -139,7 +139,7 @@ templ ManageWikiView(allWikiArticles []myTypes.Article) {
                 }}
                 <div class="admin-article-card" id={ adminArticleCardID }>
                     <div class="info">
-                        { wikiArticle.PrettyName } (<code class="md-inline-code">{ wikiArticle.Name } - { wikiArticle.CategoryPath }</code>)
+                        { wikiArticle.PrettyName } (<code class="md-inline-code">{ wikiArticle.Name }</code>)
                     </div>
                     
                     <div id={ actionsID }>

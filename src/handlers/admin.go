@@ -295,7 +295,11 @@ func (h *AdminHandler) helperAssembleWikiArticle(r *http.Request) (myTypes.Artic
 
 	name := r.FormValue("name")
 	prettyName := r.FormValue("pretty-name")
-	categoryPath := r.FormValue("category-path")
+	parentCategoryIdString := r.FormValue("parent-category-id")
+	parentCategoryId, err := strconv.Atoi(parentCategoryIdString)
+	if err != nil {
+		parentCategoryId = 0
+	}
 
 	markdownSource := r.FormValue("md-source")
 	HTML := markdown.GenerateHTMLFromString(markdownSource)
@@ -309,13 +313,13 @@ func (h *AdminHandler) helperAssembleWikiArticle(r *http.Request) (myTypes.Artic
 	lastEditedAt := time.Now().Unix()
 
 	wikiArticle := myTypes.Article{
-		Name:           name,
-		PrettyName:     prettyName,
-		HTML:           HTML,
-		MarkdownSource: markdownSource,
-		CategoryPath:   categoryPath,
-		SortOrder:      sortOrder,
-		Type:           myTypes.WikiArticle,
+		Name:             name,
+		PrettyName:       prettyName,
+		HTML:             HTML,
+		MarkdownSource:   markdownSource,
+		ParentCategoryId: parentCategoryId,
+		SortOrder:        sortOrder,
+		Type:             myTypes.WikiArticle,
 		Info: myTypes.ArticleInfo{
 			Date: lastEditedAt,
 		},

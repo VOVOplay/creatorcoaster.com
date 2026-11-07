@@ -6,14 +6,24 @@ CREATE TABLE IF NOT EXISTS staff_list(
     position_pretty_name VARCHAR(50) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS wiki_categories(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pretty_name VARCHAR(200) NOT NULL,
+    sort_order INT NOT NULL DEFAULT 9999,
+    parent_category_id INT DEFAULT NULL,
+    FOREIGN KEY (parent_category_id) REFERENCES wiki_categories(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS wiki_articles(
     name VARCHAR(200) PRIMARY KEY,
     pretty_name VARCHAR(200) NOT NULL,
     md_source TEXT NOT NULL,
-    category_path VARCHAR(300) NOT NULL,
+    parent_category_id INT DEFAULT NULL,
     last_edited_at BIGINT NOT NULL,
-    sort_order INT NOT NULL
+    sort_order INT NOT NULL DEFAULT 9999,
+    FOREIGN KEY (parent_category_id) REFERENCES wiki_categories(id) ON DELETE CASCADE
 );
+
 
 CREATE TABLE IF NOT EXISTS blog_posts(
     name VARCHAR(200) PRIMARY KEY,

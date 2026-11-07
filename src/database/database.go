@@ -173,7 +173,7 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 
 	var allWikiArticles []myTypes.Article
 
-	rawWikiArticles, err := db.Query("SELECT name, pretty_name, category_path, last_edited_at, sort_order FROM wiki_articles")
+	rawWikiArticles, err := db.Query("SELECT name, pretty_name, parent_category_id, last_edited_at, sort_order FROM wiki_articles")
 	if err != nil {
 		return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
 	}
@@ -181,9 +181,16 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 
 	for rawWikiArticles.Next() {
 		var wikiArticle myTypes.Article
-		err := rawWikiArticles.Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.CategoryPath, &wikiArticle.Info.Date, &wikiArticle.SortOrder)
+		var parentCategoryId *int
+		err := rawWikiArticles.Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &parentCategoryId, &wikiArticle.Info.Date, &wikiArticle.SortOrder)
 		if err != nil {
-			return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
+			return []myTypes.Article{}, err
+		}
+
+		if parentCategoryId == nil {
+			wikiArticle.ParentCategoryId = myTypes.RootCategoryId
+		} else {
+			wikiArticle.ParentCategoryId = *parentCategoryId
 		}
 
 		wikiArticle.Type = myTypes.WikiArticle
@@ -209,13 +216,20 @@ func GetWikiArticleByName(name string, renderer func(string) string) (myTypes.Ar
 		return myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
-	query := "SELECT name, pretty_name, md_source, category_path, last_edited_at FROM wiki_articles WHERE name = ?"
+	query := "SELECT name, pretty_name, md_source, parent_category_id, last_edited_at FROM wiki_articles WHERE name = ?"
 
 	var wikiArticle myTypes.Article
+	var parentCategoryId *int
 
-	err := db.QueryRow(query, name).Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.MarkdownSource, &wikiArticle.CategoryPath, &wikiArticle.Info.Date)
+	err := db.QueryRow(query, name).Scan(&wikiArticle.Name, &wikiArticle.PrettyName, &wikiArticle.MarkdownSource, &parentCategoryId, &wikiArticle.Info.Date)
 	if err != nil {
-		return myTypes.Article{}, myTypes.ErrArticleNotFound
+		return myTypes.Article{}, err
+	}
+
+	if parentCategoryId == nil {
+		wikiArticle.ParentCategoryId = myTypes.RootCategoryId
+	} else {
+		wikiArticle.ParentCategoryId = *parentCategoryId
 	}
 
 	HTML := renderer(wikiArticle.MarkdownSource)
@@ -225,14 +239,52 @@ func GetWikiArticleByName(name string, renderer func(string) string) (myTypes.Ar
 	return wikiArticle, nil
 }
 
+func GetRawWikiCategories() ([]myTypes.RawCategory, error) {
+	if db == nil {
+		return []myTypes.RawCategory{}, myTypes.ErrDatabseOffline
+	}
+
+	var allCategories []myTypes.RawCategory
+
+	query := "SELECT id, pretty_name, sort_order, parent_category_id FROM wiki_categories"
+	rawCategories, err := db.Query(query)
+	if err != nil {
+		return []myTypes.RawCategory{}, err
+	}
+	defer rawCategories.Close()
+
+	for rawCategories.Next() {
+		var rawCategory myTypes.RawCategory
+		var parentCategoryId *int
+		err := rawCategories.Scan(&rawCategory.Id, &rawCategory.Name, &rawCategory.SortOrder, &parentCategoryId)
+		if err != nil {
+			return []myTypes.RawCategory{}, err
+		}
+
+		if parentCategoryId == nil {
+			rawCategory.ParentCategoryId = myTypes.RootCategoryId
+		} else {
+			rawCategory.ParentCategoryId = *parentCategoryId
+		}
+
+		allCategories = append(allCategories, rawCategory)
+	}
+
+	if rawCategories.Err() != nil {
+		return []myTypes.RawCategory{}, err
+	}
+
+	return allCategories, nil
+}
+
 // Saves a wiki article to the database.
 func SaveWikiArticle(wikiArticle myTypes.Article) error {
 	if db == nil {
 		return myTypes.ErrDatabseOffline
 	}
 
-	query := "INSERT INTO wiki_articles (name, pretty_name, md_source, category_path, last_edited_at, sort_order) VALUES (?, ?, ?, ?, ?, ?)"
-	_, err := db.Exec(query, wikiArticle.Name, wikiArticle.PrettyName, wikiArticle.MarkdownSource, wikiArticle.CategoryPath, wikiArticle.Info.Date, wikiArticle.SortOrder)
+	query := "INSERT INTO wiki_articles (name, pretty_name, md_source, parent_category_id, last_edited_at, sort_order) VALUES (?, ?, ?, ?, ?, ?)"
+	_, err := db.Exec(query, wikiArticle.Name, wikiArticle.PrettyName, wikiArticle.MarkdownSource, wikiArticle.ParentCategoryId, wikiArticle.Info.Date, wikiArticle.SortOrder)
 	if err != nil {
 		return err
 	}
@@ -247,8 +299,8 @@ func UpdateWikiArticle(newWikiArticle myTypes.Article, previousName string) erro
 		return myTypes.ErrDatabseOffline
 	}
 
-	query := "UPDATE wiki_articles SET name = ?, pretty_name = ?, md_source = ?, category_path = ?, last_edited_at = ?, sort_order = ? WHERE name = ?"
-	_, err := db.Exec(query, newWikiArticle.Name, newWikiArticle.PrettyName, newWikiArticle.MarkdownSource, newWikiArticle.CategoryPath, newWikiArticle.Info.Date, newWikiArticle.SortOrder, previousName)
+	query := "UPDATE wiki_articles SET name = ?, pretty_name = ?, md_source = ?, parent_category_id = ?, last_edited_at = ?, sort_order = ? WHERE name = ?"
+	_, err := db.Exec(query, newWikiArticle.Name, newWikiArticle.PrettyName, newWikiArticle.MarkdownSource, newWikiArticle.ParentCategoryId, newWikiArticle.Info.Date, newWikiArticle.SortOrder, previousName)
 	if err != nil {
 		return err
 	}

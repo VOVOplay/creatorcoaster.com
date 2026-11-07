@@ -2,82 +2,6 @@ package views
 
 import "fmt"
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
-import "strings"
-import "slices"
-import "cmp"
-
-// Returns a slice of category names. The first being the top-most category, and the last being the lowest category.
-// Example: /folder-one/folder-two/ -> ["folder-one", "folder-two"]
-func formatPath(rawPath string) []string {
-	rawPath = strings.ReplaceAll(rawPath, " ", "")
-	splitBySlashPath := strings.Split(rawPath, "/")
-
-	// cleans up the output of strings.Split so it only includes the path names themselves
-	var formattedPath []string
-	for _, pathName := range splitBySlashPath {
-		if pathName == "" {
-			continue
-		} else {
-			formattedPath = append(formattedPath, pathName)
-		}
-	}
-
-	return formattedPath
-}
-
-func buildCategoryForArticle(currentLevel *[]myTypes.CategoryItem, path []string, article *myTypes.Article) {
-	if len(path) == 0 {
-		*currentLevel = append(*currentLevel, article)
-		return
-	}
-
-	topLevelCategoryName := path[0] // top level meaning the highest for that article
-	var topLevelCategory *myTypes.Category
-
-	categoryExists := false
-	for _, item := range *currentLevel {
-		switch item := item.(type) {
-		case *myTypes.Category:
-			if item.Name == topLevelCategoryName {
-				topLevelCategory = item
-				categoryExists = true
-				break
-			}
-		}
-	}
-
-	if !categoryExists {
-		topLevelCategory = &myTypes.Category{
-			Name:     topLevelCategoryName,
-			Elements: []myTypes.CategoryItem{},
-		}
-		*currentLevel = append(*currentLevel, topLevelCategory) // adds it to the current level
-	}
-
-	buildCategoryForArticle(&topLevelCategory.Elements, path[1:], article)
-}
-
-func buildCategories(allArticles []myTypes.Article) []myTypes.CategoryItem {
-	var categoryTree []myTypes.CategoryItem
-	for _, article := range allArticles {
-		formattedPath := formatPath(article.CategoryPath)
-		buildCategoryForArticle(&categoryTree, formattedPath, &article)
-	}
-	return categoryTree
-}
-
-func sortWikiArticles(wikiArticles []myTypes.Article) []myTypes.Article {
-    // https://pkg.go.dev/slices#SortFunc
-    slices.SortFunc(wikiArticles, func(a myTypes.Article, b myTypes.Article) int {
-        return cmp.Compare(a.SortOrder, b.SortOrder)
-    })
-
-    return wikiArticles
-}
-
-func categoryNameToID(name string) string {
-	return strings.ReplaceAll(name, " ", "-_-")
-}
 
 templ renderCurrentCategoryLevel(currentCategoryLevel []myTypes.CategoryItem, currentArticle myTypes.Article)  {
     for _, categoryItem := range currentCategoryLevel {
@@ -99,11 +23,8 @@ templ renderCurrentCategoryLevel(currentCategoryLevel []myTypes.CategoryItem, cu
             <a href={ articlePath } hx-preload="mouseover" class={ elementClass }>{ item.PrettyName }</a>
 
         case *myTypes.Category:
-			{{ 
-				id := categoryNameToID(item.Name)
-			}}
             <div class="sidebar-category">
-                <button class="category-button sidebar-element" id={ id } data-category-id={ id }><img class="folder" src="/static/assets/folder.svg">{ item.Name }<img class="chevron" src="/static/assets/chevron.svg"></button>
+                <button class="category-button sidebar-element" id={ item.Id } data-category-id={ item.Id }><img class="folder" src="/static/assets/folder.svg">{ item.Name }<img class="chevron" src="/static/assets/chevron.svg"></button>
 				<div class="sidebar-category-list">
                     @renderCurrentCategoryLevel(item.Elements, currentArticle)
                 </div>
@@ -112,16 +33,11 @@ templ renderCurrentCategoryLevel(currentCategoryLevel []myTypes.CategoryItem, cu
     }
 }
 
-templ Sidebar(article myTypes.Article, allArticles []myTypes.Article) {
+templ Sidebar(article myTypes.Article, categoryItems []myTypes.CategoryItem) {
 	<div class="sidebar">
 		<div class="sidebar-category">
 			<div class="sidebar-category-list-first">
-				{{
-					sortedWikiArticles := sortWikiArticles(allArticles)
-					categoryTree := buildCategories(sortedWikiArticles)
-				}}
-
-				@renderCurrentCategoryLevel(categoryTree, article)
+				@renderCurrentCategoryLevel(categoryItems, article)
 			</div>
 		</div>
 	</div>
@@ -148,10 +64,10 @@ templ Sidebar(article myTypes.Article, allArticles []myTypes.Article) {
 }
 
 
-templ WikiLayout(article myTypes.Article, allArticles []myTypes.Article) {
+templ WikiLayout(article myTypes.Article, categoryItems []myTypes.CategoryItem) {
     @Layout(fmt.Sprintf("%v | Creator Coaster", article.PrettyName)) {
         <div class="wiki-container">
-            @Sidebar(article, allArticles)
+            @Sidebar(article, categoryItems)
             <div class="free-wiki-area">
                 <div class="text-div">
                     @GenericArticle(article)
