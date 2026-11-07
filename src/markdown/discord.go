@@ -1,6 +1,7 @@
 package markdown
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -151,6 +152,9 @@ func expandVariable(kind variableKind, name string) (string, error) {
 	case standardVar:
 		value, err := database.GetVariableByName(name)
 		if err != nil {
+			if errors.Is(err, myTypes.ErrVariableNotFound) {
+				return "{" + name + "}", nil
+			}
 			return "", fmt.Errorf("get variable %q: %w", name, err)
 		}
 		return value, nil
@@ -158,6 +162,9 @@ func expandVariable(kind variableKind, name string) (string, error) {
 	case channelVar:
 		channel, err := database.GetChannelVariableByName(name)
 		if err != nil {
+			if errors.Is(err, myTypes.ErrVariableNotFound) {
+				return "{" + name + "}", nil
+			}
 			return "", fmt.Errorf("get channel variable %q: %w", name, err)
 		}
 		return "<#" + strconv.FormatUint(channel.ID, 10) + ">", nil
@@ -165,6 +172,9 @@ func expandVariable(kind variableKind, name string) (string, error) {
 	case roleUserVar:
 		variable, err := database.GetRoleUserVariableByName(name)
 		if err != nil {
+			if errors.Is(err, myTypes.ErrVariableNotFound) {
+				return "{" + name + "}", nil
+			}
 			return "", fmt.Errorf("get role/user variable %q: %w", name, err)
 		}
 		switch variable.Type {
