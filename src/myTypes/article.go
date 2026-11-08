@@ -50,6 +50,7 @@ type Category struct {
 type CategoryItem interface {
 	isCategoryItem()
 	GetSortOrder() int
+	GetName() string
 }
 
 func (a *Article) isCategoryItem()  {}
@@ -61,4 +62,12 @@ func (a *Article) GetSortOrder() int {
 
 func (c *Category) GetSortOrder() int {
 	return c.SortOrder
+}
+
+func (a *Article) GetName() string {
+	return a.Name
+}
+
+func (c *Category) GetName() string {
+	return c.Name
 }

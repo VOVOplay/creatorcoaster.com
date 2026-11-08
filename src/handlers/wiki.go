@@ -3,7 +3,6 @@ package handlers
 import (
 	"cmp"
 	"errors"
-	"fmt"
 	"net/http"
 	"slices"
 	"strings"
@@ -54,7 +53,6 @@ func (h *WikiHandler) HandleWiki(w http.ResponseWriter, r *http.Request) {
 	}
 
 	categoryItems := createCategoryItems(rawCategories, allArticles)
-	printCategoryItems(categoryItems, 0)
 
 	// for caching
 	w.Header().Set("Cache-Control", "public, max-age=60")
@@ -152,19 +150,10 @@ func buildCategory(rawCategory myTypes.RawCategory, remainingWikiArticles *[]myT
 
 func sortCategoryItems(items []myTypes.CategoryItem) []myTypes.CategoryItem {
 	slices.SortFunc(items, func(a myTypes.CategoryItem, b myTypes.CategoryItem) int {
-		return cmp.Compare(a.GetSortOrder(), b.GetSortOrder())
+		return cmp.Or(
+			cmp.Compare(a.GetSortOrder(), b.GetSortOrder()),
+			cmp.Compare(a.GetName(), b.GetName()),
+		)
 	})
 	return items
-}
-
-func printCategoryItems(items []myTypes.CategoryItem, depth int) {
-	for _, it := range items {
-		switch v := it.(type) {
-		case *myTypes.Category:
-			fmt.Printf("%scat %s (%p)\n", strings.Repeat("  ", depth), v.Name, v)
-			printCategoryItems(v.Elements, depth+1)
-		case *myTypes.Article:
-			fmt.Printf("%sart %s (%p)\n", strings.Repeat("  ", depth), v.Name, v)
-		}
-	}
 }
