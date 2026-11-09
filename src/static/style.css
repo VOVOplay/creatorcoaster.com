@@ -13,7 +13,10 @@
     --card-border-color: #414141;
     --card-hover-color: #0b0d10;
 
-    --button-hover-color: #13131c;
+    --button-background-color: #0f1014;
+    --button-hover-color: #0e0e15;
+    --button-border-color: #383838;
+
     --sidebar-hover-color: #1d1d2b;
 }
 
@@ -340,10 +343,10 @@ footer {
 }
 
 #not-found-section button {
-    background-color: rgb(40, 40, 40);
+    background-color: var(--button-background-color);
     color: var(--text-color);
 
-    border: 0.5px solid rgb(88, 88, 88);
+    border: 0.5px solid var(--button-border-color);
     border-radius: 30px;
 
     min-height: 44px;
@@ -355,7 +358,7 @@ footer {
 
 #not-found-section button:hover {
     cursor: pointer;
-    background-color: rgb(28, 28, 28);
+    background-color: var(--card-hover-color);
 }
 /* NOT FOUND */
 
