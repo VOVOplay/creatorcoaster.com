@@ -640,6 +640,8 @@ footer {
     color: var(--darker-text-color);
     padding: 7px;
     font-size: medium;
+    font-family: 'Inter', system-ui, "Segoe UI";
+    line-height: 1.5;
 }
 
 .sidebar-element:hover {
