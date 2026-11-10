@@ -24,9 +24,9 @@ templ Admin(loggedIn bool) {
 
 templ AdminLoggedInView() {
     <div class="text-div">
-        <a href="/admin/upload-wiki">Upload Wiki Article</a> | <a href="/admin/manage-wiki">Manage Wiki</a>
+        <a href="/admin/manage-wiki">Manage Wiki</a>
         <br>
-        <a href="/admin/upload-blog">Upload Blog Post</a> | <a href="/admin/manage-blog">Manage Blog Posts</a>
+        <a href="/admin/manage-blog">Manage Blog Posts</a>
         <br>
         <a href="/admin/upload-variable">Upload New Variable</a> | <a href="/admin/manage-variable">Manage Variables</a>
         <hr>
@@ -37,7 +37,7 @@ templ AdminLoggedInView() {
 // --- WIKI
 
 // This component serves both for uploading and editing wiki articles. However the API is seperate
-templ EditSpecificWikiArticle(wikiArticle myTypes.Article) {
+templ EditSpecificWikiArticle(wikiArticle myTypes.Article, rawCategories []myTypes.RawCategory) {
     @Layout("Upload Wiki | Admin | Creator Coaster") {
         {{
             isNewArticle := wikiArticle == myTypes.Article{}
@@ -60,15 +60,17 @@ templ EditSpecificWikiArticle(wikiArticle myTypes.Article) {
             // These values will be an empty string if it's a new article, therefore we can use them in the HTML even if it's a new article
             var nameValue string
             var prettyNameValue string
-            var parentCategoryIdValue int
             var sortOrderValue int
             var markdownSourceValue string
+
+            var currentParentCategoryId int
             if !isNewArticle {
                 nameValue = wikiArticle.Name
                 prettyNameValue = wikiArticle.PrettyName
-                parentCategoryIdValue = wikiArticle.ParentCategoryId
                 sortOrderValue = wikiArticle.SortOrder
                 markdownSourceValue = wikiArticle.MarkdownSource
+
+                currentParentCategoryId = wikiArticle.ParentCategoryId
             }
 
         }}
@@ -93,9 +95,18 @@ templ EditSpecificWikiArticle(wikiArticle myTypes.Article) {
                         <input type="text" id="pretty-name" name="pretty-name" value={ prettyNameValue } required>
                     </div>
                     <div>
-                        <label for="parent-category-id">Parent Category ID (int for now):</label>
+                        <label for="parent-category-id">Parent Category:</label>
                         <br>
-                        <input type="number" id="parent-category-id" name="parent-category-id" value={ parentCategoryIdValue } required>
+                        <select name="parent-category-id" id="parent-category-id" required>
+                            <option value={ myTypes.RootCategoryId }>root</option>
+                            for _, rawCategory := range rawCategories {
+                                if rawCategory.Id != currentParentCategoryId {
+                                    <option value={ rawCategory.Id }>{ rawCategory.Name }</option>
+                                } else {
+                                    <option value={ rawCategory.Id } selected>{ rawCategory.Name }</option>
+                                }
+                            }
+                        </select>
                     </div>
                     <div>
                         <label for="sort-order">Sort order (in its category):</label>
@@ -109,7 +120,11 @@ templ EditSpecificWikiArticle(wikiArticle myTypes.Article) {
                         <textarea id="md-source" name="md-source" required>{ markdownSourceValue }</textarea>     
                     </div>
                 
-                    <button hx-post="/api/admin/preview-wiki" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview</button> | <button type="submit" class="submit-button">Submit</button>
+                    <button hx-post="/api/admin/preview-wiki" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview</button>
+                    |
+                    <button hx-post="/api/admin/preview-wiki-sidebar" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview Sidebar</button>
+                    |
+                    <button type="submit" class="submit-button">Submit</button>
                 </form>
                 <div id="response-section"></div>
             </div>
@@ -131,6 +146,9 @@ templ ManageWikiView(allWikiArticles []myTypes.Article) {
         <div class="text-div">
             <h1 class="md-heading">Manage Wiki</h1>
             <a href="javascript:history.back()">Go back</a>
+            <br>
+            <a href="/admin/upload-wiki/"><button class="admin-create-new-article">Upload Article</button></a>
+            <hr class="md-hr">
             for _, wikiArticle := range allWikiArticles {
                 {{ 
                     adminArticleCardID := fmt.Sprintf("admin-article-card-%v", wikiArticle.Name)
@@ -290,6 +308,9 @@ templ ManageBlogView(allBlogs []myTypes.Article) {
         <div class="text-div">
             <h1 class="md-heading">Manage Blogs</h1>
             <a href="javascript:history.back()">Go back</a>
+            <br>
+            <a href="/admin/upload-blog/"><button class="admin-create-new-article">Upload Blog Post</button></a>
+            <hr class="md-hr">
             for _, blog := range allBlogs {
                 {{ 
                     adminArticleCardID := fmt.Sprintf("admin-article-card-%v", blog.Name)

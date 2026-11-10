@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -213,14 +214,20 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 
 	switch r.PathValue("specificPage") {
 	case "upload-wiki":
-		component = views.EditSpecificWikiArticle(myTypes.Article{})
+		rawCategories, err := database.GetRawWikiCategories()
+		if err != nil {
+			component = views.NotFound()
+		}
+
+		component = views.EditSpecificWikiArticle(myTypes.Article{}, rawCategories)
 	case "update-wiki":
 		requestedArticleName := r.URL.Query().Get("name")
 		requestedArticle, err := database.GetWikiArticleByName(requestedArticleName, markdown.GenerateHTMLFromString)
+		rawCategories, err := database.GetRawWikiCategories()
 		if err != nil {
 			component = views.NotFound()
 		} else {
-			component = views.EditSpecificWikiArticle(requestedArticle)
+			component = views.EditSpecificWikiArticle(requestedArticle, rawCategories)
 		}
 
 	case "manage-wiki":
@@ -273,6 +280,8 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 		h.handleWikiDeletion(w, r)
 	case "preview-wiki":
 		h.handleWikiPreview(w, r)
+	case "preview-wiki-sidebar":
+		h.handleSidebarPreview(w, r)
 	// --
 	case "upload-blog":
 		h.handleBlogUpload(w, r)
@@ -298,7 +307,7 @@ func (h *AdminHandler) helperAssembleWikiArticle(r *http.Request) (myTypes.Artic
 	parentCategoryIdString := r.FormValue("parent-category-id")
 	parentCategoryId, err := strconv.Atoi(parentCategoryIdString)
 	if err != nil {
-		parentCategoryId = 0
+		parentCategoryId = myTypes.RootCategoryId
 	}
 
 	markdownSource := r.FormValue("md-source")
@@ -387,6 +396,54 @@ func (h *AdminHandler) handleWikiPreview(w http.ResponseWriter, r *http.Request)
 	}
 
 	component := views.GenericArticle(wikiArticle)
+	component.Render(r.Context(), w)
+}
+
+func (h *AdminHandler) handleSidebarPreview(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, "Failed to parse form.", http.StatusBadRequest)
+	}
+
+	allArticles, err := database.GetAllWikiArticles()
+	if err != nil {
+		http.Error(w, "Failed to get all articles for sidebar", http.StatusInternalServerError)
+	}
+
+	currentArticle, err := h.helperAssembleWikiArticle(r)
+	if err != nil {
+		http.Error(w, "Failed to generate current wiki article.", http.StatusBadRequest)
+	}
+
+	previousName := r.FormValue("previous-name")
+
+	isAlreadyInDatabase := false
+	if slices.ContainsFunc(allArticles, func(article myTypes.Article) bool {
+		return article.Name == previousName
+	}) {
+		isAlreadyInDatabase = true
+	}
+
+	if isAlreadyInDatabase {
+		for i, article := range allArticles { // find the old one and replace it with the current one
+			if article.Name == previousName {
+				allArticles[i] = currentArticle
+				break
+			}
+		}
+	} else {
+		allArticles = append(allArticles, currentArticle)
+	}
+
+	rawCategories, err := database.GetRawWikiCategories()
+	if err != nil {
+		http.Error(w, "Failed to get raw categories for sidebar", http.StatusInternalServerError)
+	}
+
+	categoryItems := createCategoryItems(rawCategories, allArticles)
+
+	w.Write([]byte("<b>Do not click any of the links in the sidebar.</b>"))
+	component := views.Sidebar(currentArticle, categoryItems)
 	component.Render(r.Context(), w)
 }
 

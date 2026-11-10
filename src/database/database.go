@@ -283,8 +283,14 @@ func SaveWikiArticle(wikiArticle myTypes.Article) error {
 		return myTypes.ErrDatabseOffline
 	}
 
+	// this converts the root category id into `nil` so that it properly works in the database as having no parent category
+	var parentCategoryId *int
+	if wikiArticle.ParentCategoryId != myTypes.RootCategoryId {
+		parentCategoryId = &wikiArticle.ParentCategoryId
+	}
+
 	query := "INSERT INTO wiki_articles (name, pretty_name, md_source, parent_category_id, last_edited_at, sort_order) VALUES (?, ?, ?, ?, ?, ?)"
-	_, err := db.Exec(query, wikiArticle.Name, wikiArticle.PrettyName, wikiArticle.MarkdownSource, wikiArticle.ParentCategoryId, wikiArticle.Info.Date, wikiArticle.SortOrder)
+	_, err := db.Exec(query, wikiArticle.Name, wikiArticle.PrettyName, wikiArticle.MarkdownSource, parentCategoryId, wikiArticle.Info.Date, wikiArticle.SortOrder)
 	if err != nil {
 		return err
 	}
@@ -299,8 +305,14 @@ func UpdateWikiArticle(newWikiArticle myTypes.Article, previousName string) erro
 		return myTypes.ErrDatabseOffline
 	}
 
+	// this converts the root category id into `nil` so that it properly works in the database as having no parent category
+	var parentCategoryId *int
+	if newWikiArticle.ParentCategoryId != myTypes.RootCategoryId {
+		parentCategoryId = &newWikiArticle.ParentCategoryId
+	}
+
 	query := "UPDATE wiki_articles SET name = ?, pretty_name = ?, md_source = ?, parent_category_id = ?, last_edited_at = ?, sort_order = ? WHERE name = ?"
-	_, err := db.Exec(query, newWikiArticle.Name, newWikiArticle.PrettyName, newWikiArticle.MarkdownSource, newWikiArticle.ParentCategoryId, newWikiArticle.Info.Date, newWikiArticle.SortOrder, previousName)
+	_, err := db.Exec(query, newWikiArticle.Name, newWikiArticle.PrettyName, newWikiArticle.MarkdownSource, parentCategoryId, newWikiArticle.Info.Date, newWikiArticle.SortOrder, previousName)
 	if err != nil {
 		return err
 	}
