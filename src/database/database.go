@@ -277,6 +277,30 @@ func GetRawWikiCategories() ([]myTypes.RawCategory, error) {
 	return allCategories, nil
 }
 
+func GetRawWikiCategoryById(id int) (myTypes.RawCategory, error) {
+	if db == nil {
+		return myTypes.RawCategory{}, myTypes.ErrDatabseOffline
+	}
+
+	query := "SELECT id, pretty_name, sort_order, parent_category_id FROM wiki_categories WHERE id = ?"
+
+	var rawCategory myTypes.RawCategory
+	var parentCategoryId *int
+
+	err := db.QueryRow(query, id).Scan(&rawCategory.Id, &rawCategory.Name, &rawCategory.SortOrder, &parentCategoryId)
+	if err != nil {
+		return myTypes.RawCategory{}, err
+	}
+
+	if parentCategoryId == nil {
+		rawCategory.ParentCategoryId = myTypes.RootCategoryId
+	} else {
+		rawCategory.ParentCategoryId = *parentCategoryId
+	}
+
+	return rawCategory, nil
+}
+
 // Saves a wiki article to the database.
 func SaveWikiArticle(wikiArticle myTypes.Article) error {
 	if db == nil {
