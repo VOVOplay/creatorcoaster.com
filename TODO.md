@@ -13,22 +13,19 @@ Legend:
     - ➖ Rendering markdown meant for discord (e. g. Replacing #CHANNEL with <#CHANEL_ID>...) - seperate from goldmark completely
 
 - Admin panel:
-    - ❌ Uploading all types of variables
-    - ❌ Managing all types of variables
-    - ➖ Add pre-defined categories (instead of each article having its own path, they'll have to choose from one of the already existing categories)
-        - ➖ Add it in the admin panel
-        - ✅ Add it in the database
-        - ✅ Update code currently using category paths
-        - ✅ Update the wiki article upload/edit pages
+    - ❌ Managing/Uploading all types of variables
+    - ❌ Managing/Uploading Categories
+    - ❌ Adding "hints" to upload/update pages for blog and wiki such as existing variables or existing sort-orders
 
 - Other:
     - ➖ Designing and coding the landing page
-    - ❌ Making the wiki page usable on mobile
-    - ❌ Figure out sorting for categories
+    - ❌ Mobile Improvements (Wiki & Blog pages, footer...)
     - ❌ Applying a UGC policy to articles
+    - ❌ Go over the security of the whole admin thing to make sure it's alright
+    - ❌ Write the "About Us" page
+    - ❌ Add pagination or lazy-loading for blogs. Just something that will be useful when there are a lot of blogs.
 
 - Before release:
-    - ❌ Setting up the real prod database and making it accessible from pterodactyl
-    - ❌ Somehow make the schema not be a part of the bot nor the website, so theres one source of truth for that
+    - ❌ Set up a proper database
     - ❌ Fix up the bot and release the version that saves the staff list
-    - ❌ Figure out the compilation properly
+
