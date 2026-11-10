@@ -163,7 +163,7 @@ func expandVariable(kind variableKind, name string) (string, error) {
 		channel, err := database.GetChannelVariableByName(name)
 		if err != nil {
 			if errors.Is(err, myTypes.ErrVariableNotFound) {
-				return "{" + name + "}", nil
+				return "{#" + name + "}", nil
 			}
 			return "", fmt.Errorf("get channel variable %q: %w", name, err)
 		}
@@ -173,7 +173,7 @@ func expandVariable(kind variableKind, name string) (string, error) {
 		variable, err := database.GetRoleUserVariableByName(name)
 		if err != nil {
 			if errors.Is(err, myTypes.ErrVariableNotFound) {
-				return "{" + name + "}", nil
+				return "{@" + name + "}", nil
 			}
 			return "", fmt.Errorf("get role/user variable %q: %w", name, err)
 		}
