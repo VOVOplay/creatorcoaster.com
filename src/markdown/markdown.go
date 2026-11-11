@@ -11,7 +11,24 @@ import (
 	"github.com/yuin/goldmark/util"
 )
 
-var UGCPolicy bluemonday.Policy = *bluemonday.UGCPolicy()
+func configurePolicy() bluemonday.Policy {
+	policy := *bluemonday.NewPolicy()
+
+	policy.AllowElements(
+		"p", "div", "span", "br", "hr",
+		"h1", "h2", "h3", "h4", "h5", "h6",
+		"strong", "em", "b", "i", "u", "s", "del", "mark", "sub", "sup",
+		"ul", "ol", "li", "blockquote", "code", "pre",
+		"a", "img",
+	)
+
+	policy.AllowStandardURLs()
+	policy.AllowAttrs("href", "title", "target").OnElements("a")
+
+	policy.AllowStyling()
+
+	return policy
+}
 
 // Generates HTML from a string source.
 // This uses all of the custom styling.
@@ -52,7 +69,8 @@ func GenerateHTMLFromString(sourceString string) string {
 		return `<p class="md-paragraph">Could not generate HTML.</p>`
 	}
 
-	html := UGCPolicy.Sanitize(buf.String())
+	policy := configurePolicy()
+	html := policy.Sanitize(buf.String())
 
 	return html
 }
