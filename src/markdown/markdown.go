@@ -3,12 +3,15 @@ package markdown
 import (
 	"bytes"
 
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer"
 	"github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/util"
 )
+
+var UGCPolicy bluemonday.Policy = *bluemonday.UGCPolicy()
 
 // Generates HTML from a string source.
 // This uses all of the custom styling.
@@ -49,5 +52,7 @@ func GenerateHTMLFromString(sourceString string) string {
 		return `<p class="md-paragraph">Could not generate HTML.</p>`
 	}
 
-	return buf.String()
+	html := UGCPolicy.Sanitize(buf.String())
+
+	return html
 }
