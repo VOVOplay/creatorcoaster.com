@@ -20,7 +20,6 @@ Legend:
 - Other:
     - ➖ Designing and coding the landing page
     - ❌ Mobile Improvements (Wiki & Blog pages, footer...)
-    - ❌ Applying a UGC policy to articles
     - ❌ Go over the security of the whole admin thing to make sure it's alright
     - ❌ Write the "About Us" page
     - ❌ Add pagination or lazy-loading for blogs. Just something that will be useful when there are a lot of blogs.
