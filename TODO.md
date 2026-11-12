@@ -22,7 +22,6 @@ Legend:
     - ❌ Mobile Improvements (Wiki & Blog pages, footer...)
     - ❌ Go over the security of the whole admin thing to make sure it's alright
     - ❌ Write the "About Us" page
-    - ➖ Add pagination for blogs. Add blog page cache.
 
 - Before release:
     - ❌ Set up a proper database
