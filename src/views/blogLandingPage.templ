@@ -14,6 +14,10 @@ func sortBlogPosts(allBlogs []myTypes.Article) []myTypes.Article {
     return allBlogs
 }
 
+templ BlogPage(pageNumber int, blogs []myTypes.Article, databaseOkay bool) {
+    // TODO - make this component
+}
+
 templ BlogLandingPage(allBlogs []myTypes.Article, databaseOkay bool) {
     @Layout("Blog | Creator Coaster") {
         <div class="free-area-for-text">

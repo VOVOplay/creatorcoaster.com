@@ -118,7 +118,7 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 
 	rawBlogs, err := db.Query("SELECT name, pretty_name, date, author, author_pfp_link, read_time FROM blog_posts")
 	if err != nil {
-		return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
+		return []myTypes.Article{}, err
 	}
 	defer rawBlogs.Close()
 
@@ -126,7 +126,7 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 		var blog myTypes.Article
 		err := rawBlogs.Scan(&blog.Name, &blog.PrettyName, &blog.Info.Date, &blog.Info.Author, &blog.Info.AuthorPFPLink, &blog.Info.ReadTime)
 		if err != nil {
-			return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
+			return []myTypes.Article{}, err
 		}
 
 		blog.Type = myTypes.BlogArticle
@@ -134,7 +134,7 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 	}
 
 	if rawBlogs.Err() != nil {
-		return []myTypes.Article{}, myTypes.ErrUnknownDatabaseError
+		return []myTypes.Article{}, err
 	}
 
 	return allBlogs, nil

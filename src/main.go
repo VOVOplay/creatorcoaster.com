@@ -48,6 +48,7 @@ func configureRouter(config config.Config) *http.ServeMux {
 
 	router.HandleFunc("GET /blog/", blogHandler.HandleBlogLandingPage)
 	router.HandleFunc("GET /blog/{specificBlogPost}/", blogHandler.HandleSpecificBlog)
+	router.HandleFunc("GET /api/blog/load-more?page={pageNumber}", blogHandler.LoadMore)
 
 	router.HandleFunc("GET /admin/", adminHandler.HandleAdmin)
 	router.HandleFunc("GET /admin/{specificPage}/", adminHandler.HandleSpecificAdminPages)
