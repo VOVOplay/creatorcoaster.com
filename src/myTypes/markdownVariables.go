@@ -1,8 +1,16 @@
 package myTypes
 
+type Variable struct {
+	VariableName string
+	VariableContents string
+}
+
+// ---
+
 // The type used in markdown articles for channel variables
 type ChannelVariable struct {
-	Name string // The name of the channel in discord
+	VariableName string // The variable name used in markdown
+	ChannelName string // The name of the channel in discord
 	ID   uint64 // The ID of the channel
 }
 
@@ -17,7 +25,8 @@ const (
 
 // The type used in markdown articles for role-user variables
 type RoleUserVariable struct {
-	Name string       // The pretty name of the role/user (e.g. "VOVOplay", "Support")
+	VariableName string // The variable name used in markdown
+	RoleUserName string       // The pretty name of the role/user (e.g. "VOVOplay", "Support")
 	ID   uint64       // The ID of the role/user
 	Type RoleUserType // Which type it is (myTypes.RoleUserType)
 }

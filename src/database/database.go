@@ -451,7 +451,7 @@ func GetRoleUserVariableByName(name string) (myTypes.RoleUserVariable, error) {
 
 	var roleUserVariable myTypes.RoleUserVariable
 	var variableType int
-	err := db.QueryRow(query, name).Scan(&roleUserVariable.Name, &roleUserVariable.ID, &variableType)
+	err := db.QueryRow(query, name).Scan(&roleUserVariable.RoleUserName, &roleUserVariable.ID, &variableType)
 	if err != nil {
 		return myTypes.RoleUserVariable{}, myTypes.ErrVariableNotFound
 	}

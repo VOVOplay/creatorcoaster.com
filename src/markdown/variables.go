@@ -91,13 +91,13 @@ func (r *CustomVariableRenderer) RegisterFuncs(reg renderer.NodeRendererFuncRegi
 func (r *CustomVariableRenderer) renderVariable(w util.BufWriter, source []byte, node ast.Node, entering bool) (ast.WalkStatus, error) {
 	if entering {
 		n := node.(*Variable)
-		variableValue, err := database.GetVariableByName(string(n.Name))
+		variable, err := database.GetVariableByName(string(n.Name))
 		if err != nil {
 			fmt.Fprintf(w, "{%v}", string(n.Name)) // "replicating" the original look, there might be a better way to do that but fuck that
 			return ast.WalkContinue, nil
 		}
 
-		w.WriteString(variableValue)
+		w.WriteString(variable.TODO)
 	}
 
 	return ast.WalkContinue, nil
@@ -172,7 +172,7 @@ func (r *CustomChannelVariableRenderer) renderChannelVariable(w util.BufWriter, 
 			return ast.WalkContinue, nil
 		}
 
-		fmt.Fprintf(w, `<a href="%v%v" target="_blank"><span class="md-discord-mention">#%v</span></a>`, myTypes.ChannelPartialURL, channel.ID, channel.Name)
+		fmt.Fprintf(w, `<a href="%v%v" target="_blank"><span class="md-discord-mention">#%v</span></a>`, myTypes.ChannelPartialURL, channel.ID, channel.ChannelName)
 	}
 
 	return ast.WalkContinue, nil
@@ -241,13 +241,13 @@ func (r *CustomRoleUserVariableRenderer) renderRoleUserVariable(w util.BufWriter
 	if entering {
 		n := node.(*RoleUserVariable)
 
-		roleUserName, err := database.GetRoleUserVariableByName(string(n.Name))
+		roleUserVariable, err := database.GetRoleUserVariableByName(string(n.Name))
 		if err != nil {
 			fmt.Fprintf(w, "{@%v}", string(n.Name)) // replicating the original look
 			return ast.WalkContinue, nil
 		}
 
-		fmt.Fprintf(w, `<span class="md-discord-mention">@%v</span>`, roleUserName.Name)
+		fmt.Fprintf(w, `<span class="md-discord-mention">@%v</span>`, roleUserVariable.RoleUserName)
 	}
 
 	return ast.WalkContinue, nil
