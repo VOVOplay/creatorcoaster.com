@@ -250,6 +250,10 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 	case "manage-blog":
 		allBlogs, _ := database.GetAllBlogs()
 		component = views.ManageBlogView(allBlogs)
+	// --
+	case "manage-variable":
+		standardVariables, channelVariables, roleUserVariables, errors := database.GetAllVariables()
+		component = views.ManageVariablesView(standardVariables, channelVariables, roleUserVariables, errors)
 	default:
 		component = views.NotFound()
 	}

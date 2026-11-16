@@ -334,3 +334,23 @@ templ ManageBlogView(allBlogs []myTypes.Article) {
         </div>
     }
 }
+
+// --- VARIABLES
+
+templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables []myTypes.ChannelVariable, roleUserVariables []myTypes.RoleUserVariable, errors []error) {
+    @Layout("Manage Variables | Admin | Creator Coaster") {
+        <div class="text-div">
+            <h1 class="md-heading">Manage Variables</h1>
+            <a href="javascript:history.back()">Go back</a>
+            if errors != nil {
+                <br>
+                Encountered errors:
+                <br>
+                for i, err := range errors {
+                    { i + 1 }: { err.Error() }<br>
+                }
+            }
+            <br>
+        </div>
+    }
+}

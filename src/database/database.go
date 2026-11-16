@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"os"
@@ -54,8 +55,23 @@ func Close() {
 	}
 }
 
-func createDatabase() {
+func isOffline() bool {
 	if db == nil {
+		return true
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+
+	if db.PingContext(ctx) == nil {
+		return false
+	} else {
+		return true
+	}
+}
+
+func createDatabase() {
+	if isOffline() {
 		return
 	}
 
@@ -79,7 +95,7 @@ func createDatabase() {
 // Gets the staff member list from the table 'staff_list'
 // If the staff_list is empty, it returns []myTypes.StaffMember{}, this behavior has to be handled in the callsite.
 func GetStaffMemberList() ([]myTypes.StaffMember, error) {
-	if db == nil {
+	if isOffline() {
 		return []myTypes.StaffMember{}, myTypes.ErrDatabseOffline
 	}
 
@@ -110,7 +126,7 @@ func GetStaffMemberList() ([]myTypes.StaffMember, error) {
 // Gets all of the blogs.
 // The HTML field is missing in all of the articles.
 func GetAllBlogs() ([]myTypes.Article, error) {
-	if db == nil {
+	if isOffline() {
 		return []myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
@@ -143,7 +159,7 @@ func GetAllBlogs() ([]myTypes.Article, error) {
 // Gets a blog by its name.
 // renderer is the method that will render the HTML, aka. markdown.GenerateHTMLFromString()
 func GetBlogByName(name string, renderer func(string) string) (myTypes.Article, error) {
-	if db == nil {
+	if isOffline() {
 		return myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
@@ -167,7 +183,7 @@ func GetBlogByName(name string, renderer func(string) string) (myTypes.Article, 
 // Gets all of the wiki articles.
 // The HTML field is missing in all of the articles.
 func GetAllWikiArticles() ([]myTypes.Article, error) {
-	if db == nil {
+	if isOffline() {
 		return []myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
@@ -212,7 +228,7 @@ func GetAllWikiArticles() ([]myTypes.Article, error) {
 // Gets a wiki article by its name.
 // renderer is the method that will render the HTML, aka. markdown.GenerateHTMLFromString()
 func GetWikiArticleByName(name string, renderer func(string) string) (myTypes.Article, error) {
-	if db == nil {
+	if isOffline() {
 		return myTypes.Article{}, myTypes.ErrDatabseOffline
 	}
 
@@ -240,7 +256,7 @@ func GetWikiArticleByName(name string, renderer func(string) string) (myTypes.Ar
 }
 
 func GetRawWikiCategories() ([]myTypes.RawCategory, error) {
-	if db == nil {
+	if isOffline() {
 		return []myTypes.RawCategory{}, myTypes.ErrDatabseOffline
 	}
 
@@ -278,7 +294,7 @@ func GetRawWikiCategories() ([]myTypes.RawCategory, error) {
 }
 
 func GetRawWikiCategoryById(id int) (myTypes.RawCategory, error) {
-	if db == nil {
+	if isOffline() {
 		return myTypes.RawCategory{}, myTypes.ErrDatabseOffline
 	}
 
@@ -303,7 +319,7 @@ func GetRawWikiCategoryById(id int) (myTypes.RawCategory, error) {
 
 // Saves a wiki article to the database.
 func SaveWikiArticle(wikiArticle myTypes.Article) error {
-	if db == nil {
+	if isOffline() {
 		return myTypes.ErrDatabseOffline
 	}
 
@@ -325,7 +341,7 @@ func SaveWikiArticle(wikiArticle myTypes.Article) error {
 // Updates a wiki article in the database.
 // The previousName value is the old name. Even if the name hasn't changed, this value has to be provided.
 func UpdateWikiArticle(newWikiArticle myTypes.Article, previousName string) error {
-	if db == nil {
+	if isOffline() {
 		return myTypes.ErrDatabseOffline
 	}
 
@@ -346,7 +362,7 @@ func UpdateWikiArticle(newWikiArticle myTypes.Article, previousName string) erro
 
 // Deletes a wiki article from the database by name.
 func DeleteWikiArticle(name string) error {
-	if db == nil {
+	if isOffline() {
 		return myTypes.ErrDatabseOffline
 	}
 
@@ -361,7 +377,7 @@ func DeleteWikiArticle(name string) error {
 
 // Saves a blog post to the database.
 func SaveBlogPost(blog myTypes.Article) error {
-	if db == nil {
+	if isOffline() {
 		return myTypes.ErrDatabseOffline
 	}
 
@@ -377,7 +393,7 @@ func SaveBlogPost(blog myTypes.Article) error {
 // Updates a blog post in the database.
 // The previousName value is the old name. Even if the name hasn't changed, this value has to be provided.
 func UpdateBlogPost(newBlogPost myTypes.Article, previousName string) error {
-	if db == nil {
+	if isOffline() {
 		return myTypes.ErrDatabseOffline
 	}
 
@@ -392,7 +408,7 @@ func UpdateBlogPost(newBlogPost myTypes.Article, previousName string) error {
 
 // Deletes a blog post in the database.
 func DeleteBlogArticle(name string) error {
-	if db == nil {
+	if isOffline() {
 		return myTypes.ErrDatabseOffline
 	}
 
@@ -409,7 +425,7 @@ func DeleteBlogArticle(name string) error {
 
 // Returns a string of a standard variable's contents.
 func GetVariableByName(name string) (myTypes.Variable, error) {
-	if db == nil {
+	if isOffline() {
 		return myTypes.Variable{}, myTypes.ErrDatabseOffline
 	}
 
@@ -425,9 +441,41 @@ func GetVariableByName(name string) (myTypes.Variable, error) {
 	return variable, nil
 }
 
+func GetAllStandardVariables() ([]myTypes.Variable, error) {
+	if isOffline() {
+		return []myTypes.Variable{}, myTypes.ErrDatabseOffline
+	}
+
+	var allVariables []myTypes.Variable
+
+	query := "SELECT variable_name, variable_contents FROM markdown_variables"
+
+	rawVariables, err := db.Query(query)
+	if err != nil {
+		return []myTypes.Variable{}, err
+	}
+	defer rawVariables.Close()
+
+	for rawVariables.Next() {
+		var variable myTypes.Variable
+		err := rawVariables.Scan(&variable.VariableName, &variable.VariableContents)
+		if err != nil {
+			return []myTypes.Variable{}, err
+		}
+
+		allVariables = append(allVariables, variable)
+	}
+
+	if rawVariables.Err() != nil {
+		return []myTypes.Variable{}, err
+	}
+
+	return allVariables, nil
+}
+
 // Returns a channel variable.
 func GetChannelVariableByName(name string) (myTypes.ChannelVariable, error) {
-	if db == nil {
+	if isOffline() {
 		return myTypes.ChannelVariable{}, myTypes.ErrDatabseOffline
 	}
 
@@ -443,9 +491,41 @@ func GetChannelVariableByName(name string) (myTypes.ChannelVariable, error) {
 	return channel, nil
 }
 
+func GetAllChannelVariables() ([]myTypes.ChannelVariable, error) {
+	if isOffline() {
+		return []myTypes.ChannelVariable{}, myTypes.ErrDatabseOffline
+	}
+
+	var allChannelVariables []myTypes.ChannelVariable
+
+	query := "SELECT variable_name, channel_name, channel_id FROM markdown_channel_variables"
+
+	rawChannelVariables, err := db.Query(query)
+	if err != nil {
+		return []myTypes.ChannelVariable{}, err
+	}
+	defer rawChannelVariables.Close()
+
+	for rawChannelVariables.Next() {
+		var channelVariable myTypes.ChannelVariable
+		err := rawChannelVariables.Scan(&channelVariable.VariableName, &channelVariable.ChannelName, &channelVariable.ID)
+		if err != nil {
+			return []myTypes.ChannelVariable{}, err
+		}
+
+		allChannelVariables = append(allChannelVariables, channelVariable)
+	}
+
+	if rawChannelVariables.Err() != nil {
+		return []myTypes.ChannelVariable{}, err
+	}
+
+	return allChannelVariables, nil
+}
+
 // Returns a role-user variable.
 func GetRoleUserVariableByName(name string) (myTypes.RoleUserVariable, error) {
-	if db == nil {
+	if isOffline() {
 		return myTypes.RoleUserVariable{}, myTypes.ErrDatabseOffline
 	}
 
@@ -470,4 +550,73 @@ func GetRoleUserVariableByName(name string) (myTypes.RoleUserVariable, error) {
 	}
 
 	return roleUserVariable, nil
+}
+
+func GetAllRoleUserVariables() ([]myTypes.RoleUserVariable, error) {
+	if isOffline() {
+		return []myTypes.RoleUserVariable{}, myTypes.ErrDatabseOffline
+	}
+
+	var allRoleUserVariables []myTypes.RoleUserVariable
+
+	query := "SELECT variable_name, role_user_name, role_user_id, variable_type FROM markdown_role_user_variables"
+
+	rawRoleUserVariables, err := db.Query(query)
+	if err != nil {
+		return []myTypes.RoleUserVariable{}, err
+	}
+	defer rawRoleUserVariables.Close()
+
+	for rawRoleUserVariables.Next() {
+		var roleUserVariable myTypes.RoleUserVariable
+		var variableType int
+		err := rawRoleUserVariables.Scan(&roleUserVariable.VariableName, &roleUserVariable.RoleUserName, &roleUserVariable.ID, &variableType)
+		if err != nil {
+			return []myTypes.RoleUserVariable{}, err
+		}
+
+		switch variableType {
+		case int(myTypes.Role):
+			roleUserVariable.Type = myTypes.Role
+		case int(myTypes.User):
+			roleUserVariable.Type = myTypes.User
+		default:
+			fmt.Println("Warning: Got value other than 0/1 from database in table 'markdown_role_user_variables' for field `variable_type`")
+			roleUserVariable.Type = myTypes.User
+		}
+
+		allRoleUserVariables = append(allRoleUserVariables, roleUserVariable)
+	}
+
+	if rawRoleUserVariables.Err() != nil {
+		return []myTypes.RoleUserVariable{}, err
+	}
+
+	return allRoleUserVariables, nil
+}
+
+// A helper function that calls other database functions to get all variables of all types
+func GetAllVariables() ([]myTypes.Variable, []myTypes.ChannelVariable, []myTypes.RoleUserVariable, []error) {
+	var errors []error
+
+	standardVariables, err := GetAllStandardVariables()
+	if err != nil {
+		errors = append(errors, err)
+	}
+
+	channelVariables, err := GetAllChannelVariables()
+	if err != nil {
+		errors = append(errors, err)
+	}
+
+	roleUserVariables, err := GetAllRoleUserVariables()
+	if err != nil {
+		errors = append(errors, err)
+	}
+
+	if len(errors) != 0 {
+		return standardVariables, channelVariables, roleUserVariables, errors
+	}
+
+	return standardVariables, channelVariables, roleUserVariables, nil
 }

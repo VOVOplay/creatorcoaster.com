@@ -14,7 +14,8 @@ func main() {
 	config := config.GetConfig()
 	db_err := database.Init(config)
 	if db_err != nil {
-		fmt.Println("WARNING: Could not connect to database.")
+		fmt.Println("Warning: Could not connect to database.")
+		database.Close()
 	}
 	defer database.Close()
 
