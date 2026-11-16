@@ -13,7 +13,7 @@ Legend:
     - ➖ Rendering markdown meant for discord (e. g. Replacing #CHANNEL with <#CHANEL_ID>...) - seperate from goldmark completely
 
 - Admin panel:
-    - ❌ Managing/Uploading all types of variables
+    - ➖ Managing/Uploading all types of variables
     - ❌ Managing/Uploading Categories
     - ❌ Adding "hints" to upload/update pages for blog and wiki such as existing variables or existing sort-orders
 

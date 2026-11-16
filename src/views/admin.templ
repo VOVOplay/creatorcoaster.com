@@ -75,7 +75,7 @@ templ EditSpecificWikiArticle(wikiArticle myTypes.Article, rawCategories []myTyp
 
         }}
         <div class="fill-screen-div">
-            <div class="admin-half-page left">
+            <div class="admin-half-page right-border">
                 <a href="javascript:history.back()">Go back</a>
                 <h2 class="md-heading">{ heading }</h2>
                 <form hx-post={ API } hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
@@ -243,7 +243,7 @@ templ EditSpecificBlog(blog myTypes.Article, allBlogs []myTypes.Article) {
 
         }}
         <div class="fill-screen-div">
-            <div class="admin-half-page left">
+            <div class="admin-half-page right-border">
                 <a href="javascript:history.back()">Go back</a>
                 <h2 class="md-heading">{ heading }</h2>
                 <form hx-post={ API } hx-target="#response-section" hx-swap="innerHTML" class="admin-form">
@@ -339,7 +339,7 @@ templ ManageBlogView(allBlogs []myTypes.Article) {
 
 templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables []myTypes.ChannelVariable, roleUserVariables []myTypes.RoleUserVariable, errors []error) {
     @Layout("Manage Variables | Admin | Creator Coaster") {
-        <div class="text-div">
+        <div class="full-screen-div">
             <h1 class="md-heading">Manage Variables</h1>
             <a href="javascript:history.back()">Go back</a>
             if errors != nil {
@@ -350,7 +350,75 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
                     { i + 1 }: { err.Error() }<br>
                 }
             }
-            <br>
+            <hr class="md-hr">
+            <div id="admin-variable-sections-holder">
+                <div class="variable-holder right-border">
+                    <h4 class="md-heading">Standard Variables</h4>
+                    for _, variable := range standardVariables {
+                        {{
+                            cardID := fmt.Sprintf("admin-variable-card-%v", variable.VariableName)
+                            actionsID := fmt.Sprintf("actions-%v", variable.VariableName) 
+                            actionsTargetID := fmt.Sprintf("#%v", actionsID)
+                        }}
+                        <div class="admin-article-card" id={ cardID }>
+                            <div class="info">
+                            { variable.VariableName }: <code class="md-inline-code">{ variable.VariableContents }</code>
+                            </div>
+                            <div class="actions" id={ actionsID }>
+                                {{
+                                    editURL := fmt.Sprintf("/admin/update-variable?name=%v", variable.VariableName)
+                                    deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&confirmed=no", variable.VariableName)
+                                }}
+                                <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="variable-holder right-border">
+                    <h4 class="md-heading">Channel Variables</h4>
+                    for _, channelVariable := range channelVariables {
+                        {{
+                            cardID := fmt.Sprintf("admin-channel-variable-card-%v", channelVariable.VariableName)
+                            actionsID := fmt.Sprintf("actions-%v", channelVariable.VariableName) 
+                            actionsTargetID := fmt.Sprintf("#%v", actionsID)
+                        }}
+                        <div class="admin-article-card" id={ cardID }>
+                            <div class="info">
+                            { channelVariable.VariableName }: <code class="md-inline-code">{ channelVariable.ChannelName }</code>
+                            </div>
+                            <div class="actions" id={ actionsID }>
+                                {{
+                                    editURL := fmt.Sprintf("/admin/update-channel-variable?name=%v", channelVariable.VariableName)
+                                    deleteURL := fmt.Sprintf("/api/admin/delete-channel-variable?name=%v&confirmed=no", channelVariable.VariableName)
+                                }}
+                                <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="variable-holder">
+                    <h4 class="md-heading">Role/User Variables</h4>
+                    for _, roleUserVariable := range roleUserVariables {
+                        {{
+                            cardID := fmt.Sprintf("admin-role-user-variable-card-%v", roleUserVariable.VariableName)
+                            actionsID := fmt.Sprintf("actions-%v", roleUserVariable.VariableName) 
+                            actionsTargetID := fmt.Sprintf("#%v", actionsID)
+                        }}
+                        <div class="admin-article-card" id={ cardID }>
+                            <div class="info">
+                            { roleUserVariable.VariableName }: <code class="md-inline-code">{ roleUserVariable.RoleUserName }</code>
+                            </div>
+                            <div class="actions" id={ actionsID }>
+                                {{
+                                    editURL := fmt.Sprintf("/admin/update-role-user-variable?name=%v", roleUserVariable.VariableName)
+                                    deleteURL := fmt.Sprintf("/api/admin/delete-role-uservariable?name=%v&confirmed=no", roleUserVariable.VariableName)
+                                }}
+                                <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
     }
 }

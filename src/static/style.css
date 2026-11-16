@@ -987,6 +987,10 @@ footer {
     margin-right: auto;
 }
 
+.admin-article-card .actions {
+    flex-shrink: 0;
+}
+
 .admin-create-new-article {
     background-color: rgb(0, 91, 0);
 
@@ -1005,6 +1009,22 @@ footer {
 .admin-create-new-article:hover {
     cursor: pointer;
     background-color: rgb(0, 114, 0);
+}
+
+#admin-variable-sections-holder {
+    display: flex;
+    flex-direction: row;
+}
+
+.variable-holder {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.right-border {
+    border-right: 1px solid var(--card-border-color);
 }
 
 /* ADMIN */
