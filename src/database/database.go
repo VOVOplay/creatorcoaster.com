@@ -408,20 +408,21 @@ func DeleteBlogArticle(name string) error {
 // --- Variables
 
 // Returns a string of a standard variable's contents.
-func GetVariableByName(name string) (string, error) {
+func GetVariableByName(name string) (myTypes.Variable, error) {
 	if db == nil {
-		return "", myTypes.ErrDatabseOffline
+		return myTypes.Variable{}, myTypes.ErrDatabseOffline
 	}
 
 	query := "SELECT variable_contents FROM markdown_variables WHERE variable_name = ?"
 
-	var variableValue string
-	err := db.QueryRow(query, name).Scan(&variableValue)
+	var variable myTypes.Variable
+	variable.VariableName = name
+	err := db.QueryRow(query, name).Scan(&variable.VariableContents)
 	if err != nil {
-		return "", myTypes.ErrVariableNotFound
+		return myTypes.Variable{}, myTypes.ErrVariableNotFound
 	}
 
-	return variableValue, nil
+	return variable, nil
 }
 
 // Returns a channel variable.
@@ -433,7 +434,8 @@ func GetChannelVariableByName(name string) (myTypes.ChannelVariable, error) {
 	query := "SELECT channel_name, channel_id FROM markdown_channel_variables WHERE variable_name = ?"
 
 	var channel myTypes.ChannelVariable
-	err := db.QueryRow(query, name).Scan(&channel.Name, &channel.ID)
+	channel.VariableName = name
+	err := db.QueryRow(query, name).Scan(&channel.ChannelName, &channel.ID)
 	if err != nil {
 		return myTypes.ChannelVariable{}, myTypes.ErrVariableNotFound
 	}
@@ -450,6 +452,7 @@ func GetRoleUserVariableByName(name string) (myTypes.RoleUserVariable, error) {
 	query := "SELECT role_user_name, role_user_id, variable_type FROM markdown_role_user_variables WHERE variable_name = ?"
 
 	var roleUserVariable myTypes.RoleUserVariable
+	roleUserVariable.VariableName = name
 	var variableType int
 	err := db.QueryRow(query, name).Scan(&roleUserVariable.RoleUserName, &roleUserVariable.ID, &variableType)
 	if err != nil {

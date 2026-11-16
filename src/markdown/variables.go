@@ -97,7 +97,7 @@ func (r *CustomVariableRenderer) renderVariable(w util.BufWriter, source []byte,
 			return ast.WalkContinue, nil
 		}
 
-		w.WriteString(variable.TODO)
+		w.WriteString(variable.VariableContents)
 	}
 
 	return ast.WalkContinue, nil
