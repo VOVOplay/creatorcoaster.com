@@ -423,7 +423,6 @@ func DeleteBlogArticle(name string) error {
 
 // --- Variables
 
-// Returns a string of a standard variable's contents.
 func GetVariableByName(name string) (myTypes.Variable, error) {
 	if isOffline() {
 		return myTypes.Variable{}, myTypes.ErrDatabseOffline
@@ -619,4 +618,46 @@ func GetAllVariables() ([]myTypes.Variable, []myTypes.ChannelVariable, []myTypes
 	}
 
 	return standardVariables, channelVariables, roleUserVariables, nil
+}
+
+func DeleteStandardVariable(name string) error {
+	if isOffline() {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "DELETE FROM markdown_variables WHERE variable_name = ?"
+	_, err := db.Exec(query, name)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteChannelVariable(name string) error {
+	if isOffline() {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "DELETE FROM markdown_channel_variables WHERE variable_name = ?"
+	_, err := db.Exec(query, name)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteRoleUserVariable(name string) error {
+	if isOffline() {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "DELETE FROM markdown_role_user_variables WHERE variable_name = ?"
+	_, err := db.Exec(query, name)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

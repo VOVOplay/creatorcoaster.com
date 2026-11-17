@@ -295,6 +295,9 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 		h.handleBlogDeletion(w, r)
 	case "preview-blog":
 		h.handleBlogPreview(w, r)
+	// --
+	case "delete-variable":
+		h.handleVariableDeletion(w, r)
 	}
 }
 
@@ -562,4 +565,53 @@ func (h *AdminHandler) handleBlogDeletion(w http.ResponseWriter, r *http.Request
 		fmt.Fprintf(w, `Are you sure? <a href="/admin/manage-blog">No</a> | <a hx-delete="%v" hx-target="#admin-article-card-%v" hx-swap="outerHTML">Yes</a>`, deletionURL, blogName)
 	}
 
+}
+
+func (h *AdminHandler) handleVariableDeletion(w http.ResponseWriter, r *http.Request) {
+	variableTypeString := r.URL.Query().Get("type") // should be myTypes.VariableKind
+	variableType, err := strconv.Atoi(variableTypeString)
+	if err != nil {
+		http.Error(w, "The 'type' parameter in the API url is set incorrectly. It must be a valid myTypes.VariableKind", http.StatusBadRequest)
+		return
+	}
+
+	variableName := r.URL.Query().Get("name")
+
+	confirmed := r.URL.Query().Get("confirmed")
+	if confirmed == "yes" {
+		var deletionFunction func(string) error
+		switch variableType {
+		case int(myTypes.KindStandardVariable):
+			deletionFunction = database.DeleteStandardVariable
+		case int(myTypes.KindChannelVariable):
+			deletionFunction = database.DeleteChannelVariable
+		case int(myTypes.KindRoleUserVariable):
+			deletionFunction = database.DeleteRoleUserVariable
+		default:
+			http.Error(w, "The 'type' parameter in the API url is set incorrectly. It must be a valid myTypes.VariableKind", http.StatusBadRequest)
+		}
+
+		err := deletionFunction(variableName)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Failed to delete variable '%v': %v", variableName, err), http.StatusInternalServerError)
+			return
+		}
+
+		fmt.Fprintf(w, "")
+
+	} else {
+		var hxTargetURL string
+		switch variableType {
+		case int(myTypes.KindStandardVariable):
+			hxTargetURL = fmt.Sprintf("#admin-variable-card-%v", variableName)
+		case int(myTypes.KindChannelVariable):
+			hxTargetURL = fmt.Sprintf("#admin-channel-variable-card-%v", variableName)
+		case int(myTypes.KindRoleUserVariable):
+			hxTargetURL = fmt.Sprintf("#admin-role-user-variable-card-%v", variableName)
+		default:
+			http.Error(w, "The 'type' parameter in the API url is set incorrectly. It must be a valid myTypes.VariableKind", http.StatusBadRequest)
+		}
+		deletionURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=yes", variableName, variableType)
+		fmt.Fprintf(w, `Are you sure? <a href="/admin/manage-variable">No</a> | <a hx-delete="%v" hx-target="%v" hx-swap="outerHTML">Yes</a>`, deletionURL, hxTargetURL)
+	}
 }

@@ -1,7 +1,17 @@
 package myTypes
 
+type VariableKind int
+
+const (
+	KindStandardVariable VariableKind = iota
+	KindChannelVariable
+	KindRoleUserVariable
+)
+
+// ---
+
 type Variable struct {
-	VariableName string
+	VariableName     string
 	VariableContents string
 }
 
@@ -10,8 +20,8 @@ type Variable struct {
 // The type used in markdown articles for channel variables
 type ChannelVariable struct {
 	VariableName string // The variable name used in markdown
-	ChannelName string // The name of the channel in discord
-	ID   uint64 // The ID of the channel
+	ChannelName  string // The name of the channel in discord
+	ID           uint64 // The ID of the channel
 }
 
 // ---
@@ -25,10 +35,10 @@ const (
 
 // The type used in markdown articles for role-user variables
 type RoleUserVariable struct {
-	VariableName string // The variable name used in markdown
+	VariableName string       // The variable name used in markdown
 	RoleUserName string       // The pretty name of the role/user (e.g. "VOVOplay", "Support")
-	ID   uint64       // The ID of the role/user
-	Type RoleUserType // Which type it is (myTypes.RoleUserType)
+	ID           uint64       // The ID of the role/user
+	Type         RoleUserType // Which type it is (myTypes.RoleUserType)
 }
 
 // ---

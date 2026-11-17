@@ -367,7 +367,7 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
                             <div class="actions" id={ actionsID }>
                                 {{
                                     editURL := fmt.Sprintf("/admin/update-variable?name=%v", variable.VariableName)
-                                    deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&confirmed=no", variable.VariableName)
+                                    deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", variable.VariableName, myTypes.KindStandardVariable)
                                 }}
                                 <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
                             </div>
@@ -389,7 +389,7 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
                             <div class="actions" id={ actionsID }>
                                 {{
                                     editURL := fmt.Sprintf("/admin/update-channel-variable?name=%v", channelVariable.VariableName)
-                                    deleteURL := fmt.Sprintf("/api/admin/delete-channel-variable?name=%v&confirmed=no", channelVariable.VariableName)
+                                    deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", channelVariable.VariableName, myTypes.KindChannelVariable)
                                 }}
                                 <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
                             </div>
@@ -411,7 +411,7 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
                             <div class="actions" id={ actionsID }>
                                 {{
                                     editURL := fmt.Sprintf("/admin/update-role-user-variable?name=%v", roleUserVariable.VariableName)
-                                    deleteURL := fmt.Sprintf("/api/admin/delete-role-uservariable?name=%v&confirmed=no", roleUserVariable.VariableName)
+                                    deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", roleUserVariable.VariableName, myTypes.KindRoleUserVariable)
                                 }}
                                 <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
                             </div>
