@@ -298,6 +298,15 @@ func (h *AdminHandler) HandleAPI(w http.ResponseWriter, r *http.Request) {
 	// --
 	case "delete-variable":
 		h.handleVariableDeletion(w, r)
+	case "show-edit-variable-card":
+		h.handleShowEditVariableCard(w, r)
+	case "upload-variable":
+		h.handleVariableUpload(w, r)
+	case "update-variable":
+		h.handleVariableUpdate(w, r)
+	default:
+		http.Error(w, "Unknown API path", http.StatusNotFound)
+		return
 	}
 }
 
@@ -567,6 +576,68 @@ func (h *AdminHandler) handleBlogDeletion(w http.ResponseWriter, r *http.Request
 
 }
 
+// ---
+
+func (h *AdminHandler) helperAssembleStandardVariable(r *http.Request) (myTypes.Variable, error) {
+	err := r.ParseForm()
+	if err != nil {
+		return myTypes.Variable{}, err
+	}
+
+	variableName := r.FormValue("variable-name")
+	variableContents := r.FormValue("contents")
+
+	return myTypes.Variable{
+		VariableName:     variableName,
+		VariableContents: variableContents,
+	}, nil
+}
+
+func (h *AdminHandler) helperAssembleChannelVariable(r *http.Request) (myTypes.ChannelVariable, error) {
+	err := r.ParseForm()
+	if err != nil {
+		return myTypes.ChannelVariable{}, err
+	}
+
+	variableName := r.FormValue("variable-name")
+	channelName := r.FormValue("channel-name")
+
+	channelIDString := r.FormValue("channel-id")
+	channelID, err := strconv.ParseUint(channelIDString, 10, 64)
+	if err != nil {
+		return myTypes.ChannelVariable{}, err
+	}
+
+	return myTypes.ChannelVariable{
+		VariableName: variableName,
+		ID:           channelID,
+		ChannelName:  channelName,
+	}, nil
+}
+
+func (h *AdminHandler) helperAssembleRoleUserVariable(r *http.Request) (myTypes.RoleUserVariable, error) {
+	err := r.ParseForm()
+	if err != nil {
+		return myTypes.RoleUserVariable{}, err
+	}
+
+	variableName := r.FormValue("variable-name")
+	roleUserName := r.FormValue("role-user-name")
+
+	roleUserIDString := r.FormValue("role-user-id")
+	roleUserID, err := strconv.ParseUint(roleUserIDString, 10, 64)
+	if err != nil {
+		return myTypes.RoleUserVariable{}, err
+	}
+
+	return myTypes.RoleUserVariable{
+		VariableName: variableName,
+		ID:           roleUserID,
+		RoleUserName: roleUserName,
+	}, nil
+
+}
+
 func (h *AdminHandler) handleVariableDeletion(w http.ResponseWriter, r *http.Request) {
 	variableTypeString := r.URL.Query().Get("type") // should be myTypes.VariableKind
 	variableType, err := strconv.Atoi(variableTypeString)
@@ -614,4 +685,166 @@ func (h *AdminHandler) handleVariableDeletion(w http.ResponseWriter, r *http.Req
 		deletionURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=yes", variableName, variableType)
 		fmt.Fprintf(w, `Are you sure? <a href="/admin/manage-variable">No</a> | <a hx-delete="%v" hx-target="%v" hx-swap="outerHTML">Yes</a>`, deletionURL, hxTargetURL)
 	}
+}
+
+func (h *AdminHandler) handleVariableUpload(w http.ResponseWriter, r *http.Request) {
+	variableTypeString := r.URL.Query().Get("type")
+	variableType, err := strconv.Atoi(variableTypeString)
+	if err != nil {
+		http.Error(w, "The 'type' parameter in the API url is set incorrectly. It must be a valid myTypes.VariableKind", http.StatusBadRequest)
+		return
+	}
+
+	switch variableType {
+	case int(myTypes.KindStandardVariable):
+		variable, err := h.helperAssembleStandardVariable(r)
+		if err != nil {
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		err = database.SaveStandardVariable(variable)
+		if err != nil {
+			fmt.Fprintf(w, "Database error: %v", err)
+			return
+		}
+
+		component := views.StandardVariableCard(variable)
+		component.Render(r.Context(), w)
+
+	case int(myTypes.KindChannelVariable):
+		channelVariable, err := h.helperAssembleChannelVariable(r)
+		if err != nil {
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		err = database.SaveChannelVariable(channelVariable)
+		if err != nil {
+			fmt.Fprintf(w, "Database error: %v", err)
+			return
+		}
+
+		component := views.ChannelVariableCard(channelVariable)
+		component.Render(r.Context(), w)
+
+	case int(myTypes.KindRoleUserVariable):
+		roleUserVariable, err := h.helperAssembleRoleUserVariable(r)
+		if err != nil {
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		err = database.SaveRoleUserVariable(roleUserVariable)
+		if err != nil {
+			fmt.Fprintf(w, "Database error: %v", err)
+			return
+		}
+
+		component := views.RoleUserVariableCard(roleUserVariable)
+		component.Render(r.Context(), w)
+	}
+}
+
+func (h *AdminHandler) handleVariableUpdate(w http.ResponseWriter, r *http.Request) {
+	variableTypeString := r.URL.Query().Get("type")
+	variableType, err := strconv.Atoi(variableTypeString)
+	if err != nil {
+		http.Error(w, "The 'type' parameter in the API url is set incorrectly. It must be a valid myTypes.VariableKind", http.StatusBadRequest)
+		return
+	}
+
+	switch variableType {
+	case int(myTypes.KindStandardVariable):
+		variable, err := h.helperAssembleStandardVariable(r)
+		if err != nil {
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		previousName := r.FormValue("previous-name")
+
+		err = database.UpdateStandardVariable(variable, previousName)
+		if err != nil {
+			fmt.Fprintf(w, "Database error: %v", err)
+			return
+		}
+
+		component := views.StandardVariableCard(variable)
+		component.Render(r.Context(), w)
+
+	case int(myTypes.KindChannelVariable):
+		channelVariable, err := h.helperAssembleChannelVariable(r)
+		if err != nil {
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		previousName := r.FormValue("previous-name")
+
+		err = database.UpdateChannelVariable(channelVariable, previousName)
+		if err != nil {
+			fmt.Fprintf(w, "Database error: %v", err)
+			return
+		}
+
+		component := views.ChannelVariableCard(channelVariable)
+		component.Render(r.Context(), w)
+
+	case int(myTypes.KindRoleUserVariable):
+		roleUserVariable, err := h.helperAssembleRoleUserVariable(r)
+		if err != nil {
+			http.Error(w, "Bad Request", http.StatusBadRequest)
+			return
+		}
+
+		previousName := r.FormValue("previous-name")
+
+		err = database.UpdateRoleUserVariable(roleUserVariable, previousName)
+		if err != nil {
+			fmt.Fprintf(w, "Database error: %v", err)
+			return
+		}
+
+		component := views.RoleUserVariableCard(roleUserVariable)
+		component.Render(r.Context(), w)
+	}
+}
+
+func (h *AdminHandler) handleShowEditVariableCard(w http.ResponseWriter, r *http.Request) {
+	variableTypeString := r.URL.Query().Get("type")
+	variableType, err := strconv.Atoi(variableTypeString)
+	if err != nil {
+		http.Error(w, "The 'type' parameter in the API url is set incorrectly. It must be a valid myTypes.VariableKind", http.StatusBadRequest)
+		return
+	}
+
+	variableName := r.URL.Query().Get("name")
+
+	var component templ.Component
+	switch variableType {
+	case int(myTypes.KindStandardVariable):
+		variable, err := database.GetVariableByName(variableName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		component = views.EditStandardVariableCard(variable)
+	case int(myTypes.KindChannelVariable):
+		channelVariable, err := database.GetChannelVariableByName(variableName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		component = views.EditChannelVariableCard(channelVariable)
+	case int(myTypes.KindRoleUserVariable):
+		roleUserVariable, err := database.GetRoleUserVariableByName(variableName)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		component = views.EditRoleUserVariableCard(roleUserVariable)
+	}
+
+	component.Render(r.Context(), w)
 }

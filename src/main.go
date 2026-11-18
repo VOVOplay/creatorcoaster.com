@@ -56,6 +56,7 @@ func configureRouter(config config.Config) *http.ServeMux {
 	router.HandleFunc("GET /auth/discord/callback/", adminHandler.HandleCallback)
 	router.HandleFunc("GET /auth/discord/logout/", adminHandler.HandleAdminLogout)
 
+	router.HandleFunc("GET /api/admin/{specificCommand}", adminHandler.HandleAPI)
 	router.HandleFunc("POST /api/admin/{specificCommand}/", adminHandler.HandleAPI)
 	router.HandleFunc("DELETE /api/admin/{specificCommand}/", adminHandler.HandleAPI)
 

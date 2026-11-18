@@ -661,3 +661,27 @@ func DeleteRoleUserVariable(name string) error {
 
 	return nil
 }
+
+func SaveStandardVariable(variable myTypes.Variable) error {
+	return nil
+}
+
+func SaveChannelVariable(channelVariable myTypes.ChannelVariable) error {
+	return nil
+}
+
+func SaveRoleUserVariable(roleUserVariable myTypes.RoleUserVariable) error {
+	return nil
+}
+
+func UpdateStandardVariable(newVariable myTypes.Variable, previousName string) error {
+	return nil
+}
+
+func UpdateChannelVariable(newChannelVariable myTypes.ChannelVariable, previousName string) error {
+	return nil
+}
+
+func UpdateRoleUserVariable(newRoleUserVariable myTypes.RoleUserVariable, previousName string) error {
+	return nil
+}

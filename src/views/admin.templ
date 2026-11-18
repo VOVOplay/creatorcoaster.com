@@ -340,6 +340,7 @@ templ ManageBlogView(allBlogs []myTypes.Article) {
 templ StandardVariableCard(variable myTypes.Variable) {
     {{
         cardID := fmt.Sprintf("admin-variable-card-%v", variable.VariableName)
+        cardTargetID := fmt.Sprintf("#%v", cardID)
         actionsID := fmt.Sprintf("actions-%v", variable.VariableName) 
         actionsTargetID := fmt.Sprintf("#%v", actionsID)
     }}
@@ -349,10 +350,10 @@ templ StandardVariableCard(variable myTypes.Variable) {
         </div>
         <div class="actions" id={ actionsID }>
             {{
-                editURL := fmt.Sprintf("/admin/update-variable?name=%v", variable.VariableName)
+                editURL := fmt.Sprintf("/api/admin/show-edit-variable-card?name=%v&type=%v", variable.VariableName, myTypes.KindStandardVariable)
                 deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", variable.VariableName, myTypes.KindStandardVariable)
             }}
-            <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+            <a hx-get={ editURL } hx-target={ cardTargetID }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
         </div>
     </div>
 }
@@ -360,6 +361,7 @@ templ StandardVariableCard(variable myTypes.Variable) {
 templ ChannelVariableCard(channelVariable myTypes.ChannelVariable) {
     {{
         cardID := fmt.Sprintf("admin-channel-variable-card-%v", channelVariable.VariableName)
+        cardTargetID := fmt.Sprintf("#%v", cardID)
         actionsID := fmt.Sprintf("actions-%v", channelVariable.VariableName) 
         actionsTargetID := fmt.Sprintf("#%v", actionsID)
     }}
@@ -369,10 +371,10 @@ templ ChannelVariableCard(channelVariable myTypes.ChannelVariable) {
         </div>
         <div class="actions" id={ actionsID }>
             {{
-                editURL := fmt.Sprintf("/admin/update-channel-variable?name=%v", channelVariable.VariableName)
+                editURL := fmt.Sprintf("/api/admin/show-edit-variable-card?name=%v&type=%v", channelVariable.VariableName, myTypes.KindChannelVariable)
                 deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", channelVariable.VariableName, myTypes.KindChannelVariable)
             }}
-            <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+            <a hx-get={ editURL } hx-target={ cardTargetID }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
         </div>
     </div>
 }
@@ -380,6 +382,7 @@ templ ChannelVariableCard(channelVariable myTypes.ChannelVariable) {
 templ RoleUserVariableCard(roleUserVariable myTypes.RoleUserVariable) {
     {{
         cardID := fmt.Sprintf("admin-role-user-variable-card-%v", roleUserVariable.VariableName)
+        cardTargetID := fmt.Sprintf("#%v", cardID)
         actionsID := fmt.Sprintf("actions-%v", roleUserVariable.VariableName) 
         actionsTargetID := fmt.Sprintf("#%v", actionsID)
     }}
@@ -389,10 +392,10 @@ templ RoleUserVariableCard(roleUserVariable myTypes.RoleUserVariable) {
         </div>
         <div class="actions" id={ actionsID }>
             {{
-                editURL := fmt.Sprintf("/admin/update-role-user-variable?name=%v", roleUserVariable.VariableName)
+                editURL := fmt.Sprintf("/api/admin/show-edit-variable-card?name=%v&type=%v", roleUserVariable.VariableName, myTypes.KindRoleUserVariable)
                 deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", roleUserVariable.VariableName, myTypes.KindRoleUserVariable)
             }}
-            <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+            <a hx-get={ editURL } hx-target={ cardTargetID }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
         </div>
     </div>
 }
@@ -433,4 +436,150 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
             </div>
         </div>
     }
+}
+
+templ EditStandardVariableCard(variable myTypes.Variable) {
+    {{
+        isNewVariable := variable == myTypes.Variable{}
+
+        var previousName string
+        if !isNewVariable {
+            previousName = variable.VariableName
+        }
+        
+        API := fmt.Sprintf("/api/admin/upload-variable?type=%v", myTypes.KindStandardVariable)
+        if !isNewVariable {
+            API = fmt.Sprintf("/api/admin/update-variable?type=%v", myTypes.KindStandardVariable)
+        }
+
+        hxTarget := fmt.Sprintf("#admin-variable-card-%v", variable.VariableName)
+
+        var nameValue string
+        var contentsValue string
+        if !isNewVariable {
+            nameValue = variable.VariableName
+            contentsValue = variable.VariableContents
+        }
+    }}
+    <form hx-post={ API } hx-target={ hxTarget } hx-swap="outerHTML" class="admin-form">
+        // Hidden field for the old name
+        if !isNewVariable {
+            <input class="hidden" type="text" id="previous-name" name="previous-name" value={ previousName } required>
+        }
+
+        <div>
+            <label for="variable-name">Variable Name:</label>
+            <br>
+            <input type="text" id="variable-name" name="variable-name" value={ nameValue } required>
+        </div>
+        <div>
+            <label for="contents">Variable Contents:</label>
+            <br>
+            <input type="text" id="contents" name="contents" value={ contentsValue } required>
+        </div>
+    
+        <button type="submit" class="submit-button">Submit</button>
+    </form>
+}
+
+templ EditChannelVariableCard(channelVariable myTypes.ChannelVariable) {
+    {{
+        isNewVariable := channelVariable == myTypes.ChannelVariable{}
+
+        var previousName string
+        if !isNewVariable {
+            previousName = channelVariable.VariableName
+        }
+        
+        API := fmt.Sprintf("/api/admin/upload-variable?type=%v", myTypes.KindChannelVariable)
+        if !isNewVariable {
+            API = fmt.Sprintf("/api/admin/update-variable?type=%v", myTypes.KindChannelVariable)
+        }
+
+        hxTarget := fmt.Sprintf("#admin-channel-variable-card-%v", channelVariable.VariableName)
+
+        var nameValue string
+        var channelIDValue uint64
+        var channelNameValue string
+        if !isNewVariable {
+            nameValue = channelVariable.VariableName
+            channelIDValue = channelVariable.ID
+            channelNameValue = channelVariable.ChannelName
+        }
+    }}
+    <form hx-post={ API } hx-target={ hxTarget } hx-swap="outerHTML" class="admin-form">
+        // Hidden field for the old name
+        if !isNewVariable {
+            <input class="hidden" type="text" id="previous-name" name="previous-name" value={ previousName } required>
+        }
+
+        <div>
+            <label for="variable-name">Variable Name:</label>
+            <br>
+            <input type="text" id="variable-name" name="variable-name" value={ nameValue } required>
+        </div>
+        <div>
+            <label for="channel-id">Channel ID:</label>
+            <br>
+            <input type="text" id="channel-id" name="channel-id" value={ channelIDValue } required>
+        </div>
+        <div>
+            <label for="channel-name">Channel Name:</label>
+            <br>
+            <input type="text" id="channel-name" name="channel-name" value={ channelNameValue } required>
+        </div>
+    
+        <button type="submit" class="submit-button">Submit</button>
+    </form>
+}
+
+templ EditRoleUserVariableCard(roleUserVariable myTypes.RoleUserVariable) {
+    {{
+        isNewVariable := roleUserVariable == myTypes.RoleUserVariable{}
+
+        var previousName string
+        if !isNewVariable {
+            previousName = roleUserVariable.VariableName
+        }
+        
+        API := fmt.Sprintf("/api/admin/upload-variable?type=%v", myTypes.KindRoleUserVariable)
+        if !isNewVariable {
+            API = fmt.Sprintf("/api/admin/update-variable?type=%v", myTypes.KindRoleUserVariable)
+        }
+
+        hxTarget := fmt.Sprintf("#admin-role-user-variable-card-%v", roleUserVariable.VariableName)
+
+        var nameValue string
+        var roleUserIDValue uint64
+        var roleUserNameValue string
+        if !isNewVariable {
+            nameValue = roleUserVariable.VariableName
+            roleUserIDValue = roleUserVariable.ID
+            roleUserNameValue = roleUserVariable.RoleUserName
+        }
+    }}
+    <form hx-post={ API } hx-target={ hxTarget } hx-swap="outerHTML" class="admin-form">
+        // Hidden field for the old name
+        if !isNewVariable {
+            <input class="hidden" type="text" id="previous-name" name="previous-name" value={ previousName } required>
+        }
+
+        <div>
+            <label for="variable-name">Variable Name:</label>
+            <br>
+            <input type="text" id="variable-name" name="variable-name" value={ nameValue } required>
+        </div>
+        <div>
+            <label for="role-user-id">Role/User ID:</label>
+            <br>
+            <input type="text" id="role-user-id" name="role-user-id" value={ roleUserIDValue } required>
+        </div>
+        <div>
+            <label for="role-user-name">Role/User name:</label>
+            <br>
+            <input type="text" id="role-user-name" name="role-user-name" value={ roleUserNameValue } required>
+        </div>
+    
+        <button type="submit" class="submit-button">Submit</button>
+    </form>
 }
