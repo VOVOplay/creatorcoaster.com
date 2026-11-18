@@ -821,6 +821,21 @@ func (h *AdminHandler) handleShowEditVariableCard(w http.ResponseWriter, r *http
 
 	variableName := r.URL.Query().Get("name")
 
+	// creating a new one (the name parameter isnt present)
+	if variableName == "" {
+		var component templ.Component
+		switch variableType {
+		case int(myTypes.KindStandardVariable):
+			component = views.EditStandardVariableCard(myTypes.Variable{})
+		case int(myTypes.KindChannelVariable):
+			component = views.EditChannelVariableCard(myTypes.ChannelVariable{})
+		case int(myTypes.KindRoleUserVariable):
+			component = views.EditRoleUserVariableCard(myTypes.RoleUserVariable{})
+		}
+		component.Render(r.Context(), w)
+		return
+	}
+
 	var component templ.Component
 	switch variableType {
 	case int(myTypes.KindStandardVariable):

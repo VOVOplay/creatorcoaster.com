@@ -417,18 +417,33 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
             <div id="admin-variable-sections-holder">
                 <div class="variable-holder right-border">
                     <h4 class="md-heading">Standard Variables</h4>
+                    {{
+                        editURL := fmt.Sprintf("/api/admin/show-edit-variable-card?type=%v", myTypes.KindStandardVariable)
+                    }}
+                    <a hx-get={ editURL } hx-target="#standard-variables-list" hx-swap="afterbegin">Upload New</a>
+                    <div id="standard-variables-list"></div>
                     for _, variable := range standardVariables {
                         @StandardVariableCard(variable)
                     }
                 </div>
                 <div class="variable-holder right-border">
                     <h4 class="md-heading">Channel Variables</h4>
+                    {{
+                        editURL = fmt.Sprintf("/api/admin/show-edit-variable-card?type=%v", myTypes.KindChannelVariable)
+                    }}
+                    <a hx-get={ editURL } hx-target="#channel-variables-list" hx-swap="afterbegin">Upload New</a>
+                    <div id="channel-variables-list"></div>
                     for _, channelVariable := range channelVariables {
                         @ChannelVariableCard(channelVariable)
                     }
                 </div>
                 <div class="variable-holder">
                     <h4 class="md-heading">Role/User Variables</h4>
+                    {{
+                        editURL = fmt.Sprintf("/api/admin/show-edit-variable-card?type=%v", myTypes.KindRoleUserVariable)
+                    }}
+                    <a hx-get={ editURL } hx-target="#role-user-variables-list" hx-swap="afterbegin">Upload New</a>
+                    <div id="role-user-variables-list"></div>
                     for _, roleUserVariable := range roleUserVariables {
                         @RoleUserVariableCard(roleUserVariable)
                     }
@@ -452,7 +467,12 @@ templ EditStandardVariableCard(variable myTypes.Variable) {
             API = fmt.Sprintf("/api/admin/update-variable?type=%v", myTypes.KindStandardVariable)
         }
 
-        hxTarget := fmt.Sprintf("#admin-variable-card-%v", variable.VariableName)
+        hxTarget := "this"
+        hxSwap := "outerHTML"
+        if !isNewVariable {
+            hxTarget = fmt.Sprintf("#admin-variable-card-%v", variable.VariableName)
+            hxSwap = "outerHTML"
+        }
 
         var nameValue string
         var contentsValue string
@@ -461,7 +481,7 @@ templ EditStandardVariableCard(variable myTypes.Variable) {
             contentsValue = variable.VariableContents
         }
     }}
-    <form hx-post={ API } hx-target={ hxTarget } hx-swap="outerHTML" class="admin-form">
+    <form hx-post={ API } hx-target={ hxTarget } hx-swap={ hxSwap } class="admin-form">
         // Hidden field for the old name
         if !isNewVariable {
             <input class="hidden" type="text" id="previous-name" name="previous-name" value={ previousName } required>
@@ -496,7 +516,12 @@ templ EditChannelVariableCard(channelVariable myTypes.ChannelVariable) {
             API = fmt.Sprintf("/api/admin/update-variable?type=%v", myTypes.KindChannelVariable)
         }
 
-        hxTarget := fmt.Sprintf("#admin-channel-variable-card-%v", channelVariable.VariableName)
+        hxTarget := "this"
+        hxSwap := "outerHTML"
+        if !isNewVariable {
+            hxTarget = fmt.Sprintf("#admin-channel-variable-card-%v", channelVariable.VariableName)
+            hxSwap = "outerHTML"
+        }
 
         var nameValue string
         var channelIDValue uint64
@@ -507,7 +532,7 @@ templ EditChannelVariableCard(channelVariable myTypes.ChannelVariable) {
             channelNameValue = channelVariable.ChannelName
         }
     }}
-    <form hx-post={ API } hx-target={ hxTarget } hx-swap="outerHTML" class="admin-form">
+    <form hx-post={ API } hx-target={ hxTarget } hx-swap={ hxSwap } class="admin-form">
         // Hidden field for the old name
         if !isNewVariable {
             <input class="hidden" type="text" id="previous-name" name="previous-name" value={ previousName } required>
@@ -547,7 +572,12 @@ templ EditRoleUserVariableCard(roleUserVariable myTypes.RoleUserVariable) {
             API = fmt.Sprintf("/api/admin/update-variable?type=%v", myTypes.KindRoleUserVariable)
         }
 
-        hxTarget := fmt.Sprintf("#admin-role-user-variable-card-%v", roleUserVariable.VariableName)
+        hxTarget := "this"
+        hxSwap := "outerHTML"
+        if !isNewVariable {
+            hxTarget = fmt.Sprintf("#admin-role-user-variable-card-%v", roleUserVariable.VariableName)
+            hxSwap = "outerHTML"
+        }
 
         var nameValue string
         var roleUserIDValue uint64
@@ -558,7 +588,7 @@ templ EditRoleUserVariableCard(roleUserVariable myTypes.RoleUserVariable) {
             roleUserNameValue = roleUserVariable.RoleUserName
         }
     }}
-    <form hx-post={ API } hx-target={ hxTarget } hx-swap="outerHTML" class="admin-form">
+    <form hx-post={ API } hx-target={ hxTarget } hx-swap={ hxSwap } class="admin-form">
         // Hidden field for the old name
         if !isNewVariable {
             <input class="hidden" type="text" id="previous-name" name="previous-name" value={ previousName } required>
