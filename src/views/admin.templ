@@ -546,7 +546,12 @@ templ EditChannelVariableCard(channelVariable myTypes.ChannelVariable) {
         <div>
             <label for="channel-id">Channel ID:</label>
             <br>
-            <input type="text" id="channel-id" name="channel-id" value={ channelIDValue } required>
+            if channelIDValue == 0 {
+                <input type="text" id="channel-id" name="channel-id" required>
+            } else {
+                <input type="text" id="channel-id" name="channel-id" value={ channelIDValue } required>
+            }
+            
         </div>
         <div>
             <label for="channel-name">Channel Name:</label>
@@ -582,10 +587,12 @@ templ EditRoleUserVariableCard(roleUserVariable myTypes.RoleUserVariable) {
         var nameValue string
         var roleUserIDValue uint64
         var roleUserNameValue string
+        roleUserType := myTypes.User
         if !isNewVariable {
             nameValue = roleUserVariable.VariableName
             roleUserIDValue = roleUserVariable.ID
             roleUserNameValue = roleUserVariable.RoleUserName
+            roleUserType = roleUserVariable.Type
         }
     }}
     <form hx-post={ API } hx-target={ hxTarget } hx-swap={ hxSwap } class="admin-form">
@@ -602,14 +609,30 @@ templ EditRoleUserVariableCard(roleUserVariable myTypes.RoleUserVariable) {
         <div>
             <label for="role-user-id">Role/User ID:</label>
             <br>
-            <input type="text" id="role-user-id" name="role-user-id" value={ roleUserIDValue } required>
+            if roleUserIDValue == 0 {
+                <input type="text" id="role-user-id" name="role-user-id" required>
+            } else {
+                <input type="text" id="role-user-id" name="role-user-id" value={ roleUserIDValue } required>
+            }
         </div>
         <div>
             <label for="role-user-name">Role/User name:</label>
             <br>
             <input type="text" id="role-user-name" name="role-user-name" value={ roleUserNameValue } required>
         </div>
-    
+        <div>
+            <label for="type">Type (Role or User):</label>
+            <br>
+            <select name="type" id="type" required>
+                if roleUserType == myTypes.User {
+                    <option value={ myTypes.User }>User</option>
+                    <option value={ myTypes.Role }>Role</option>
+                } else {
+                    <option value={ myTypes.Role }>Role</option>
+                    <option value={ myTypes.User }>User</option>
+                }
+            </select>
+        </div>
         <button type="submit" class="submit-button">Submit</button>
     </form>
 }

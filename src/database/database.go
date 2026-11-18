@@ -695,7 +695,7 @@ func SaveRoleUserVariable(roleUserVariable myTypes.RoleUserVariable) error {
 		return myTypes.ErrDatabseOffline
 	}
 
-	query := "INSERT INTO markdown_role_user_variables (variable_name, role_user_name, role_user_id, variable_type) VALUES (?, ?)"
+	query := "INSERT INTO markdown_role_user_variables (variable_name, role_user_name, role_user_id, variable_type) VALUES (?, ?, ?, ?)"
 	_, err := db.Exec(query, roleUserVariable.VariableName, roleUserVariable.RoleUserName, roleUserVariable.ID, roleUserVariable.Type)
 	if err != nil {
 		return err
@@ -723,7 +723,7 @@ func UpdateChannelVariable(newChannelVariable myTypes.ChannelVariable, previousN
 		return myTypes.ErrDatabseOffline
 	}
 
-	query := "UPDATE markdown_variables SET variable_name = ?, channel_name = ?, channel_id WHERE variable_name = ?"
+	query := "UPDATE markdown_channel_variables SET variable_name = ?, channel_name = ?, channel_id = ? WHERE variable_name = ?"
 	_, err := db.Exec(query, newChannelVariable.VariableName, newChannelVariable.ChannelName, newChannelVariable.ID, previousName)
 	if err != nil {
 		return err
@@ -737,7 +737,7 @@ func UpdateRoleUserVariable(newRoleUserVariable myTypes.RoleUserVariable, previo
 		return myTypes.ErrDatabseOffline
 	}
 
-	query := "UPDATE markdown_variables SET variable_name = ?, role_user_name = ?, role_user_id, variable_type WHERE variable_name = ?"
+	query := "UPDATE markdown_role_user_variables SET variable_name = ?, role_user_name = ?, role_user_id = ?, variable_type = ? WHERE variable_name = ?"
 	_, err := db.Exec(query, newRoleUserVariable.VariableName, newRoleUserVariable.RoleUserName, newRoleUserVariable.ID, newRoleUserVariable.Type, previousName)
 	if err != nil {
 		return err
