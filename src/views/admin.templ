@@ -337,6 +337,66 @@ templ ManageBlogView(allBlogs []myTypes.Article) {
 
 // --- VARIABLES
 
+templ StandardVariableCard(variable myTypes.Variable) {
+    {{
+        cardID := fmt.Sprintf("admin-variable-card-%v", variable.VariableName)
+        actionsID := fmt.Sprintf("actions-%v", variable.VariableName) 
+        actionsTargetID := fmt.Sprintf("#%v", actionsID)
+    }}
+    <div class="admin-article-card" id={ cardID }>
+        <div class="info">
+        { variable.VariableName }: <code class="md-inline-code">{ variable.VariableContents }</code>
+        </div>
+        <div class="actions" id={ actionsID }>
+            {{
+                editURL := fmt.Sprintf("/admin/update-variable?name=%v", variable.VariableName)
+                deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", variable.VariableName, myTypes.KindStandardVariable)
+            }}
+            <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+        </div>
+    </div>
+}
+
+templ ChannelVariableCard(channelVariable myTypes.ChannelVariable) {
+    {{
+        cardID := fmt.Sprintf("admin-channel-variable-card-%v", channelVariable.VariableName)
+        actionsID := fmt.Sprintf("actions-%v", channelVariable.VariableName) 
+        actionsTargetID := fmt.Sprintf("#%v", actionsID)
+    }}
+    <div class="admin-article-card" id={ cardID }>
+        <div class="info">
+        { channelVariable.VariableName }: <code class="md-inline-code">{ channelVariable.ChannelName }</code>
+        </div>
+        <div class="actions" id={ actionsID }>
+            {{
+                editURL := fmt.Sprintf("/admin/update-channel-variable?name=%v", channelVariable.VariableName)
+                deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", channelVariable.VariableName, myTypes.KindChannelVariable)
+            }}
+            <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+        </div>
+    </div>
+}
+
+templ RoleUserVariableCard(roleUserVariable myTypes.RoleUserVariable) {
+    {{
+        cardID := fmt.Sprintf("admin-role-user-variable-card-%v", roleUserVariable.VariableName)
+        actionsID := fmt.Sprintf("actions-%v", roleUserVariable.VariableName) 
+        actionsTargetID := fmt.Sprintf("#%v", actionsID)
+    }}
+    <div class="admin-article-card" id={ cardID }>
+        <div class="info">
+        { roleUserVariable.VariableName }: <code class="md-inline-code">{ roleUserVariable.RoleUserName }</code>
+        </div>
+        <div class="actions" id={ actionsID }>
+            {{
+                editURL := fmt.Sprintf("/admin/update-role-user-variable?name=%v", roleUserVariable.VariableName)
+                deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", roleUserVariable.VariableName, myTypes.KindRoleUserVariable)
+            }}
+            <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
+        </div>
+    </div>
+}
+
 templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables []myTypes.ChannelVariable, roleUserVariables []myTypes.RoleUserVariable, errors []error) {
     @Layout("Manage Variables | Admin | Creator Coaster") {
         <div class="full-screen-div">
@@ -355,67 +415,19 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
                 <div class="variable-holder right-border">
                     <h4 class="md-heading">Standard Variables</h4>
                     for _, variable := range standardVariables {
-                        {{
-                            cardID := fmt.Sprintf("admin-variable-card-%v", variable.VariableName)
-                            actionsID := fmt.Sprintf("actions-%v", variable.VariableName) 
-                            actionsTargetID := fmt.Sprintf("#%v", actionsID)
-                        }}
-                        <div class="admin-article-card" id={ cardID }>
-                            <div class="info">
-                            { variable.VariableName }: <code class="md-inline-code">{ variable.VariableContents }</code>
-                            </div>
-                            <div class="actions" id={ actionsID }>
-                                {{
-                                    editURL := fmt.Sprintf("/admin/update-variable?name=%v", variable.VariableName)
-                                    deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", variable.VariableName, myTypes.KindStandardVariable)
-                                }}
-                                <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
-                            </div>
-                        </div>
+                        @StandardVariableCard(variable)
                     }
                 </div>
                 <div class="variable-holder right-border">
                     <h4 class="md-heading">Channel Variables</h4>
                     for _, channelVariable := range channelVariables {
-                        {{
-                            cardID := fmt.Sprintf("admin-channel-variable-card-%v", channelVariable.VariableName)
-                            actionsID := fmt.Sprintf("actions-%v", channelVariable.VariableName) 
-                            actionsTargetID := fmt.Sprintf("#%v", actionsID)
-                        }}
-                        <div class="admin-article-card" id={ cardID }>
-                            <div class="info">
-                            { channelVariable.VariableName }: <code class="md-inline-code">{ channelVariable.ChannelName }</code>
-                            </div>
-                            <div class="actions" id={ actionsID }>
-                                {{
-                                    editURL := fmt.Sprintf("/admin/update-channel-variable?name=%v", channelVariable.VariableName)
-                                    deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", channelVariable.VariableName, myTypes.KindChannelVariable)
-                                }}
-                                <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
-                            </div>
-                        </div>
+                        @ChannelVariableCard(channelVariable)
                     }
                 </div>
                 <div class="variable-holder">
                     <h4 class="md-heading">Role/User Variables</h4>
                     for _, roleUserVariable := range roleUserVariables {
-                        {{
-                            cardID := fmt.Sprintf("admin-role-user-variable-card-%v", roleUserVariable.VariableName)
-                            actionsID := fmt.Sprintf("actions-%v", roleUserVariable.VariableName) 
-                            actionsTargetID := fmt.Sprintf("#%v", actionsID)
-                        }}
-                        <div class="admin-article-card" id={ cardID }>
-                            <div class="info">
-                            { roleUserVariable.VariableName }: <code class="md-inline-code">{ roleUserVariable.RoleUserName }</code>
-                            </div>
-                            <div class="actions" id={ actionsID }>
-                                {{
-                                    editURL := fmt.Sprintf("/admin/update-role-user-variable?name=%v", roleUserVariable.VariableName)
-                                    deleteURL := fmt.Sprintf("/api/admin/delete-variable?name=%v&type=%v&confirmed=no", roleUserVariable.VariableName, myTypes.KindRoleUserVariable)
-                                }}
-                                <a href={ editURL }>Edit</a> | <a hx-delete={ deleteURL } hx-target={ actionsTargetID }>Delete</a>
-                            </div>
-                        </div>
+                        @RoleUserVariableCard(roleUserVariable)
                     }
                 </div>
             </div>
