@@ -420,7 +420,7 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
                     {{
                         editURL := fmt.Sprintf("/api/admin/show-edit-variable-card?type=%v", myTypes.KindStandardVariable)
                     }}
-                    <a hx-get={ editURL } hx-target="#standard-variables-list" hx-swap="afterbegin">Upload New</a>
+                    <a class="upload-new-link" hx-get={ editURL } hx-target="#standard-variables-list" hx-swap="afterbegin">Upload New</a>
                     <div id="standard-variables-list"></div>
                     for _, variable := range standardVariables {
                         @StandardVariableCard(variable)
@@ -431,7 +431,7 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
                     {{
                         editURL = fmt.Sprintf("/api/admin/show-edit-variable-card?type=%v", myTypes.KindChannelVariable)
                     }}
-                    <a hx-get={ editURL } hx-target="#channel-variables-list" hx-swap="afterbegin">Upload New</a>
+                    <a class="upload-new-link" hx-get={ editURL } hx-target="#channel-variables-list" hx-swap="afterbegin">Upload New</a>
                     <div id="channel-variables-list"></div>
                     for _, channelVariable := range channelVariables {
                         @ChannelVariableCard(channelVariable)
@@ -442,7 +442,7 @@ templ ManageVariablesView(standardVariables []myTypes.Variable, channelVariables
                     {{
                         editURL = fmt.Sprintf("/api/admin/show-edit-variable-card?type=%v", myTypes.KindRoleUserVariable)
                     }}
-                    <a hx-get={ editURL } hx-target="#role-user-variables-list" hx-swap="afterbegin">Upload New</a>
+                    <a class="upload-new-link" hx-get={ editURL } hx-target="#role-user-variables-list" hx-swap="afterbegin">Upload New</a>
                     <div id="role-user-variables-list"></div>
                     for _, roleUserVariable := range roleUserVariables {
                         @RoleUserVariableCard(roleUserVariable)

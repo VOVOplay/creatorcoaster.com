@@ -1026,6 +1026,12 @@ footer {
     border-right: 1px solid var(--card-border-color);
 }
 
+.variable-holder:has(#standard-variables-list .admin-form) .upload-new-link,
+.variable-holder:has(#channel-variables-list .admin-form) .upload-new-link,
+.variable-holder:has(#role-user-variables-list .admin-form) .upload-new-link {
+    display: none;
+}
+
 /* ADMIN */
 
 @media (max-width: 660px) {
