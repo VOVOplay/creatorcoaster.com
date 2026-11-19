@@ -5,11 +5,9 @@ Legend:
 
 ## Actual things that still need to be done:
 - Markdown:
-    - ❌ Variables from wiki article into db variable: 
-    {new_var_name}(
-        Text
-        Text
-    )
+    - ➖ Variables from wiki article into db variable:
+        - ❌ Preprocessing function: Removes the syntax of this block from the input source (The contents stay there), this gets called in the generate html function and doesn't save anything into the database
+        - ➖ Saving function: Saves all the the article sections into the database (maybe returns them as well depending on the requirements), this only gets called when actually submitting an article.
     - ➖ Rendering markdown meant for discord (e. g. Replacing #CHANNEL with <#CHANEL_ID>...) - seperate from goldmark completely
 
 - Admin panel:
