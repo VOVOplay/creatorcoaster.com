@@ -20,6 +20,12 @@ type ArticleInfo struct {
 	IsFirstWikiArticle bool   // [WIKI] A flag to denote the first wiki article
 }
 
+type ArticleSection struct {
+	Name     string
+	Contents string
+	Article  Article // The article in which the section is located
+}
+
 // Used for making /wiki/ load that, and also to mark it as the first article in article.Info.IsFirstArticle
 var FirstArticleName string = "introduction"
 var RootCategoryId int = -1

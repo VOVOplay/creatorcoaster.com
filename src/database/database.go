@@ -745,3 +745,38 @@ func UpdateRoleUserVariable(newRoleUserVariable myTypes.RoleUserVariable, previo
 
 	return nil
 }
+
+// --- Article sections
+
+func SaveArticleSection(section myTypes.ArticleSection) error {
+	if isOffline() {
+		return myTypes.ErrDatabseOffline
+	}
+
+	query := "INSERT INTO article_sections (section_name, section_contents, article_name) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE section_contents = VALUES(section_contents)"
+	_, err := db.Exec(query, section.Name, section.Contents, section.Article.Name)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetArticleSection(article myTypes.Article, sectionName string) (myTypes.ArticleSection, error) {
+	if isOffline() {
+		return myTypes.ArticleSection{}, myTypes.ErrDatabseOffline
+	}
+
+	query := "SELECT section_contents FROM article_sections WHERE article_name = ? AND section_name = ?"
+
+	var articleSection myTypes.ArticleSection
+	err := db.QueryRow(query, article.Name, sectionName).Scan(&articleSection.Contents)
+	if err != nil {
+		return myTypes.ArticleSection{}, err
+	}
+
+	articleSection.Article = article
+	articleSection.Name = sectionName
+
+	return articleSection, nil
+}

@@ -52,3 +52,14 @@ CREATE TABLE IF NOT EXISTS markdown_role_user_variables(
     role_user_id BIGINT NOT NULL,
     variable_type INT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS article_sections(
+    section_name VARCHAR(200) NOT NULL,
+    section_contents TEXT NOT NULL,
+    article_name VARCHAR(200) NOT NULL,
+    PRIMARY KEY (article_name, section_name),
+    CONSTRAINT fk_article_sections_article
+        FOREIGN KEY (article_name) REFERENCES wiki_articles(name)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);

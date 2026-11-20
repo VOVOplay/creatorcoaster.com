@@ -1,14 +1,15 @@
 package markdown
 
 import (
+	"errors"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/VOVOplay/creatorcoaster.com/src/database"
+	"github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 )
 
-type ArticleSection struct {
-	Name     string
-	Contents string
-}
+var ErrSectionsMustBeInWikiArticles error = errors.New("Article sections can only be in wiki articles.")
 
 type articleSectionLineInfo struct {
 	openingLine line
@@ -21,15 +22,19 @@ type line struct {
 }
 
 // Traverses a string and saves all of the article sections into the database
-func SaveArticleSectionsToDatabase(article string) ([]ArticleSection, error) {
-	articleSections, _ := getAllArticleSections(article)
-
-	// removing the last \n so it stays clean in the database and in the bot
-	for i := range articleSections {
-		articleSections[i].Contents = strings.TrimSuffix(articleSections[i].Contents, "\n")
+func ProcessAndSaveArticleSections(article myTypes.Article) ([]myTypes.ArticleSection, error) {
+	if article.Type != myTypes.WikiArticle {
+		return []myTypes.ArticleSection{}, ErrSectionsMustBeInWikiArticles
 	}
 
-	// TODO: Save to database
+	articleSections, _ := getAllArticleSections(article.MarkdownSource)
+
+	for i, articleSection := range articleSections {
+		articleSections[i].Contents = strings.TrimSuffix(articleSections[i].Contents, "\n") // removing the last \n so it stays clean in the database and in the bot
+		articleSection.Article = article
+
+		database.SaveArticleSection(articleSection)
+	}
 
 	return articleSections, nil
 }
@@ -68,8 +73,8 @@ func (info articleSectionLineInfo) isMeantForRemoval(index int) bool {
 }
 
 // finds all the article sections and returns them
-func getAllArticleSections(article string) ([]ArticleSection, []articleSectionLineInfo) {
-	var sections []ArticleSection
+func getAllArticleSections(article string) ([]myTypes.ArticleSection, []articleSectionLineInfo) {
+	var sections []myTypes.ArticleSection
 	var sectionsLineInfo []articleSectionLineInfo
 	var previousChar rune
 
@@ -116,10 +121,10 @@ func getAllArticleSections(article string) ([]ArticleSection, []articleSectionLi
 	return sections, sectionsLineInfo
 }
 
-func assembleArticleSection(restOfArticle string) (ArticleSection, int, int, bool, bool) {
+func assembleArticleSection(restOfArticle string) (myTypes.ArticleSection, int, int, bool, bool) {
 	endOfNameIndex := strings.Index(restOfArticle, "\n")
 	if endOfNameIndex == -1 {
-		return ArticleSection{}, -1, -1, false, false
+		return myTypes.ArticleSection{}, -1, -1, false, false
 	}
 
 	closingCharIndex := -1 // the colon on the last line
@@ -133,18 +138,18 @@ func assembleArticleSection(restOfArticle string) (ArticleSection, int, int, boo
 	}
 
 	if closingCharIndex == -1 {
-		return ArticleSection{}, -1, -1, false, false
+		return myTypes.ArticleSection{}, -1, -1, false, false
 	}
 
 	name := restOfArticle[1:endOfNameIndex]
 	name = strings.ReplaceAll(name, " ", "_")
 	if len(name) < 1 {
-		return ArticleSection{}, -1, -1, false, false
+		return myTypes.ArticleSection{}, -1, -1, false, false
 	}
 
 	contents := restOfArticle[endOfNameIndex+1 : closingCharIndex]
 
-	articleSection := ArticleSection{
+	articleSection := myTypes.ArticleSection{
 		Name:     name,
 		Contents: contents,
 	}

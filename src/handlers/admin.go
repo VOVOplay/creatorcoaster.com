@@ -357,11 +357,18 @@ func (h *AdminHandler) handleWikiUpload(w http.ResponseWriter, r *http.Request) 
 	wikiArticle, err := h.helperAssembleWikiArticle(r)
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
 	}
 
 	err = database.SaveWikiArticle(wikiArticle)
 	if err != nil {
 		fmt.Fprintf(w, "Database error: %v", err)
+		return
+	}
+
+	_, err = markdown.ProcessAndSaveArticleSections(wikiArticle)
+	if err != nil {
+		fmt.Fprintf(w, "Error saving the article section: %v", err)
 		return
 	}
 
@@ -372,6 +379,7 @@ func (h *AdminHandler) handleWikiUpdate(w http.ResponseWriter, r *http.Request) 
 	newWikiArticle, err := h.helperAssembleWikiArticle(r)
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
 	}
 
 	previousName := r.FormValue("previous-name")
@@ -379,6 +387,12 @@ func (h *AdminHandler) handleWikiUpdate(w http.ResponseWriter, r *http.Request) 
 	err = database.UpdateWikiArticle(newWikiArticle, previousName)
 	if err != nil {
 		fmt.Fprintf(w, "Database error: %v", err)
+		return
+	}
+
+	_, err = markdown.ProcessAndSaveArticleSections(newWikiArticle)
+	if err != nil {
+		fmt.Fprintf(w, "Error saving the article section: %v", err)
 		return
 	}
 
