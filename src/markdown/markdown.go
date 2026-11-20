@@ -33,7 +33,9 @@ func configurePolicy() bluemonday.Policy {
 // Generates HTML from a string source.
 // This uses all of the custom styling.
 func GenerateHTMLFromString(sourceString string) string {
-	source := []byte(sourceString)
+	strippedString := StripArticleSectionSyntaxFromArticle(sourceString)
+
+	source := []byte(strippedString)
 
 	md := goldmark.New(
 		goldmark.WithExtensions(

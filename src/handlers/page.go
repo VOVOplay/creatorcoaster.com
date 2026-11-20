@@ -67,7 +67,7 @@ func (h *PageHandler) HandlePrivacy(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *PageHandler) HandleResources(w http.ResponseWriter, r *http.Request) {
-	text := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("resources.md"))
+	text := markdown.GenerateHTMLFromString(database.LoadStaticMarkdownFile("test.md"))
 
 	w.Header().Set("Cache-Control", "public, max-age=60")
 
