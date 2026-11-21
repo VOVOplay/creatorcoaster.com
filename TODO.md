@@ -9,7 +9,10 @@ Legend:
 
 - Admin panel:
     - ❌ Managing/Uploading Categories
-    - ❌ Adding "hints" to upload/update pages for blog and wiki such as existing variables or existing sort-orders
+    - ❌ Adding "hints" to upload/update pages for blog and wiki.
+        - ❌ Existing variables (all three types)
+        - ✅ Existing sort orders (debug sidebar view showing that when clicking "preview sidebar")
+        - ✅ User-PFP combinations for blogs
 
 - Other:
     - ➖ Designing and coding the landing page

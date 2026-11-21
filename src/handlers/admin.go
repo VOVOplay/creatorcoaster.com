@@ -473,7 +473,7 @@ func (h *AdminHandler) handleSidebarPreview(w http.ResponseWriter, r *http.Reque
 	categoryItems := createCategoryItems(rawCategories, allArticles)
 
 	w.Write([]byte("<b>Do not click any of the links in the sidebar.</b>"))
-	component := views.Sidebar(currentArticle, categoryItems)
+	component := views.Sidebar(currentArticle, categoryItems, true)
 	component.Render(r.Context(), w)
 }
 

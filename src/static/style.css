@@ -657,6 +657,10 @@ footer {
     background-color: var(--sidebar-hover-color);
 }
 
+.sidebar-debug-info {
+    padding: 5px;
+}
+
 
 .category-button {
     background-color: var(--yet-another-gray);

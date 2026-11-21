@@ -3,7 +3,7 @@ package views
 import "fmt"
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 
-templ renderCurrentCategoryLevel(currentCategoryLevel []myTypes.CategoryItem, currentArticle myTypes.Article)  {
+templ renderCurrentCategoryLevel(currentCategoryLevel []myTypes.CategoryItem, currentArticle myTypes.Article, debug bool)  {
     for _, categoryItem := range currentCategoryLevel {
         switch item := categoryItem.(type) {
         case *myTypes.Article:
@@ -20,24 +20,33 @@ templ renderCurrentCategoryLevel(currentCategoryLevel []myTypes.CategoryItem, cu
 					elementClass += " sidebar-element-selected"
 				}
 			}}
-            <a href={ articlePath } hx-preload="mouseover" class={ elementClass }>{ item.PrettyName }</a>
+			if debug {
+				<a href={ articlePath } hx-preload="mouseover" class={ elementClass }>{ item.PrettyName } <span class="md-tiny-text sidebar-debug-info">[{ item.SortOrder }]</span></a>
+			} else {
+            	<a href={ articlePath } hx-preload="mouseover" class={ elementClass }>{ item.PrettyName }</a>
+			}
 
         case *myTypes.Category:
             <div class="sidebar-category">
-                <button class="category-button sidebar-element" id={ item.Id } data-category-id={ item.Id }><img class="folder" src="/static/assets/folder.svg">{ item.Name }<img class="chevron" src="/static/assets/chevron.svg"></button>
+				if debug {
+					<button class="category-button sidebar-element" id={ item.Id } data-category-id={ item.Id }><img class="folder" src="/static/assets/folder.svg">{ item.Name } <span class="md-tiny-text sidebar-debug-info">[{ item.SortOrder }]</span><img class="chevron" src="/static/assets/chevron.svg"></button>
+				} else {
+					<button class="category-button sidebar-element" id={ item.Id } data-category-id={ item.Id }><img class="folder" src="/static/assets/folder.svg">{ item.Name }<img class="chevron" src="/static/assets/chevron.svg"></button>
+				}
+                
 				<div class="sidebar-category-list">
-                    @renderCurrentCategoryLevel(item.Elements, currentArticle)
+                    @renderCurrentCategoryLevel(item.Elements, currentArticle, debug)
                 </div>
             </div>
         }
     }
 }
 
-templ Sidebar(article myTypes.Article, categoryItems []myTypes.CategoryItem) {
+templ Sidebar(article myTypes.Article, categoryItems []myTypes.CategoryItem, debug bool) {
 	<div class="sidebar">
 		<div class="sidebar-category">
 			<div class="sidebar-category-list-first">
-				@renderCurrentCategoryLevel(categoryItems, article)
+				@renderCurrentCategoryLevel(categoryItems, article, debug)
 			</div>
 		</div>
 	</div>
@@ -67,7 +76,7 @@ templ Sidebar(article myTypes.Article, categoryItems []myTypes.CategoryItem) {
 templ WikiLayout(article myTypes.Article, categoryItems []myTypes.CategoryItem) {
     @Layout(fmt.Sprintf("%v | Creator Coaster", article.PrettyName)) {
         <div class="wiki-container">
-            @Sidebar(article, categoryItems)
+            @Sidebar(article, categoryItems, false)
             <div class="free-wiki-area">
                 <div class="text-div">
                     @GenericArticle(article)
