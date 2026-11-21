@@ -3,6 +3,7 @@ package views
 import "github.com/VOVOplay/creatorcoaster.com/src/myTypes"
 import "fmt"
 import "os"
+import "strings"
 
 func getDiscordLoginURL() string {
     return os.Getenv("DISCORD_LOGIN_URL")
@@ -34,10 +35,47 @@ templ AdminLoggedInView() {
     </div> 
 }
 
+templ VariablesPreview(variableGetter func() ([]myTypes.Variable, []myTypes.ChannelVariable, []myTypes.RoleUserVariable, []error), markdownGenerator func(string) (string)) {
+{{
+    variablesPreviewString, errors := getVariablesPreviewString(variableGetter, markdownGenerator)
+}}
+if errors != nil {
+    for i := 1; i <= len(errors); i++ {
+        { i }: { errors[i-1].Error() }
+    }
+}
+@templ.Raw(variablesPreviewString)
+}
+
+func getVariablesPreviewString(variableGetter func() ([]myTypes.Variable, []myTypes.ChannelVariable, []myTypes.RoleUserVariable, []error), markdownGenerator func(string) (string)) (string, []error) {
+    standardVariables, channelVariables, roleUserVariables, errors := variableGetter()
+
+    var builder strings.Builder
+    
+    builder.WriteString("\n***\n### Standard Variables\n")
+    for _, standardVariable := range standardVariables {
+        builder.WriteString(fmt.Sprintf("`{%v}`: {%v}\n", standardVariable.VariableName, standardVariable.VariableName))
+    }
+
+    builder.WriteString("\n***\n### Channel Variables\n")
+    for _, channelVariable := range channelVariables {
+        builder.WriteString(fmt.Sprintf("`{#%v}`: {#%v}\n", channelVariable.VariableName, channelVariable.VariableName))
+    }
+
+    builder.WriteString("\n***\n### Role/User Variables\n")
+    for _, roleUserVariable := range roleUserVariables {
+        builder.WriteString(fmt.Sprintf("`{@%v}`: {@%v}\n", roleUserVariable.VariableName, roleUserVariable.VariableName))
+    }
+
+    html := markdownGenerator(builder.String())
+
+    return html, errors
+}
+
 // --- WIKI
 
 // This component serves both for uploading and editing wiki articles. However the API is seperate
-templ EditSpecificWikiArticle(wikiArticle myTypes.Article, rawCategories []myTypes.RawCategory) {
+templ EditSpecificWikiArticle(wikiArticle myTypes.Article, rawCategories []myTypes.RawCategory, variableGetter func() ([]myTypes.Variable, []myTypes.ChannelVariable, []myTypes.RoleUserVariable, []error), markdownGenerator func(string) (string)) {
     @Layout("Upload Wiki | Admin | Creator Coaster") {
         {{
             isNewArticle := wikiArticle == myTypes.Article{}
@@ -126,6 +164,7 @@ templ EditSpecificWikiArticle(wikiArticle myTypes.Article, rawCategories []myTyp
                     |
                     <button type="submit" class="submit-button">Submit</button>
                 </form>
+                @VariablesPreview(variableGetter, markdownGenerator)
                 <div id="response-section"></div>
             </div>
             <div class="admin-half-page">
@@ -207,7 +246,7 @@ func getListOfCombinations(allBlogs []myTypes.Article) []AuthorPFPCombination {
 } 
 
 // This component serves both for uploading and editing wiki articles. However the API is seperate
-templ EditSpecificBlog(blog myTypes.Article, allBlogs []myTypes.Article) {
+templ EditSpecificBlog(blog myTypes.Article, allBlogs []myTypes.Article, variableGetter func() ([]myTypes.Variable, []myTypes.ChannelVariable, []myTypes.RoleUserVariable, []error), markdownGenerator func(string) (string)) {
     @Layout("Upload Blog | Admin | Creator Coaster") {
         {{
             isNewArticle := blog == myTypes.Article{}
@@ -282,14 +321,17 @@ templ EditSpecificBlog(blog myTypes.Article, allBlogs []myTypes.Article) {
                     <button hx-post="/api/admin/preview-blog" hx-target="#preview-contents" hx-swap="innerHTML" class="preview-button">Preview</button> | <button type="submit" class="submit-button">Submit</button>
                 </form>
                 <div id="response-section"></div>
+                <hr class="md-hr">
                 <h3 class="md-heading">Previously used name-pfp combinations:</h3>
                 {{ fullList :=  getListOfCombinations(allBlogs) }}
 
                 for _, combination := range fullList {
-                    <code class="md-inline-code">{combination.AuthorName}</code> - <code class="md-inline-code">{combination.PFPLink}</code>
+                    <code class="md-inline-code">{combination.AuthorName}</code>: <a href={ combination.PFPLink }>PFP Link</a>
                     <br>
                 }
+                @VariablesPreview(variableGetter, markdownGenerator)
             </div>
+            
             <div class="admin-half-page">
                 <div class="free-area-for-text">
                     <div class="text-div">

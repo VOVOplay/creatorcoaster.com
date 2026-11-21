@@ -219,7 +219,7 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 			component = views.NotFound()
 		}
 
-		component = views.EditSpecificWikiArticle(myTypes.Article{}, rawCategories)
+		component = views.EditSpecificWikiArticle(myTypes.Article{}, rawCategories, database.GetAllVariables, markdown.GenerateHTMLFromString)
 	case "update-wiki":
 		requestedArticleName := r.URL.Query().Get("name")
 		requestedArticle, err := database.GetWikiArticleByName(requestedArticleName, markdown.GenerateHTMLFromString)
@@ -227,7 +227,7 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 		if err != nil {
 			component = views.NotFound()
 		} else {
-			component = views.EditSpecificWikiArticle(requestedArticle, rawCategories)
+			component = views.EditSpecificWikiArticle(requestedArticle, rawCategories, database.GetAllVariables, markdown.GenerateHTMLFromString)
 		}
 
 	case "manage-wiki":
@@ -236,7 +236,7 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 	// --
 	case "upload-blog":
 		allBlogs, _ := database.GetAllBlogs()
-		component = views.EditSpecificBlog(myTypes.Article{}, allBlogs)
+		component = views.EditSpecificBlog(myTypes.Article{}, allBlogs, database.GetAllVariables, markdown.GenerateHTMLFromString)
 	case "update-blog":
 		allBlogs, _ := database.GetAllBlogs()
 
@@ -245,7 +245,7 @@ func (h *AdminHandler) HandleSpecificAdminPages(w http.ResponseWriter, r *http.R
 		if err != nil {
 			component = views.NotFound()
 		} else {
-			component = views.EditSpecificBlog(requestedBlog, allBlogs)
+			component = views.EditSpecificBlog(requestedBlog, allBlogs, database.GetAllVariables, markdown.GenerateHTMLFromString)
 		}
 	case "manage-blog":
 		allBlogs, _ := database.GetAllBlogs()

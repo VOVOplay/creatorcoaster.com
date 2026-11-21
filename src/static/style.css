@@ -904,6 +904,10 @@ footer {
     border-right: 1px solid var(--tertiary-color);
 }
 
+.admin-form {
+    padding-bottom: 15px;
+}
+
 .admin-form input {
     background-color: var(--tertiary-color);
     border: 1px solid var(--secondary-color);
