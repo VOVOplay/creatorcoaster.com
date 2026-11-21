@@ -4,7 +4,7 @@ Legend:
 - ❌: Not done
 
 ## TODO
-➖ Rendering markdown meant for discord (e. g. Replacing #CHANNEL with <#CHANEL_ID>...) - seperate from goldmark completely
+✅ Rendering markdown meant for discord (e. g. Replacing #CHANNEL with <#CHANEL_ID>...) - seperate from goldmark completely
 ➖ Designing and coding the landing page
 ❌ Managing/Uploading Categories in admin panel
 ❌ Mobile Improvements (Wiki & Blog pages, footer...)
@@ -14,3 +14,6 @@ Legend:
 - Before release:
     - ❌ Set up a proper database
     - ❌ Fix up the bot and release the version that saves the staff list
+
+Bugs:
+    - The role-user type field in role/user variables doesnt do anything in the upload/edit card

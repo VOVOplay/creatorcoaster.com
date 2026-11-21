@@ -434,7 +434,7 @@ func GetVariableByName(name string) (myTypes.Variable, error) {
 	variable.VariableName = name
 	err := db.QueryRow(query, name).Scan(&variable.VariableContents)
 	if err != nil {
-		return myTypes.Variable{}, myTypes.ErrVariableNotFound
+		return myTypes.Variable{}, err
 	}
 
 	return variable, nil
@@ -484,7 +484,7 @@ func GetChannelVariableByName(name string) (myTypes.ChannelVariable, error) {
 	channel.VariableName = name
 	err := db.QueryRow(query, name).Scan(&channel.ChannelName, &channel.ID)
 	if err != nil {
-		return myTypes.ChannelVariable{}, myTypes.ErrVariableNotFound
+		return myTypes.ChannelVariable{}, err
 	}
 
 	return channel, nil

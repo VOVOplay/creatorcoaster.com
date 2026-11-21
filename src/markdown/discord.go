@@ -1,7 +1,6 @@
 package markdown
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -122,10 +121,10 @@ func parseVariable(line string, start int) (kind variableKind, name string, end 
 		switch line[nameStart] {
 		case '#':
 			kind = channelVar
-			nameStart++
+			nameStart = start + 2
 		case '@':
 			kind = roleUserVar
-			nameStart++
+			nameStart = start + 2
 		}
 	}
 
@@ -150,43 +149,34 @@ func parseVariable(line string, start int) (kind variableKind, name string, end 
 func expandVariable(kind variableKind, name string) (string, error) {
 	switch kind {
 	case standardVar:
-		value, err := database.GetVariableByName(name)
+		standardVariable, err := database.GetVariableByName(name)
 		if err != nil {
-			if errors.Is(err, myTypes.ErrVariableNotFound) {
-				return "{" + name + "}", nil
-			}
-			return "", fmt.Errorf("get variable %q: %w", name, err)
+			return "{" + name + "}", nil
 		}
-		return value, nil
+		return standardVariable.VariableContents, nil
 
 	case channelVar:
-		channel, err := database.GetChannelVariableByName(name)
+		channelVariable, err := database.GetChannelVariableByName(name)
 		if err != nil {
-			if errors.Is(err, myTypes.ErrVariableNotFound) {
-				return "{#" + name + "}", nil
-			}
-			return "", fmt.Errorf("get channel variable %q: %w", name, err)
+			return "{#" + name + "}", nil
 		}
-		return "<#" + strconv.FormatUint(channel.ID, 10) + ">", nil
+		return "<#" + strconv.FormatUint(channelVariable.ID, 10) + ">", nil
 
 	case roleUserVar:
-		variable, err := database.GetRoleUserVariableByName(name)
+		roleUserVariable, err := database.GetRoleUserVariableByName(name)
 		if err != nil {
-			if errors.Is(err, myTypes.ErrVariableNotFound) {
-				return "{@" + name + "}", nil
-			}
-			return "", fmt.Errorf("get role/user variable %q: %w", name, err)
+			return "{#" + name + "}", nil
 		}
-		switch variable.Type {
+		switch roleUserVariable.Type {
 		case myTypes.Role:
-			return "<@&" + strconv.FormatUint(variable.ID, 10) + ">", nil
+			return "<@&" + strconv.FormatUint(roleUserVariable.ID, 10) + ">", nil
 		case myTypes.User:
-			return "<@" + strconv.FormatUint(variable.ID, 10) + ">", nil
+			return "<@" + strconv.FormatUint(roleUserVariable.ID, 10) + ">", nil
 		default:
-			return "", fmt.Errorf("unknown role/user variable type %d", variable.Type)
+			return "[ERROR]", fmt.Errorf("unknown role/user variable type %d", roleUserVariable.Type)
 		}
 
 	default:
-		return "", fmt.Errorf("unknown variable kind %d", kind)
+		return "[ERROR]", fmt.Errorf("unknown variable kind %d", kind)
 	}
 }
