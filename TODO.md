@@ -14,6 +14,3 @@ Legend:
 - Before release:
     - ❌ Set up a proper database
     - ❌ Fix up the bot and release the version that saves the staff list
-
-Bugs:
-    - The role-user type field in role/user variables doesnt do anything in the upload/edit card

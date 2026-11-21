@@ -644,10 +644,26 @@ func (h *AdminHandler) helperAssembleRoleUserVariable(r *http.Request) (myTypes.
 		return myTypes.RoleUserVariable{}, err
 	}
 
+	roleUserTypeString := r.FormValue("type")
+	roleUserTypeInt, err := strconv.Atoi(roleUserTypeString)
+	if err != nil {
+		return myTypes.RoleUserVariable{}, err
+	}
+	var roleUserType myTypes.RoleUserType
+	switch roleUserTypeInt {
+	case int(myTypes.Role):
+		roleUserType = myTypes.Role
+	case int(myTypes.User):
+		roleUserType = myTypes.User
+	default:
+		return myTypes.RoleUserVariable{}, fmt.Errorf("The role/user type is not correct.")
+	}
+
 	return myTypes.RoleUserVariable{
 		VariableName: variableName,
 		ID:           roleUserID,
 		RoleUserName: roleUserName,
+		Type:         roleUserType,
 	}, nil
 
 }
