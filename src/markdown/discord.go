@@ -1,7 +1,6 @@
 package markdown
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"unicode"
@@ -36,10 +35,7 @@ type variableCacheKey struct {
 // (no Setext-style headings, raw HTML, images, indented code blocks, etc).
 // Variable names must not contain any whitespace, and are terminated by
 // closing braces (and begun with opening braces).
-//
-// The only errors returned are errors occurred while looking up a variable
-// in the database.
-func GenerateDiscordMarkdownFromString(source string) (string, error) {
+func GenerateDiscordMarkdownFromString(source string) string {
 	var b strings.Builder
 	b.Grow(len(source))
 
@@ -68,11 +64,7 @@ func GenerateDiscordMarkdownFromString(source string) (string, error) {
 
 			value, found := variableCache[key]
 			if !found {
-				var err error
-				value, err = expandVariable(kind, name)
-				if err != nil {
-					return "", err
-				}
+				value = expandVariable(kind, name)
 
 				if variableCache == nil {
 					variableCache = make(map[variableCacheKey]string)
@@ -90,7 +82,7 @@ func GenerateDiscordMarkdownFromString(source string) (string, error) {
 		b.WriteString(line[last:])
 	}
 
-	return b.String(), nil
+	return b.String()
 }
 
 func isHorizontalRule(line string) bool {
@@ -146,37 +138,39 @@ func parseVariable(line string, start int) (kind variableKind, name string, end 
 	return 0, "", 0, false
 }
 
-func expandVariable(kind variableKind, name string) (string, error) {
+func expandVariable(kind variableKind, name string) string {
 	switch kind {
 	case standardVar:
 		standardVariable, err := database.GetVariableByName(name)
 		if err != nil {
-			return "{" + name + "}", nil
+			return "{" + name + "}"
 		}
-		return standardVariable.VariableContents, nil
+		return standardVariable.VariableContents
 
 	case channelVar:
 		channelVariable, err := database.GetChannelVariableByName(name)
 		if err != nil {
-			return "{#" + name + "}", nil
+			return "{#" + name + "}"
 		}
-		return "<#" + strconv.FormatUint(channelVariable.ID, 10) + ">", nil
+		return "<#" + strconv.FormatUint(channelVariable.ID, 10) + ">"
 
 	case roleUserVar:
 		roleUserVariable, err := database.GetRoleUserVariableByName(name)
 		if err != nil {
-			return "{#" + name + "}", nil
+			return "{@" + name + "}"
 		}
 		switch roleUserVariable.Type {
 		case myTypes.Role:
-			return "<@&" + strconv.FormatUint(roleUserVariable.ID, 10) + ">", nil
+			return "<@&" + strconv.FormatUint(roleUserVariable.ID, 10) + ">"
 		case myTypes.User:
-			return "<@" + strconv.FormatUint(roleUserVariable.ID, 10) + ">", nil
+			return "<@" + strconv.FormatUint(roleUserVariable.ID, 10) + ">"
 		default:
-			return "[ERROR]", fmt.Errorf("unknown role/user variable type %d", roleUserVariable.Type)
+			// TODO: log this
+			return "[ERROR]"
 		}
 
 	default:
-		return "[ERROR]", fmt.Errorf("unknown variable kind %d", kind)
+		// TODO: log this
+		return "[ERROR]"
 	}
 }
